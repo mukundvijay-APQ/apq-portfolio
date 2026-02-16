@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APQ - Advanced Quality Analyzer</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        // ============================================================================
+        // STATISTICAL CALCULATION FUNCTIONS (Black Belt Level)
+        // ============================================================================
+        
+        const generateRecommendations = (formData) => {
+            const recommendations = [];
+            
+            // Extract numeric values from form
+            const qualityText = formData.qualityIssues?.toLowerCase() || '';
+            const testText = formData.testResults?.toLowerCase() || '';
+            
+            // Try to extract yield from test results
+            const yieldMatch = testText.match(/yield[:\s]+(\d+(?:\.\d+)?)/i);
+            const cpkMatch = testText.match(/cpk[:\s]+(\d+(?:\.\d+)?)/i);
+            const dpmoMatch = testText.match(/dpmo[:\s]+(\d+)/i);
+            
+            if (yieldMatch && parseFloat(yieldMatch[1]) < 95) {
+                recommendations.push({
+                    type: 'warning',
+                    title: 'Low First Pass Yield Detected',
+                    message: `Yield of ${yieldMatch[1]}% is below industry standard (95%). Recommend root cause analysis.`,
+                    action: 'Initiate 8D investigation on top 3 defect types'
+                });
+            }
+            
+            if (cpkMatch && parseFloat(cpkMatch[1]) < 1.33) {
+                recommendations.push({
+                    type: 'critical',
+                    title: 'Process Not Capable',
+                    message: `Cpk of ${cpkMatch[1]} indicates process is not capable. Target: >1.33 for production.`,
+                    action: 'Implement SPC monitoring and reduce process variation'
+                });
+            }
+            
+            if (dpmoMatch && parseInt(dpmoMatch[1]) > 1000) {
+                recommendations.push({
+                    type: 'warning',
+                    title: 'High Defect Density',
+                    message: `DPMO of ${dpmoMatch[1]} indicates quality issues. Target: <500 DPMO.`,
+                    action: 'Conduct Pareto analysis to identify vital few defects'
+                });
+            }
+            
+            // Look for keywords indicating issues
+            if (qualityText.includes('failure') || qualityText.includes('defect')) {
+                if (formData.phase === 'EVT') {
+                    recommendations.push({
+                        type: 'info',
+                        title: 'EVT Phase - Early Detection',
+                        message: 'Issues found in EVT are 10x cheaper to fix than in DVT. Focus on design validation.',
+                        action: 'Schedule design FMEA review with cross-functional team'
+                    });
+                } else if (formData.phase === 'DVT') {
+                    recommendations.push({
+                        type: 'critical',
+                        title: 'DVT Gate Risk',
+                        message: 'Multiple quality issues detected in DVT. Gate transition may be at risk.',
+                        action: 'Create recovery plan with clear exit criteria and timeline'
+                    });
+                }
+            }
+            
+            // Generic helpful tip if no issues detected
+            if (recommendations.length === 0 && formData.productName) {
+                recommendations.push({
+                    type: 'info',
+                    title: 'Quality Data Entry Tips',
+                    message: 'Include specific metrics (Yield %, Cpk, DPMO) in your test results for detailed recommendations.',
+                    action: 'Add quantitative data to receive targeted quality insights'
+                });
+            }
+            
+            return recommendations;
+        };
+        
+        // Meta Ray-Ban Case Study Data
+        const metaReport = {
+          productName: "Meta Ray-Ban Smart Glasses (Wayfarer)",
+          phase: "DVT",
+          sampleSize: "500",
+          executiveSummary: "DVT phase analysis reveals significant quality challenges requiring immediate attention before PVT transition. Audio distortion (12% failure rate), camera focus issues (5.2% failure), and battery degradation (15% below target) represent critical blockers. First Pass Yield of 78% falls substantially below the 95% target, with process capability (Cpk=0.89) indicating inadequate process control.",
+          phaseStatus: "CONDITIONAL_PASS",
+          qualityToolsApplied: ["8D", "5-Why", "FMEA", "Pareto", "Fishbone", "SPC"],
+          keyMetrics: {
+            defectDensity: "1,200 DPMO",
+            yieldRate: "78%",
+            criticalIssues: "3",
+            testCoverage: "87%",
+            cpk: "0.89",
+            dpmo: "1,200"
+          },
+          paretoAnalysis: {
+            top3Issues: [
+              { issue: "Audio Distortion & Speaker Failures", percentage: "35%", cumulativePercentage: "35%" },
+              { issue: "Camera Module Defects", percentage: "22%", cumulativePercentage: "57%" },
+              { issue: "Battery Performance Issues", percentage: "15%", cumulativePercentage: "72%" }
+            ],
+            recommendation: "Focus immediate resources on audio quality (35% of defects) and camera reliability (22%). These two issues account for 57% of all defects."
+          },
+          rootCauseAnalysis: {
+            method: "5-Why with Fishbone Diagram",
+            primaryCause: "Manufacturing process shortcuts driven by production schedule pressure",
+            whyChain: [
+              "Why is there audio distortion? → Speaker diaphragm is delaminating from voice coil",
+              "Why is delamination occurring? → Adhesive bond strength is insufficient",
+              "Why is bond strength insufficient? → Adhesive cure time was reduced from 4 hours to 2 hours",
+              "Why was cure time reduced? → To meet production takt time and schedule commitments",
+              "Why wasn't engineering consulted? → Production pressure prioritized schedule over process validation (ROOT CAUSE)"
+            ]
+          },
+          fmeaAnalysis: [
+            { failureMode: "Speaker Diaphragm Delamination", severity: "8", occurrence: "7", detection: "5", rpn: "280", recommendedActions: "Restore 4-hour cure time, implement 100% bond pull testing" },
+            { failureMode: "Battery Capacity Degradation", severity: "9", occurrence: "5", detection: "6", rpn: "270", recommendedActions: "Implement tighter voltage regulation, add thermal monitoring" },
+            { failureMode: "Camera Focus Mechanism Sticking", severity: "7", occurrence: "6", detection: "4", rpn: "168", recommendedActions: "Select low-temperature lubricant, implement cold chamber testing" }
+          ],
+          processStability: {
+            controlChartAnalysis: "OUT OF CONTROL at Station 3: 8 consecutive points below centerline (samples 4-11)",
+            processCapability: "NOT CAPABLE - Overall Cpk=0.89 (target: >1.33)",
+            recommendation: "Immediate process stabilization required"
+          },
+          gateDecision: "CONDITIONAL PASS - Proceed to PVT phase ONLY after successful completion and validation of all corrective actions. Timeline: 4 weeks. Projected warranty savings: $4.8M annually."
+        };
+
+        // Enhanced Pareto Chart Component
+        function ParetoChart({ data }) {
+          const chartRef = useRef(null);
+          const chartInstance = useRef(null);
+          
+          useEffect(() => {
+            if (chartRef.current) {
+              const ctx = chartRef.current.getContext('2d');
+              
+              if (chartInstance.current) {
+                chartInstance.current.destroy();
+              }
+              
+              const percentages = data.top3Issues.map(item => parseInt(item.percentage));
+              const cumulative = data.top3Issues.map(item => parseInt(item.cumulativePercentage));
+              
+              chartInstance.current = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: ['Audio Issues', 'Camera Defects', 'Battery Issues'],
+                  datasets: [{
+                    label: 'Defect %',
+                    data: percentages,
+                    backgroundColor: 'rgba(100, 255, 218, 0.6)',
+                    borderColor: '#64ffda',
+                    borderWidth: 2,
+                    yAxisID: 'y'
+                  }, {
+                    label: 'Cumulative %',
+                    data: cumulative,
+                    type: 'line',
+                    borderColor: '#fbbf24',
+                    backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    yAxisID: 'y1',
+                    tension: 0.4
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      labels: { color: '#e6f1ff', font: { size: 12 } }
+                    },
+                    title: {
+                      display: false
+                    }
+                  },
+                  scales: {
+                    y: {
+                      type: 'linear',
+                      position: 'left',
+                      ticks: { color: '#94a3b8' },
+                      grid: { color: 'rgba(148, 163, 184, 0.1)' },
+                      title: { display: true, text: 'Defect %', color: '#64ffda' }
+                    },
+                    y1: {
+                      type: 'linear',
+                      position: 'right',
+                      ticks: { color: '#94a3b8' },
+                      grid: { display: false },
+                      title: { display: true, text: 'Cumulative %', color: '#fbbf24' },
+                      max: 100
+                    },
+                    x: {
+                      ticks: { color: '#94a3b8' },
+                      grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                    }
+                  }
+                }
+              });
+            }
+            
+            return () => {
+              if (chartInstance.current) {
+                chartInstance.current.destroy();
+              }
+            };
+          }, [data]);
+          
+          const exportChart = () => {
+            if (chartRef.current) {
+              const url = chartRef.current.toDataURL('image/png');
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'pareto-chart.png';
+              a.click();
+            }
+          };
+          
+          const exportData = () => {
+            const csv = 'Issue,Percentage,Cumulative\n' + 
+              data.top3Issues.map(item => `"${item.issue}",${item.percentage},${item.cumulativePercentage}`).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'pareto-data.csv';
+            a.click();
+          };
+          
+          return (
+            <div>
+              <div style={{ height: '300px', marginBottom: '1rem' }}>
+                <canvas ref={chartRef}></canvas>
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                <button onClick={exportChart} style={{ padding: '0.5rem 1rem', background: 'rgba(100, 255, 218, 0.2)', color: '#64ffda', border: '1px solid #64ffda', borderRadius: '0.25rem', fontSize: '0.875rem', cursor: 'pointer' }}>
+                  📥 Export Chart PNG
+                </button>
+                <button onClick={exportData} style={{ padding: '0.5rem 1rem', background: 'rgba(100, 255, 218, 0.2)', color: '#64ffda', border: '1px solid #64ffda', borderRadius: '0.25rem', fontSize: '0.875rem', cursor: 'pointer' }}>
+                  📊 Export Data CSV
+                </button>
+              </div>
+            </div>
+          );
+        }
+
+        // Control Chart Component with Western Electric Rules Detection
+        function ControlChart() {
+          const chartRef = useRef(null);
+          const chartInstance = useRef(null);
+          const [violations, setViolations] = useState([]);
+          
+          useEffect(() => {
+            // Generate data with ACTUAL 8 consecutive points below CL
+            const dataPoints = [
+              85,  // 1: above
+              82,  // 2: below
+              88,  // 3: above (peak)
+              82,  // 4: below - START OF RUN
+              81,  // 5: below
+              79,  // 6: below
+              80,  // 7: below
+              83,  // 8: below
+              82,  // 9: below
+              81,  // 10: below
+              83,  // 11: below - END (8 consecutive: samples 4-11)
+              87,  // 12: above (breaks run)
+              85,  // 13: above
+              84,  // 14: at CL
+              86,  // 15: above
+              83,  // 16: below
+              85,  // 17: above
+              87,  // 18: above
+              84,  // 19: at CL
+              85   // 20: above
+            ];
+            const mean = 84;
+            const ucl = 90;
+            const lcl = 78;
+            
+            // Detect Rule 4: 8+ consecutive on one side of CL
+            const detectRule4 = (data, CL) => {
+              let consecutiveBelow = 0;
+              let startBelow = -1;
+              
+              for (let i = 0; i < data.length; i++) {
+                if (data[i] < CL) {
+                  if (consecutiveBelow === 0) startBelow = i;
+                  consecutiveBelow++;
+                  if (consecutiveBelow >= 8) {
+                    return { 
+                      found: true, 
+                      side: 'below', 
+                      start: startBelow, 
+                      end: i,
+                      count: consecutiveBelow 
+                    };
+                  }
+                } else if (data[i] > CL) {
+                  consecutiveBelow = 0;
+                } else {
+                  consecutiveBelow = 0;
+                }
+              }
+              return { found: false };
+            };
+            
+            // Run detection
+            const rule4Result = detectRule4(dataPoints, mean);
+            if (rule4Result.found) {
+              setViolations([{
+                message: `OUT OF CONTROL at Station 3: ${rule4Result.count} consecutive points ${rule4Result.side} centerline (samples ${rule4Result.start + 1}-${rule4Result.end + 1})`
+              }]);
+            }
+            
+            if (chartRef.current) {
+              const ctx = chartRef.current.getContext('2d');
+              
+              if (chartInstance.current) {
+                chartInstance.current.destroy();
+              }
+              
+              chartInstance.current = new Chart(ctx, {
+                type: 'line',
+                data: {
+                  labels: Array.from({length: 20}, (_, i) => i + 1),
+                  datasets: [{
+                    label: 'Measurement',
+                    data: dataPoints,
+                    borderColor: '#64ffda',
+                    backgroundColor: 'rgba(100, 255, 218, 0.1)',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#64ffda'
+                  }, {
+                    label: 'UCL',
+                    data: Array(20).fill(ucl),
+                    borderColor: '#ef4444',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 0
+                  }, {
+                    label: 'CL',
+                    data: Array(20).fill(mean),
+                    borderColor: '#3b82f6',
+                    borderWidth: 2,
+                    pointRadius: 0
+                  }, {
+                    label: 'LCL',
+                    data: Array(20).fill(lcl),
+                    borderColor: '#ef4444',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 0
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      labels: { color: '#e6f1ff', font: { size: 12 } }
+                    }
+                  },
+                  scales: {
+                    y: {
+                      ticks: { color: '#94a3b8' },
+                      grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                    },
+                    x: {
+                      ticks: { color: '#94a3b8' },
+                      grid: { color: 'rgba(148, 163, 184, 0.1)' },
+                      title: { display: true, text: 'Sample Number', color: '#94a3b8' }
+                    }
+                  }
+                }
+              });
+            }
+            
+            return () => {
+              if (chartInstance.current) {
+                chartInstance.current.destroy();
+              }
+            };
+          }, []);
+          
+          const exportChart = () => {
+            if (chartRef.current) {
+              const url = chartRef.current.toDataURL('image/png');
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'control-chart.png';
+              a.click();
+            }
+          };
+          
+          return (
+            <div>
+              <div style={{ height: '300px', marginBottom: '1rem' }}>
+                <canvas ref={chartRef}></canvas>
+              </div>
+              {violations.map((v, i) => (
+                <div key={i} style={{ padding: '1rem', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '0.5rem', marginBottom: '1rem' }}>
+                  <p style={{ color: '#ef4444', fontSize: '0.875rem', fontWeight: '600' }}>⚠️ {v.message}</p>
+                </div>
+              ))}
+              <div style={{ textAlign: 'center' }}>
+                <button onClick={exportChart} style={{ padding: '0.5rem 1rem', background: 'rgba(100, 255, 218, 0.2)', color: '#64ffda', border: '1px solid #64ffda', borderRadius: '0.25rem', fontSize: '0.875rem', cursor: 'pointer' }}>
+                  📥 Export Chart PNG
+                </button>
+              </div>
+            </div>
+          );
+        }
+
+        // Capability Analysis Chart
+        function CapabilityChart({ cpk = 0.89 }) {
+          const chartRef = useRef(null);
+          const chartInstance = useRef(null);
+          
+          useEffect(() => {
+            if (chartRef.current) {
+              const ctx = chartRef.current.getContext('2d');
+              
+              if (chartInstance.current) {
+                chartInstance.current.destroy();
+              }
+              
+              const cp = 1.45;
+              const ppk = 0.89;
+              const pp = 1.45;
+              
+              chartInstance.current = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: ['Cp', 'Cpk', 'Pp', 'Ppk'],
+                  datasets: [{
+                    label: 'Capability Index',
+                    data: [cp, cpk, pp, ppk],
+                    backgroundColor: [
+                      cp >= 1.33 ? 'rgba(34, 197, 94, 0.6)' : 'rgba(239, 68, 68, 0.6)',
+                      cpk >= 1.33 ? 'rgba(34, 197, 94, 0.6)' : 'rgba(239, 68, 68, 0.6)',
+                      pp >= 1.33 ? 'rgba(34, 197, 94, 0.6)' : 'rgba(239, 68, 68, 0.6)',
+                      ppk >= 1.33 ? 'rgba(34, 197, 94, 0.6)' : 'rgba(239, 68, 68, 0.6)'
+                    ],
+                    borderColor: [
+                      cp >= 1.33 ? '#22c55e' : '#ef4444',
+                      cpk >= 1.33 ? '#22c55e' : '#ef4444',
+                      pp >= 1.33 ? '#22c55e' : '#ef4444',
+                      ppk >= 1.33 ? '#22c55e' : '#ef4444'
+                    ],
+                    borderWidth: 2
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: { display: false }
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      max: 2,
+                      ticks: { color: '#94a3b8' },
+                      grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                    },
+                    x: {
+                      ticks: { color: '#94a3b8' },
+                      grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                    }
+                  }
+                }
+              });
+            }
+            
+            return () => {
+              if (chartInstance.current) {
+                chartInstance.current.destroy();
+              }
+            };
+          }, [cpk]);
+          
+          const exportChart = () => {
+            if (chartRef.current) {
+              const url = chartRef.current.toDataURL('image/png');
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'capability-chart.png';
+              a.click();
+            }
+          };
+          
+          return (
+            <div>
+              <div style={{ height: '250px', marginBottom: '1rem' }}>
+                <canvas ref={chartRef}></canvas>
+              </div>
+              <div style={{ padding: '0.75rem', background: 'rgba(100, 255, 218, 0.05)', borderRadius: '0.5rem', marginBottom: '1rem' }}>
+                <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.25rem' }}>Interpretation:</div>
+                <div style={{ fontSize: '0.875rem', color: '#e6f1ff' }}>
+                  Target: >1.33 (Capable) | >1.67 (Excellent)
+                </div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <button onClick={exportChart} style={{ padding: '0.5rem 1rem', background: 'rgba(100, 255, 218, 0.2)', color: '#64ffda', border: '1px solid #64ffda', borderRadius: '0.25rem', fontSize: '0.875rem', cursor: 'pointer' }}>
+                  📥 Export Chart PNG
+                </button>
+              </div>
+            </div>
+          );
+        }
+
+        function QualityAnalyzerToggle() {
+          const [useDemo, setUseDemo] = useState(true);
+          const [showReport, setShowReport] = useState(true);
+          const [formData, setFormData] = useState({
+            productName: '',
+            phase: 'DVT',
+            sampleSize: '',
+            qualityIssues: '',
+            testResults: '',
+            failureAnalysis: '',
+            processData: ''
+          });
+          
+          const [actionItems, setActionItems] = useState([]);
+          const [recommendations, setRecommendations] = useState([]);
+          
+          // Real-time recommendations
+          useEffect(() => {
+            if (!useDemo) {
+              const recs = generateRecommendations(formData);
+              setRecommendations(recs);
+            }
+          }, [formData, useDemo]);
+
+          const handleInputChange = (e) => {
+            setFormData({ ...formData, [e.target.name]: e.target.value });
+          };
+
+          const generateCustomReport = () => {
+            setShowReport(true);
+          };
+
+          const currentReport = useDemo ? metaReport : {
+            productName: formData.productName || "Custom Product",
+            phase: formData.phase,
+            sampleSize: formData.sampleSize || "N/A",
+            executiveSummary: formData.qualityIssues || "No quality issues data provided.",
+            phaseStatus: "ANALYSIS_PENDING",
+            qualityToolsApplied: ["Custom Analysis"],
+            keyMetrics: {
+              status: "Custom data entered - contact for AI-powered analysis"
+            },
+            customNote: "This is a formatted display of your input data. For comprehensive AI-powered analysis using 8D, 5-Why, FMEA, Pareto, Fishbone, and SPC tools, please contact mukundvijay@gmail.com"
+          };
+          
+          const addActionItem = () => {
+            const newAction = {
+              id: Date.now(),
+              description: '',
+              owner: '',
+              dueDate: '',
+              status: 'Open',
+              priority: 'Medium'
+            };
+            setActionItems([...actionItems, newAction]);
+          };
+          
+          const updateActionItem = (id, field, value) => {
+            setActionItems(actionItems.map(action => 
+              action.id === id ? { ...action, [field]: value } : action
+            ));
+          };
+          
+          const deleteActionItem = (id) => {
+            setActionItems(actionItems.filter(action => action.id !== id));
+          };
+          
+          const exportActionsToCSV = () => {
+            const headers = 'Description,Owner,Due Date,Priority,Status\n';
+            const csv = headers + actionItems.map(a => 
+              `"${a.description}","${a.owner}","${a.dueDate}","${a.priority}","${a.status}"`
+            ).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'action-items.csv';
+            link.click();
+          };
+
+          return (
+            <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, rgb(15, 23, 42), rgb(30, 41, 59), rgb(15, 23, 42))', color: 'white', padding: '2rem' }}>
+              <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+                
+                {/* Header - UNCHANGED */}
+                <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', padding: '1rem 2rem', background: 'linear-gradient(to right, rgba(100, 255, 218, 0.2), rgba(168, 85, 247, 0.2), rgba(251, 191, 36, 0.2))', borderRadius: '9999px', border: '1px solid rgba(100, 255, 218, 0.3)' }}>
+                    <span style={{ fontSize: '1.5rem' }}>✨</span>
+                    <span style={{ fontFamily: 'monospace', fontWeight: '600', background: 'linear-gradient(to right, #64ffda, #a855f7, #fbbf24)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>APQ - AI Powered Quality</span>
+                  </div>
+                  
+                  <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '1rem', background: 'linear-gradient(to right, #64ffda, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                    Quality Report Generator
+                  </h1>
+
+                  {/* Toggle Button - UNCHANGED */}
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
+                    <button
+                      onClick={() => { setUseDemo(true); setShowReport(true); }}
+                      style={{
+                        padding: '0.75rem 2rem',
+                        background: useDemo ? 'linear-gradient(to right, #64ffda, #a855f7)' : 'rgba(30, 41, 59, 0.5)',
+                        color: 'white',
+                        border: useDemo ? 'none' : '1px solid rgba(148, 163, 184, 0.3)',
+                        borderRadius: '0.5rem',
+                        fontSize: '1rem',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s'
+                      }}
+                    >
+                      📊 View Demo Example
+                    </button>
+                    <button
+                      onClick={() => { setUseDemo(false); setShowReport(false); }}
+                      style={{
+                        padding: '0.75rem 2rem',
+                        background: !useDemo ? 'linear-gradient(to right, #64ffda, #a855f7)' : 'rgba(30, 41, 59, 0.5)',
+                        color: 'white',
+                        border: !useDemo ? 'none' : '1px solid rgba(148, 163, 184, 0.3)',
+                        borderRadius: '0.5rem',
+                        fontSize: '1rem',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s'
+                      }}
+                    >
+                      ✏️ Enter Your Own Data
+                    </button>
+                  </div>
+
+                  {useDemo && (
+                    <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '0.5rem', maxWidth: '800px', margin: '1rem auto' }}>
+                      <p style={{ fontSize: '0.875rem', color: '#93c5fd' }}>
+                        📌 Viewing comprehensive DVT phase analysis for <strong>Meta Ray-Ban Smart Glasses</strong> demonstrating all APQ quality tools
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* NEW: Main Content with Sidebar Layout */}
+                <div style={{ display: 'grid', gridTemplateColumns: !useDemo && !showReport ? '1fr 350px' : '1fr', gap: '2rem' }}>
+                  
+                  {/* Main Content Area */}
+                  <div>
+                    
+                    {/* Custom Form - UNCHANGED except now in grid */}
+                    {!useDemo && !showReport && (
+                      <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+                        <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#64ffda', marginBottom: '1.5rem' }}>Enter Your Quality Data</h2>
+                          
+                          <div style={{ marginBottom: '1.5rem' }}>
+                            <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: '600' }}>Product Name *</label>
+                            <input
+                              type="text"
+                              name="productName"
+                              value={formData.productName}
+                              onChange={handleInputChange}
+                              placeholder="e.g., Smart Watch Series X"
+                              style={{ width: '100%', padding: '0.75rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.5rem', color: 'white', fontSize: '1rem' }}
+                            />
+                          </div>
+
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                            <div>
+                              <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: '600' }}>Phase *</label>
+                              <select
+                                name="phase"
+                                value={formData.phase}
+                                onChange={handleInputChange}
+                                style={{ width: '100%', padding: '0.75rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.5rem', color: 'white', fontSize: '1rem' }}
+                              >
+                                <option value="EVT">EVT - Engineering Validation</option>
+                                <option value="DVT">DVT - Design Validation</option>
+                                <option value="PVT">PVT - Production Validation</option>
+                                <option value="MP">MP - Mass Production</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: '600' }}>Sample Size</label>
+                              <input
+                                type="number"
+                                name="sampleSize"
+                                value={formData.sampleSize}
+                                onChange={handleInputChange}
+                                placeholder="e.g., 500"
+                                style={{ width: '100%', padding: '0.75rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.5rem', color: 'white', fontSize: '1rem' }}
+                              />
+                            </div>
+                          </div>
+
+                          <div style={{ marginBottom: '1.5rem' }}>
+                            <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: '600' }}>Quality Issues & Defects</label>
+                            <textarea
+                              name="qualityIssues"
+                              value={formData.qualityIssues}
+                              onChange={handleInputChange}
+                              placeholder="Describe defects, failure rates, critical issues...
+Example:
+- Audio distortion: 12% failure rate at high volume
+- Battery life: 15% below target (4.2hrs vs 5.0hrs)
+- Camera focus sticking in cold weather: 5.2% failure"
+                              rows="6"
+                              style={{ width: '100%', padding: '0.75rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.5rem', color: 'white', fontSize: '0.95rem', fontFamily: 'monospace', lineHeight: '1.6' }}
+                            />
+                          </div>
+
+                          <div style={{ marginBottom: '1.5rem' }}>
+                            <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: '600' }}>Test Results & Metrics</label>
+                            <textarea
+                              name="testResults"
+                              value={formData.testResults}
+                              onChange={handleInputChange}
+                              placeholder="Enter test data, pass/fail rates, key metrics...
+Example:
+- First Pass Yield: 78% (Target: 95%)
+- Defect Density: 1,200 DPMO
+- Test Coverage: 87%
+- Cpk: 0.89 (Target: >1.33)"
+                              rows="5"
+                              style={{ width: '100%', padding: '0.75rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.5rem', color: 'white', fontSize: '0.95rem', fontFamily: 'monospace', lineHeight: '1.6' }}
+                            />
+                          </div>
+
+                          <div style={{ marginBottom: '1.5rem' }}>
+                            <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: '600' }}>Failure Analysis Data</label>
+                            <textarea
+                              name="failureAnalysis"
+                              value={formData.failureAnalysis}
+                              onChange={handleInputChange}
+                              placeholder="Describe failure modes, root causes, observations...
+Example:
+- Top failure: Component X delamination (24% of failures)
+- Root cause: Manufacturing process change (cure time reduced)
+- Contributing factors: Temperature variation, supplier change"
+                              rows="5"
+                              style={{ width: '100%', padding: '0.75rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.5rem', color: 'white', fontSize: '0.95rem', fontFamily: 'monospace', lineHeight: '1.6' }}
+                            />
+                          </div>
+
+                          <div style={{ marginBottom: '2rem' }}>
+                            <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: '600' }}>Process & SPC Data</label>
+                            <textarea
+                              name="processData"
+                              value={formData.processData}
+                              onChange={handleInputChange}
+                              placeholder="Enter SPC data, control chart notes, Cpk values...
+Example:
+- Station 3: OUT OF CONTROL (8 points below centerline)
+- Station 7: Cpk = 1.15 (marginal)
+- Special causes: Process parameter changes, supplier variation"
+                              rows="5"
+                              style={{ width: '100%', padding: '0.75rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.5rem', color: 'white', fontSize: '0.95rem', fontFamily: 'monospace', lineHeight: '1.6' }}
+                            />
+                          </div>
+
+                          <button
+                            onClick={generateCustomReport}
+                            disabled={!formData.productName || !formData.qualityIssues}
+                            style={{
+                              width: '100%',
+                              padding: '1rem',
+                              background: (!formData.productName || !formData.qualityIssues) ? 'rgba(100, 255, 218, 0.3)' : 'linear-gradient(to right, #64ffda, #a855f7)',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '0.5rem',
+                              fontSize: '1.125rem',
+                              fontWeight: '600',
+                              cursor: (!formData.productName || !formData.qualityIssues) ? 'not-allowed' : 'pointer',
+                              transition: 'all 0.3s'
+                            }}
+                          >
+                            📊 Generate Quality Analysis
+                          </button>
+
+                          <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.3)', borderRadius: '0.5rem' }}>
+                            <p style={{ fontSize: '0.875rem', color: '#fbbf24', lineHeight: '1.6' }}>
+                              <strong>💡 Note:</strong> This demo displays your data in a structured format. For comprehensive AI-powered analysis using 8D, 5-Why, FMEA, Pareto, Fishbone, and SPC tools, contact me at <strong>mukundvijay@gmail.com</strong>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Report Display - ENHANCED with Charts */}
+                    {showReport && (
+                      <>
+                        {/* Executive Summary - UNCHANGED */}
+                        <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                          <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#64ffda', marginBottom: '1rem' }}>
+                            📄 {useDemo ? 'DVT Phase Gate Review' : 'Quality Data Summary'}
+                          </h2>
+                          <div style={{ marginBottom: '1rem' }}>
+                            <span style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Product: </span>
+                            <span style={{ color: '#e2e8f0', fontWeight: '600' }}>{currentReport.productName}</span>
+                            <span style={{ color: '#94a3b8', marginLeft: '2rem', fontSize: '0.875rem' }}>Phase: </span>
+                            <span style={{ color: '#64ffda', fontWeight: '600' }}>{currentReport.phase}</span>
+                            <span style={{ color: '#94a3b8', marginLeft: '2rem', fontSize: '0.875rem' }}>Sample: </span>
+                            <span style={{ color: '#fbbf24', fontWeight: '600' }}>{currentReport.sampleSize}</span>
+                          </div>
+                          <p style={{ color: '#cbd5e1', lineHeight: '1.8', marginBottom: '1.5rem' }}>
+                            {currentReport.executiveSummary}
+                          </p>
+                          
+                          {!useDemo && currentReport.customNote && (
+                            <div style={{ padding: '1rem', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '0.5rem', marginTop: '1rem' }}>
+                              <p style={{ color: '#93c5fd', fontSize: '0.875rem', lineHeight: '1.6' }}>
+                                <strong>📧 Want Full APQ Analysis?</strong><br/>
+                                {currentReport.customNote}
+                              </p>
+                            </div>
+                          )}
+                          
+                          {useDemo && (
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                              <div style={{ padding: '1rem', background: 'rgba(10, 25, 47, 0.5)', borderRadius: '0.5rem', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                                <div style={{ fontSize: '0.875rem', color: '#94a3b8', marginBottom: '0.25rem' }}>Phase Status</div>
+                                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fbbf24' }}>{currentReport.phaseStatus}</div>
+                              </div>
+                              <div style={{ padding: '1rem', background: 'rgba(10, 25, 47, 0.5)', borderRadius: '0.5rem', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                                <div style={{ fontSize: '0.875rem', color: '#94a3b8', marginBottom: '0.25rem' }}>Tools Applied</div>
+                                <div style={{ fontSize: '1rem', fontWeight: '600', color: '#64ffda' }}>{currentReport.qualityToolsApplied.join(', ')}</div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Only show detailed analysis for demo */}
+                        {useDemo && (
+                          <>
+                            {/* Key Metrics - UNCHANGED */}
+                            <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                              <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#a855f7', marginBottom: '1rem' }}>📊 Key Metrics</h2>
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
+                                {Object.entries(currentReport.keyMetrics).map(([key, value]) => (
+                                  <div key={key} style={{ padding: '1.5rem', background: 'rgba(100, 255, 218, 0.1)', border: '1px solid rgba(100, 255, 218, 0.3)', borderRadius: '0.5rem', textAlign: 'center' }}>
+                                    <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.5rem', textTransform: 'uppercase' }}>
+                                      {key.replace(/([A-Z])/g, ' $1').trim()}
+                                    </div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#64ffda' }}>{value}</div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* ENHANCED: Pareto with Chart.js */}
+                            <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                              <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#3b82f6', marginBottom: '1rem' }}>📈 Pareto Analysis</h2>
+                              <ParetoChart data={currentReport.paretoAnalysis} />
+                              <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(100, 255, 218, 0.05)', borderRadius: '0.5rem' }}>
+                                <p style={{ color: '#cbd5e1', fontSize: '0.875rem' }}>{currentReport.paretoAnalysis.recommendation}</p>
+                              </div>
+                            </div>
+
+                            {/* NEW: Control Chart */}
+                            <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                              <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#3b82f6', marginBottom: '1rem' }}>📉 Statistical Process Control Chart</h2>
+                              <ControlChart />
+                              <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '0.5rem' }}>
+                                <p style={{ color: '#ef4444', fontSize: '0.875rem', fontWeight: '600' }}>⚠️ {currentReport.processStability.controlChartAnalysis}</p>
+                              </div>
+                            </div>
+
+                            {/* NEW: Capability Analysis */}
+                            <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                              <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#22c55e', marginBottom: '1rem' }}>📊 Process Capability Analysis</h2>
+                              <CapabilityChart cpk={0.89} />
+                              <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '0.5rem' }}>
+                                <p style={{ color: '#ef4444', fontSize: '0.875rem', fontWeight: '600' }}>{currentReport.processStability.processCapability}</p>
+                                <p style={{ color: '#cbd5e1', fontSize: '0.875rem', marginTop: '0.5rem' }}>{currentReport.processStability.recommendation}</p>
+                              </div>
+                            </div>
+
+                            {/* 5-Why - UNCHANGED */}
+                            <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                              <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#a855f7', marginBottom: '1rem' }}>🎯 5-Why Root Cause Analysis</h2>
+                              <div style={{ padding: '1.5rem', background: 'rgba(168, 85, 247, 0.1)', border: '1px solid rgba(168, 85, 247, 0.3)', borderRadius: '0.5rem', marginBottom: '1rem' }}>
+                                <div style={{ fontWeight: '600', color: '#94a3b8', marginBottom: '0.5rem' }}>Root Cause:</div>
+                                <div style={{ color: '#a855f7', fontSize: '1.125rem', fontWeight: '600' }}>{currentReport.rootCauseAnalysis.primaryCause}</div>
+                              </div>
+                              {currentReport.rootCauseAnalysis.whyChain.map((why, i) => (
+                                <div key={i} style={{ display: 'flex', gap: '1rem', padding: '1rem', background: i === currentReport.rootCauseAnalysis.whyChain.length - 1 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(10, 25, 47, 0.5)', borderRadius: '0.5rem', marginBottom: '0.5rem', border: `1px solid ${i === currentReport.rootCauseAnalysis.whyChain.length - 1 ? 'rgba(239, 68, 68, 0.3)' : 'rgba(148, 163, 184, 0.2)'}` }}>
+                                  <div style={{ flexShrink: 0, width: '2rem', height: '2rem', borderRadius: '9999px', background: i === currentReport.rootCauseAnalysis.whyChain.length - 1 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(251, 191, 36, 0.2)', color: i === currentReport.rootCauseAnalysis.whyChain.length - 1 ? '#ef4444' : '#fbbf24', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+                                    {i + 1}
+                                  </div>
+                                  <div style={{ color: '#cbd5e1', lineHeight: '1.6' }}>{why}</div>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* FMEA - UNCHANGED */}
+                            <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                              <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#fbbf24', marginBottom: '1rem' }}>⚠️ FMEA Analysis</h2>
+                              {currentReport.fmeaAnalysis.map((fmea, i) => (
+                                <div key={i} style={{ padding: '1.5rem', background: 'rgba(10, 25, 47, 0.5)', borderRadius: '0.5rem', marginBottom: '1rem', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#e2e8f0' }}>{fmea.failureMode}</h3>
+                                    <div style={{ padding: '0.5rem 1rem', background: parseInt(fmea.rpn) > 200 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(251, 191, 36, 0.2)', border: `1px solid ${parseInt(fmea.rpn) > 200 ? '#ef4444' : '#fbbf24'}`, borderRadius: '0.25rem' }}>
+                                      <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>RPN: </span>
+                                      <span style={{ fontSize: '1.25rem', fontWeight: 'bold', color: parseInt(fmea.rpn) > 200 ? '#ef4444' : '#fbbf24' }}>{fmea.rpn}</span>
+                                    </div>
+                                  </div>
+                                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem', marginBottom: '1rem' }}>
+                                    <div style={{ textAlign: 'center', padding: '0.5rem', background: 'rgba(15, 23, 42, 0.8)', borderRadius: '0.25rem' }}>
+                                      <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Severity</div>
+                                      <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#ef4444' }}>{fmea.severity}</div>
+                                    </div>
+                                    <div style={{ textAlign: 'center', padding: '0.5rem', background: 'rgba(15, 23, 42, 0.8)', borderRadius: '0.25rem' }}>
+                                      <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Occurrence</div>
+                                      <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fbbf24' }}>{fmea.occurrence}</div>
+                                    </div>
+                                    <div style={{ textAlign: 'center', padding: '0.5rem', background: 'rgba(15, 23, 42, 0.8)', borderRadius: '0.25rem' }}>
+                                      <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Detection</div>
+                                      <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6' }}>{fmea.detection}</div>
+                                    </div>
+                                  </div>
+                                  <div style={{ padding: '1rem', background: 'rgba(100, 255, 218, 0.1)', border: '1px solid rgba(100, 255, 218, 0.3)', borderRadius: '0.25rem' }}>
+                                    <strong style={{ color: '#64ffda', fontSize: '0.875rem' }}>Actions:</strong>
+                                    <div style={{ color: '#cbd5e1', marginTop: '0.5rem' }}>{fmea.recommendedActions}</div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Gate Decision - UNCHANGED */}
+                            <div style={{ background: 'linear-gradient(to right, rgba(251, 191, 36, 0.2), rgba(239, 68, 68, 0.2))', border: '2px solid rgba(251, 191, 36, 0.5)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                              <h2 style={{ fontSize: '2.25rem', fontWeight: 'bold', color: '#fbbf24', marginBottom: '1rem', textAlign: 'center' }}>
+                                ✅ GATE DECISION
+                              </h2>
+                              <p style={{ color: '#e2e8f0', fontSize: '1.125rem', lineHeight: '1.8', textAlign: 'center' }}>
+                                {currentReport.gateDecision}
+                              </p>
+                            </div>
+                          </>
+                        )}
+
+                        {/* NEW: Action Items Section */}
+                        <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                            <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#64ffda' }}>✅ Action Item Tracking</h2>
+                            <button
+                              onClick={addActionItem}
+                              style={{ padding: '0.75rem 1.5rem', background: '#64ffda', color: '#0a192f', border: 'none', borderRadius: '0.5rem', fontWeight: '600', cursor: 'pointer', fontSize: '0.95rem' }}
+                            >
+                              + Add Action Item
+                            </button>
+                          </div>
+                          
+                          {actionItems.length === 0 ? (
+                            <div style={{ textAlign: 'center', padding: '3rem', color: '#8892b0' }}>
+                              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📋</div>
+                              <p>No action items yet. Click "Add Action Item" to track corrective actions and owners.</p>
+                            </div>
+                          ) : (
+                            <>
+                              <div style={{ overflowX: 'auto' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                  <thead>
+                                    <tr style={{ borderBottom: '2px solid rgba(100, 255, 218, 0.3)' }}>
+                                      <th style={{ padding: '1rem', textAlign: 'left', color: '#64ffda', fontSize: '0.875rem', fontWeight: '600' }}>Description</th>
+                                      <th style={{ padding: '1rem', textAlign: 'left', color: '#64ffda', fontSize: '0.875rem', fontWeight: '600' }}>Owner</th>
+                                      <th style={{ padding: '1rem', textAlign: 'left', color: '#64ffda', fontSize: '0.875rem', fontWeight: '600' }}>Due Date</th>
+                                      <th style={{ padding: '1rem', textAlign: 'left', color: '#64ffda', fontSize: '0.875rem', fontWeight: '600' }}>Priority</th>
+                                      <th style={{ padding: '1rem', textAlign: 'left', color: '#64ffda', fontSize: '0.875rem', fontWeight: '600' }}>Status</th>
+                                      <th style={{ padding: '1rem', textAlign: 'center', color: '#64ffda', fontSize: '0.875rem', fontWeight: '600' }}>Actions</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {actionItems.map(action => (
+                                      <tr key={action.id} style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                                        <td style={{ padding: '1rem' }}>
+                                          <input
+                                            type="text"
+                                            value={action.description}
+                                            onChange={(e) => updateActionItem(action.id, 'description', e.target.value)}
+                                            placeholder="Enter action description..."
+                                            style={{ width: '100%', padding: '0.5rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.25rem', color: 'white', fontSize: '0.875rem' }}
+                                          />
+                                        </td>
+                                        <td style={{ padding: '1rem' }}>
+                                          <input
+                                            type="text"
+                                            value={action.owner}
+                                            onChange={(e) => updateActionItem(action.id, 'owner', e.target.value)}
+                                            placeholder="Assignee name"
+                                            style={{ width: '100%', padding: '0.5rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.25rem', color: 'white', fontSize: '0.875rem' }}
+                                          />
+                                        </td>
+                                        <td style={{ padding: '1rem' }}>
+                                          <input
+                                            type="date"
+                                            value={action.dueDate}
+                                            onChange={(e) => updateActionItem(action.id, 'dueDate', e.target.value)}
+                                            style={{ width: '100%', padding: '0.5rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.25rem', color: 'white', fontSize: '0.875rem' }}
+                                          />
+                                        </td>
+                                        <td style={{ padding: '1rem' }}>
+                                          <select
+                                            value={action.priority}
+                                            onChange={(e) => updateActionItem(action.id, 'priority', e.target.value)}
+                                            style={{ width: '100%', padding: '0.5rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.25rem', color: 'white', fontSize: '0.875rem' }}
+                                          >
+                                            <option value="Low">Low</option>
+                                            <option value="Medium">Medium</option>
+                                            <option value="High">High</option>
+                                            <option value="Critical">Critical</option>
+                                          </select>
+                                        </td>
+                                        <td style={{ padding: '1rem' }}>
+                                          <select
+                                            value={action.status}
+                                            onChange={(e) => updateActionItem(action.id, 'status', e.target.value)}
+                                            style={{ width: '100%', padding: '0.5rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.25rem', color: 'white', fontSize: '0.875rem' }}
+                                          >
+                                            <option value="Open">Open</option>
+                                            <option value="In Progress">In Progress</option>
+                                            <option value="Complete">Complete</option>
+                                          </select>
+                                        </td>
+                                        <td style={{ padding: '1rem', textAlign: 'center' }}>
+                                          <button
+                                            onClick={() => deleteActionItem(action.id)}
+                                            style={{ padding: '0.5rem 1rem', background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '0.25rem', cursor: 'pointer', fontSize: '0.875rem' }}
+                                          >
+                                            Delete
+                                          </button>
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                              <div style={{ marginTop: '1.5rem' }}>
+                                <button
+                                  onClick={exportActionsToCSV}
+                                  style={{ padding: '0.75rem 1.5rem', background: 'rgba(100, 255, 218, 0.2)', color: '#64ffda', border: '1px solid #64ffda', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: '600' }}
+                                >
+                                  📥 Export Action Items to CSV
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Footer - UNCHANGED */}
+                        <div style={{ textAlign: 'center', padding: '2rem', background: 'rgba(10, 25, 47, 0.5)', borderRadius: '1rem', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                          <div style={{ marginBottom: '1rem' }}>
+                            <span style={{ fontSize: '0.875rem', color: '#64ffda' }}>✨ {useDemo ? 'Demo powered by' : 'Displayed by'} APQ - AI Powered Quality System</span>
+                          </div>
+                          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                            <a href="Meta-RayBan-Quality-Report-Final.pdf" target="_blank" style={{ padding: '0.75rem 1.5rem', background: 'rgba(100, 255, 218, 0.2)', color: '#64ffda', border: '1px solid #64ffda', borderRadius: '0.5rem', textDecoration: 'none', fontWeight: '600' }}>
+                              📄 Download Full PDF Report
+                            </a>
+                            <a href="index.html" style={{ padding: '0.75rem 1.5rem', background: 'rgba(148, 163, 184, 0.2)', color: '#cbd5e1', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.5rem', textDecoration: 'none', fontWeight: '600' }}>
+                              ← Back to Portfolio
+                            </a>
+                          </div>
+                          <div style={{ marginTop: '1.5rem', fontSize: '0.75rem', color: '#64748b', lineHeight: '1.5' }}>
+                            <strong style={{ color: '#94a3b8' }}>© 2026 Mukund Vijay. APQ - AI Powered Quality™.</strong><br/>
+                            Demo case study for portfolio purposes. Not professional advice.<br/>
+                            For comprehensive AI-powered analysis: mukundvijay@gmail.com
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  
+                  {/* NEW: Real-Time Recommendations Sidebar (only in custom form mode) */}
+                  {!useDemo && !showReport && (
+                    <div style={{ position: 'sticky', top: '2rem', height: 'fit-content' }}>
+                      <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '1.5rem' }}>
+                        <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#64ffda', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <span>💡</span> Real-Time Insights
+                        </h3>
+                        
+                        {recommendations.length === 0 ? (
+                          <div style={{ textAlign: 'center', padding: '2rem', color: '#8892b0' }}>
+                            <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>✅</div>
+                            <p style={{ fontSize: '0.875rem' }}>Enter quality data to receive intelligent recommendations</p>
+                          </div>
+                        ) : (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            {recommendations.map((rec, i) => (
+                              <div
+                                key={i}
+                                style={{
+                                  padding: '1rem',
+                                  background: rec.type === 'critical' ? 'rgba(239, 68, 68, 0.1)' : rec.type === 'warning' ? 'rgba(251, 191, 36, 0.1)' : 'rgba(59, 130, 246, 0.1)',
+                                  border: `1px solid ${rec.type === 'critical' ? '#ef4444' : rec.type === 'warning' ? '#fbbf24' : '#3b82f6'}`,
+                                  borderRadius: '0.5rem'
+                                }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'start', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                  <span style={{ fontSize: '1.25rem' }}>
+                                    {rec.type === 'critical' ? '🔴' : rec.type === 'warning' ? '⚠️' : 'ℹ️'}
+                                  </span>
+                                  <div>
+                                    <div style={{ fontWeight: '600', color: rec.type === 'critical' ? '#ef4444' : rec.type === 'warning' ? '#fbbf24' : '#3b82f6', fontSize: '0.875rem', marginBottom: '0.25rem' }}>
+                                      {rec.title}
+                                    </div>
+                                    <div style={{ fontSize: '0.75rem', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+                                      {rec.message}
+                                    </div>
+                                    <div style={{ fontSize: '0.75rem', color: '#64ffda', fontWeight: '600' }}>
+                                      → {rec.action}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        ReactDOM.render(<QualityAnalyzerToggle />, document.getElementById('root'));
+    </script>
+</body>
+</html>
