@@ -4,24 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mukund Vijay | APQ - AI Powered Quality Leader</title>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2MS88FQKS6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-2MS88FQKS6');
+    </script>
+    <!-- End Google Analytics -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* Backgrounds */
             --primary-dark: #0a192f;
             --primary-navy: #112240;
+            --card-bg: #1c2e4a;
+            
+            /* Brand Colors - Use Sparingly */
             --accent-teal: #64ffda;
-            --accent-blue: #4a90e2;
-            --accent-purple: #a855f7;
-            --accent-gold: #fbbf24;
+            --gradient-apq: linear-gradient(135deg, #64ffda 0%, #a855f7 50%, #fbbf24 100%);
+            
+            /* Text Colors */
             --text-slate: #8892b0;
             --text-light: #ccd6f6;
             --text-white: #e6f1ff;
-            --card-bg: #1c2e4a;
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            
+            /* Utility Gradients */
             --gradient-hero: linear-gradient(135deg, #0a192f 0%, #112240 50%, #1c2e4a 100%);
-            --gradient-apq: linear-gradient(135deg, #64ffda 0%, #a855f7 50%, #fbbf24 100%);
         }
 
         * {
@@ -400,6 +414,20 @@
             transform: translateY(-3px);
         }
 
+        /* Strategic Primary CTA - Uses APQ Gradient (Use sparingly!) */
+        .btn-cta-gradient {
+            background: var(--gradient-apq);
+            color: white;
+            border: none;
+            font-weight: 700;
+        }
+
+        .btn-cta-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(100, 255, 218, 0.3);
+            filter: brightness(1.1);
+        }
+
         /* Section Styles */
         section {
             padding: 6rem 3rem;
@@ -432,9 +460,22 @@
         .section-line {
             flex-grow: 1;
             height: 1px;
-            background: var(--text-slate);
+            background: var(--accent-teal);
             opacity: 0.3;
             margin-left: 2rem;
+        }
+
+        /* APQ Tools Section - Special Gradient Treatment */
+        #apq-tools .section-title {
+            background: var(--gradient-apq);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #apq-tools .section-line {
+            background: var(--gradient-apq);
+            opacity: 0.5;
         }
 
         /* APQ Callout Box */
@@ -488,21 +529,29 @@
         .apq-callout-list {
             list-style: none;
             margin-top: 1.5rem;
-            display: grid;
-            gap: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
         .apq-callout-list li {
             display: flex;
-            align-items: flex-start;
             gap: 1rem;
             color: var(--text-slate);
+            line-height: 1.7;
         }
 
         .apq-callout-list li::before {
             content: '⚡';
             font-size: 1.2rem;
+            color: var(--accent-teal);
             flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        .apq-callout-list li strong {
+            color: var(--accent-teal);
+            font-weight: 600;
         }
 
         /* About Section */
@@ -804,7 +853,7 @@
             left: 0;
             width: 4px;
             height: 100%;
-            background: var(--gradient-primary);
+            background: var(--accent-teal);
             transform: scaleY(0);
             transform-origin: bottom;
             transition: transform 0.3s ease;
@@ -1106,6 +1155,7 @@
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#education">Education</a></li>
                 <li><a href="#skills">Skills</a></li>
+                <li><a href="#apq-tools">APQ Tools</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
@@ -1464,6 +1514,161 @@
         </div>
     </section>
 
+    <!-- APQ Tools & Demonstrations Section -->
+    <section id="apq-tools">
+        <div class="section-header">
+            <span class="section-number">06.</span>
+            <h2 class="section-title">APQ Tools & Demonstrations</h2>
+            <div class="section-line"></div>
+        </div>
+
+        <div class="apq-callout">
+            <div class="apq-callout-header">
+                <span class="apq-callout-icon">🚀</span>
+                <h3 class="apq-callout-title">Experience APQ in Action</h3>
+            </div>
+            <p class="apq-callout-text">
+                See firsthand how AI-powered quality tools transform manufacturing analysis. 
+                These interactive demonstrations showcase real-world applications of the APQ 
+                methodology, from automated quality reporting to comprehensive failure analysis using 
+                advanced quality engineering tools (8D, 5-Why, FMEA, Pareto, Fishbone, SPC).
+            </p>
+        </div>
+
+        <div class="skills-grid" style="margin-top: 3rem;">
+            
+            <!-- Tool 1: Quality Report Generator -->
+            <div class="skill-category apq-skills">
+                <h3>📊 Quality Report Generator</h3>
+                <p class="text-slate-400 text-sm mb-4" style="color: var(--text-slate); font-size: 0.95rem; line-height: 1.6;">
+                    AI-generated comprehensive quality reports using 8D problem solving, 5-Why root cause analysis, 
+                    FMEA risk assessment, Pareto analysis, Fishbone diagrams, and SPC control charts. 
+                    Reduces manual reporting time by 60% while improving accuracy and consistency.
+                </p>
+                
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <a href="Meta-RayBan-Quality-Report-Final.pdf" target="_blank"
+                       style="display: block; width: 100%; padding: 0.75rem 1rem; background: linear-gradient(to right, var(--accent-teal), var(--accent-purple)); color: white; border-radius: 0.5rem; font-weight: 600; text-align: center; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        📄 View Sample Report (PDF)
+                    </a>
+                    
+                    <a href="advanced-quality-analyzer.html" target="_blank"
+                       style="display: block; width: 100%; padding: 0.75rem 1rem; background: var(--card-bg); color: white; border: 1px solid var(--text-slate); border-radius: 0.5rem; font-weight: 600; text-align: center; text-decoration: none; transition: all 0.3s ease;">
+                        🚀 Launch Live Tool →
+                    </a>
+                </div>
+                
+                <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(100, 255, 218, 0.1); border: 1px solid rgba(100, 255, 218, 0.3); border-radius: 0.5rem;">
+                    <div style="font-size: 0.75rem; font-weight: 600; color: var(--accent-teal); margin-bottom: 0.25rem;">Featured Case Study:</div>
+                    <div style="font-size: 0.75rem; color: var(--text-slate);">Meta Ray-Ban Smart Glasses DVT Phase Analysis</div>
+                    <div style="font-size: 0.7rem; color: var(--text-slate); margin-top: 0.5rem; font-style: italic;">
+                        Comprehensive analysis applying all 6 quality tools with visual charts, FMEA tables, control charts, and actionable recommendations
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tool 2: Predictive Analytics Dashboard -->
+            <div class="skill-category">
+                <h3>📈 Predictive Analytics Dashboard</h3>
+                <p class="text-slate-400 text-sm mb-4" style="color: var(--text-slate); font-size: 0.95rem; line-height: 1.6;">
+                    ML-powered defect prediction and trend analysis. Identifies quality issues before 
+                    they occur, enabling proactive interventions and reducing warranty costs.
+                </p>
+                
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button style="width: 100%; padding: 0.75rem 1rem; background: var(--primary-navy); color: var(--text-slate); border: 1px solid var(--text-slate); border-radius: 0.5rem; font-weight: 600; cursor: not-allowed; opacity: 0.6;">
+                        Coming Soon
+                    </button>
+                </div>
+                
+                <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(10, 25, 47, 0.5); border: 1px solid var(--text-slate); border-radius: 0.5rem;">
+                    <div style="font-size: 0.75rem; color: var(--text-slate);">
+                        🔮 Real-time quality prediction • Anomaly detection • Trend forecasting • Monte Carlo simulation
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tool 3: Process Capability Optimizer -->
+            <div class="skill-category">
+                <h3>⚙️ Process Capability Optimizer</h3>
+                <p class="text-slate-400 text-sm mb-4" style="color: var(--text-slate); font-size: 0.95rem; line-height: 1.6;">
+                    Automated SPC monitoring and process capability analysis. Provides real-time 
+                    recommendations for achieving Cpk > 1.33 and maintaining statistical control.
+                </p>
+                
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button style="width: 100%; padding: 0.75rem 1rem; background: var(--primary-navy); color: var(--text-slate); border: 1px solid var(--text-slate); border-radius: 0.5rem; font-weight: 600; cursor: not-allowed; opacity: 0.6;">
+                        Coming Soon
+                    </button>
+                </div>
+                
+                <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(10, 25, 47, 0.5); border: 1px solid var(--text-slate); border-radius: 0.5rem;">
+                    <div style="font-size: 0.75rem; color: var(--text-slate);">
+                        📊 Control charts • Capability studies • DOE optimization • Special cause detection
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tool 4: Supplier Quality Scorecard -->
+            <div class="skill-category">
+                <h3>🏭 Supplier Quality Scorecard</h3>
+                <p class="text-slate-400 text-sm mb-4" style="color: var(--text-slate); font-size: 0.95rem; line-height: 1.6;">
+                    Automated supplier performance tracking and risk assessment. Generates 
+                    comprehensive scorecards with PPM tracking and actionable insights.
+                </p>
+                
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button style="width: 100%; padding: 0.75rem 1rem; background: var(--primary-navy); color: var(--text-slate); border: 1px solid var(--text-slate); border-radius: 0.5rem; font-weight: 600; cursor: not-allowed; opacity: 0.6;">
+                        Coming Soon
+                    </button>
+                </div>
+                
+                <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(10, 25, 47, 0.5); border: 1px solid var(--text-slate); border-radius: 0.5rem;">
+                    <div style="font-size: 0.75rem; color: var(--text-slate);">
+                        ⭐ PPM tracking • SCAR management • Audit scheduling • Supplier risk matrix
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Technology Stack Callout -->
+        <div style="margin-top: 3rem; padding: 2rem; background: linear-gradient(to right, rgba(10, 25, 47, 0.5), rgba(17, 34, 64, 0.5)); border: 1px solid var(--text-slate); border-radius: 0.75rem;">
+            <h3 style="font-size: 1.5rem; font-weight: 600; color: white; margin-bottom: 1.5rem; text-align: center;">🛠️ Technology Stack</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🤖</div>
+                    <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-light);">Claude Sonnet 4</div>
+                    <div style="font-size: 0.75rem; color: var(--text-slate);">LLM Engine</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚛️</div>
+                    <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-light);">React</div>
+                    <div style="font-size: 0.75rem; color: var(--text-slate);">UI Framework</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📊</div>
+                    <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-light);">Python</div>
+                    <div style="font-size: 0.75rem; color: var(--text-slate);">Data Analysis</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎨</div>
+                    <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-light);">Tailwind CSS</div>
+                    <div style="font-size: 0.75rem; color: var(--text-slate);">Styling</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div style="margin-top: 2rem; padding: 1rem; background: rgba(10, 25, 47, 0.5); border: 1px solid var(--text-slate); border-radius: 0.5rem;">
+            <p style="font-size: 0.75rem; color: #6b7280; text-align: center; line-height: 1.5;">
+                <span style="font-weight: 600; color: var(--text-slate);">© 2026 Mukund Vijay. APQ - AI Powered Quality™.</span> 
+                All Rights Reserved. These tools are for demonstration purposes only and do not constitute 
+                professional engineering advice. Contact: mukundvijay@gmail.com
+            </p>
+        </div>
+    </section>
+
     <!-- Contact Section -->
     <section id="contact" class="contact-section">
         <h2 class="contact-title">Get in Touch</h2>
@@ -1561,12 +1766,62 @@
             });
         }, observerOptions);
 
-        // Observe all sections and cards for animation
-        document.querySelectorAll('section, .stat-card, .job, .skill-category, .education-card').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
+        // Track PDF downloads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Track PDF clicks
+            document.querySelectorAll('a[href$=".pdf"]').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'download', {
+                            'event_category': 'PDF',
+                            'event_label': 'Meta-RayBan-Quality-Report',
+                            'event_value': 1
+                        });
+                    }
+                });
+            });
+            
+            // Track APQ tool launches
+            document.querySelectorAll('a[href*="advanced-quality-analyzer"]').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'click', {
+                            'event_category': 'APQ Tool',
+                            'event_label': 'Launch Live Tool',
+                            'event_value': 1
+                        });
+                    }
+                });
+            });
+            
+            // Track contact interactions
+            document.querySelectorAll('a[href^="mailto:"]').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'contact', {
+                            'event_category': 'Contact',
+                            'event_label': 'Email Click',
+                            'event_value': 1
+                        });
+                    }
+                });
+            });
+            
+            // Track section views
+            const sections = document.querySelectorAll('section[id]');
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && typeof gtag !== 'undefined') {
+                        gtag('event', 'section_view', {
+                            'event_category': 'Navigation',
+                            'event_label': entry.target.id,
+                            'event_value': 1
+                        });
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => sectionObserver.observe(section));
         });
     </script>
 </body>
