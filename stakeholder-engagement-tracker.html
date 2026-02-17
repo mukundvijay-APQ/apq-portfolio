@@ -1,0 +1,2149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APQ - Stakeholder Engagement Tracker</title>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2MS88FQKS6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-2MS88FQKS6');
+    </script>
+    <!-- End Google tag -->
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-blue: #64ffda;
+            --primary-dark-blue: #0052CC;
+            --primary-navy: #0a192f;
+            --primary-light-blue: #E6F0FF;
+            --primary-teal: #00B8D4;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+        
+        .apq-gradient {
+            background: linear-gradient(135deg, #0066FF 0%, #00B8D4 100%);
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+        }
+        
+        .section-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 102, 255, 0.12);
+        }
+        
+        .editable-field {
+            border: 2px dashed #e5e7eb;
+            transition: all 0.2s;
+            min-height: 60px;
+        }
+        
+        .editable-field:hover {
+            border-color: #0066FF;
+            background-color: #E6F0FF;
+        }
+        
+        .editable-field:focus {
+            outline: none;
+            border-color: #0066FF;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+        }
+        
+        .btn-apq-primary {
+            background: #0066FF;
+            color: white;
+            transition: all 0.2s;
+        }
+        
+        .btn-apq-primary:hover {
+            background: #0052CC;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-not-contacted { background: #F3F4F6; color: #6B7280; }
+        .status-scheduled { background: #DBEAFE; color: #1E40AF; }
+        .status-completed { background: #D1FAE5; color: #065F46; }
+        .status-follow-up { background: #FEF3C7; color: #92400E; }
+        
+        .interaction-timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .interaction-timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #E5E7EB;
+        }
+        
+        .interaction-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .interaction-item::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #0066FF;
+            border: 3px solid white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-7xl mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <div class="apq-gradient rounded-2xl p-8 mb-6 shadow-lg">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-6">
+                    <div class="text-7xl">👓</div>
+                    <div class="text-white">
+                        <h1 class="text-4xl md:text-5xl font-bold mb-2">Early Engagement Assessment</h1>
+                        <p class="text-xl opacity-90">Meta Ray-Ban Smart Glasses - Pre-Proto Planning</p>
+                    </div>
+                </div>
+                <div class="hidden md:block text-white text-right">
+                    <div class="text-sm opacity-75 mb-1">Powered by</div>
+                    <div class="text-3xl font-bold">APQ</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats Dashboard -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="section-card p-4">
+                <div class="text-sm text-gray-600 mb-1">Total Functions</div>
+                <div class="text-3xl font-bold" style="color: #0066FF;" id="totalFunctions">11</div>
+            </div>
+            <div class="section-card p-4">
+                <div class="text-sm text-gray-600 mb-1">Meetings Completed</div>
+                <div class="text-3xl font-bold" style="color: #10B981;" id="completedMeetings">0</div>
+            </div>
+            <div class="section-card p-4">
+                <div class="text-sm text-gray-600 mb-1">Avg Interest Score</div>
+                <div class="text-3xl font-bold" style="color: #00B8D4;" id="avgInterest">5.0</div>
+            </div>
+            <div class="section-card p-4">
+                <div class="text-sm text-gray-600 mb-1">Follow-ups Needed</div>
+                <div class="text-3xl font-bold" style="color: #F59E0B;" id="followUpsNeeded">0</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="section-card p-4 mb-6">
+            <div class="flex flex-wrap gap-3 justify-between items-center">
+                <div class="flex gap-3">
+                    <button onclick="showSection('overview')" id="overviewBtn" class="px-6 py-3 rounded-lg font-semibold btn-apq-primary">
+                        📊 Product Overview
+                    </button>
+                    <button onclick="showSection('functions')" id="functionsBtn" class="px-6 py-3 rounded-lg font-semibold bg-white text-gray-700 border-2 border-gray-200 hover:border-blue-500">
+                        👥 Function Interactions
+                    </button>
+                    <button onclick="showSection('summary')" id="summaryBtn" class="px-6 py-3 rounded-lg font-semibold bg-white text-gray-700 border-2 border-gray-200 hover:border-blue-500">
+                        📑 Summary Report
+                    </button>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="exportDetailedData()" class="px-6 py-3 rounded-lg font-semibold bg-white border-2" style="border-color: #0066FF; color: #0066FF;">
+                        📥 Export Data
+                    </button>
+                    <button onclick="generateSummary()" class="px-6 py-3 rounded-lg font-semibold" style="background: #00B8D4; color: white;">
+                        ✨ Generate Summary
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Container -->
+        <div id="contentContainer"></div>
+    </div>
+
+    <script>
+        let state = {
+            currentSection: 'overview',
+            functions: {
+                'Product Management': {
+                    contact: { name: '', email: '', title: '' },
+                    status: 'not-contacted',
+                    interactions: [],
+                    painPoints: ['Launch delays due to quality issues', 'Field failures damaging brand', 'No visibility into manufacturing readiness'],
+                    platformValue: ['Real-time launch readiness dashboard', 'Early defect detection prevents delays', 'Data-driven go/no-go decisions'],
+                    discoveryQuestions: [
+                        'What quality issues caused delays in past programs?',
+                        'What visibility do you need into manufacturing quality?',
+                        'How do you currently make launch readiness decisions?'
+                    ],
+                    questionsAsked: [],
+                    responsesReceived: [],
+                    interestScore: 5,
+                    priorities: '',
+                    concerns: '',
+                    budget: '',
+                    timeline: '',
+                    decisionCriteria: '',
+                    nextSteps: '',
+                    followUpDate: '',
+                    notes: '',
+                    summary: ''
+                },
+                'Hardware Engineering': {
+                    contact: { name: '', email: '', title: '' },
+                    status: 'not-contacted',
+                    interactions: [],
+                    painPoints: ['Unclear if defects are design vs manufacturing', 'Weeks to get defect samples for analysis', 'Design changes mid-production'],
+                    platformValue: ['Instant access to defect images', 'Design vs process failure identification', 'Validate design changes in hours'],
+                    discoveryQuestions: [
+                        'How long does it take to get defect samples today?',
+                        'How do you distinguish design vs manufacturing issues?',
+                        'What feedback do you wish you had during DVT?'
+                    ],
+                    questionsAsked: [],
+                    responsesReceived: [],
+                    interestScore: 5,
+                    priorities: '',
+                    concerns: '',
+                    budget: '',
+                    timeline: '',
+                    decisionCriteria: '',
+                    nextSteps: '',
+                    followUpDate: '',
+                    notes: '',
+                    summary: ''
+                },
+                'Process Engineering': {
+                    contact: { name: '', email: '', title: '' },
+                    status: 'not-contacted',
+                    interactions: [],
+                    painPoints: ['Manual SPC takes days to show trends', 'No correlation between defects and process variables', 'Supplier changes breaking processes'],
+                    platformValue: ['Real-time SPC with automated alerts', 'Multi-variate defect correlation', 'Supplier lot traceability'],
+                    discoveryQuestions: [
+                        'What process parameters are hardest to control?',
+                        'How do you correlate defects to process changes?',
+                        'What supplier changes have caused issues?'
+                    ],
+                    questionsAsked: [],
+                    responsesReceived: [],
+                    interestScore: 5,
+                    priorities: '',
+                    concerns: '',
+                    budget: '',
+                    timeline: '',
+                    decisionCriteria: '',
+                    nextSteps: '',
+                    followUpDate: '',
+                    notes: '',
+                    summary: ''
+                },
+                'Quality Engineering': {
+                    contact: { name: '', email: '', title: '' },
+                    status: 'not-contacted',
+                    interactions: [],
+                    painPoints: ['15% sampling misses defects', '4-5 days to detect trends', 'Manual inspection not scalable'],
+                    platformValue: ['100% inline inspection', 'Detection in hours vs days', 'AI scales without adding inspectors'],
+                    discoveryQuestions: [
+                        'What is your current sampling plan?',
+                        'What defects escape to customers?',
+                        'How many inspectors would you need for 100% coverage?'
+                    ],
+                    questionsAsked: [],
+                    responsesReceived: [],
+                    interestScore: 5,
+                    priorities: '',
+                    concerns: '',
+                    budget: '',
+                    timeline: '',
+                    decisionCriteria: '',
+                    nextSteps: '',
+                    followUpDate: '',
+                    notes: '',
+                    summary: ''
+                },
+                'Manufacturing Engineering': {
+                    contact: { name: '', email: '', title: '' },
+                    status: 'not-contacted',
+                    interactions: [],
+                    painPoints: ['Tooling qualification takes weeks', 'No data on equipment performance', 'Unclear which line/station has issues'],
+                    platformValue: ['Rapid tooling validation', 'Equipment capability comparison', 'Station-level defect traceability'],
+                    discoveryQuestions: [
+                        'How long does tooling qualification take?',
+                        'How do you compare performance across lines?',
+                        'What would faster feedback on tooling changes enable?'
+                    ],
+                    questionsAsked: [],
+                    responsesReceived: [],
+                    interestScore: 5,
+                    priorities: '',
+                    concerns: '',
+                    budget: '',
+                    timeline: '',
+                    decisionCriteria: '',
+                    nextSteps: '',
+                    followUpDate: '',
+                    notes: '',
+                    summary: ''
+                },
+                'Supplier Quality': {
+                    contact: { name: '', email: '', title: '' },
+                    status: 'not-contacted',
+                    interactions: [],
+                    painPoints: ['Supplier changes without notification', 'No objective data for supplier scorecards', 'Weeks to resolve supplier issues'],
+                    platformValue: ['Material lot correlation', 'Objective supplier comparison', 'Visual evidence for discussions'],
+                    discoveryQuestions: [
+                        'What supplier changes have caused quality issues?',
+                        'How do you hold suppliers accountable?',
+                        'What evidence do you wish you had in supplier discussions?'
+                    ],
+                    questionsAsked: [],
+                    responsesReceived: [],
+                    interestScore: 5,
+                    priorities: '',
+                    concerns: '',
+                    budget: '',
+                    timeline: '',
+                    decisionCriteria: '',
+                    nextSteps: '',
+                    followUpDate: '',
+                    notes: '',
+                    summary: ''
+                },
+                'NPI Program Management': {
+                    contact: { name: '', email: '', title: '' },
+                    status: 'not-contacted',
+                    interactions: [],
+                    painPoints: ['Managing cross-functional teams', 'No single source of truth for quality', 'Difficult to track progress'],
+                    platformValue: ['Centralized quality dashboard', 'Real-time program status', 'Data-driven decision making'],
+                    discoveryQuestions: [
+                        'How do you track quality across the program?',
+                        'What tools do you use for program management?',
+                        'What quality metrics matter most to leadership?'
+                    ],
+                    questionsAsked: [],
+                    responsesReceived: [],
+                    interestScore: 5,
+                    priorities: '',
+                    concerns: '',
+                    budget: '',
+                    timeline: '',
+                    decisionCriteria: '',
+                    nextSteps: '',
+                    followUpDate: '',
+                    notes: '',
+                    summary: ''
+                },
+                'Reliability Engineering': {
+                    contact: { name: '', email: '', title: '' },
+                    status: 'not-contacted',
+                    interactions: [],
+                    painPoints: ['Limited data on early failure modes', 'Hard to link design to field failures', 'Reliability testing is reactive'],
+                    platformValue: ['Early failure mode detection', 'Production-to-field correlation', 'Proactive reliability insights'],
+                    discoveryQuestions: [
+                        'How do you track early life failures?',
+                        'Can you correlate field failures to production data?',
+                        'What reliability data gaps do you have?'
+                    ],
+                    questionsAsked: [],
+                    responsesReceived: [],
+                    interestScore: 5,
+                    priorities: '',
+                    concerns: '',
+                    budget: '',
+                    timeline: '',
+                    decisionCriteria: '',
+                    nextSteps: '',
+                    followUpDate: '',
+                    notes: '',
+                    summary: ''
+                },
+                'Operations Leadership': {
+                    contact: { name: '', email: '', title: '' },
+                    status: 'not-contacted',
+                    interactions: [],
+                    painPoints: ['Quality issues impacting P&L', 'No real-time visibility into yield', 'Scrap costs unpredictable'],
+                    platformValue: ['Real-time yield dashboards', 'Scrap cost reduction', 'Predictable quality outcomes'],
+                    discoveryQuestions: [
+                        'What quality issues most impact your P&L?',
+                        'How do you track yield in real-time today?',
+                        'What ROI threshold do you need for new tools?'
+                    ],
+                    questionsAsked: [],
+                    responsesReceived: [],
+                    interestScore: 5,
+                    priorities: '',
+                    concerns: '',
+                    budget: '',
+                    timeline: '',
+                    decisionCriteria: '',
+                    nextSteps: '',
+                    followUpDate: '',
+                    notes: '',
+                    summary: ''
+                },
+                'Executive Sponsor': {
+                    contact: { name: '', email: '', title: '' },
+                    status: 'not-contacted',
+                    interactions: [],
+                    painPoints: ['Brand risk from quality issues', 'Program delays', 'Resource allocation decisions'],
+                    platformValue: ['Risk mitigation', 'Program confidence', 'Strategic quality advantage'],
+                    discoveryQuestions: [
+                        'What keeps you up at night about this program?',
+                        'How do you measure program success?',
+                        'What would make you confident in the launch?'
+                    ],
+                    questionsAsked: [],
+                    responsesReceived: [],
+                    interestScore: 5,
+                    priorities: '',
+                    concerns: '',
+                    budget: '',
+                    timeline: '',
+                    decisionCriteria: '',
+                    nextSteps: '',
+                    followUpDate: '',
+                    notes: '',
+                    summary: ''
+                },
+                'Test Engineering': {
+                    contact: { name: '', email: '', title: '' },
+                    status: 'not-contacted',
+                    interactions: [],
+                    painPoints: ['Test coverage gaps', 'Manual testing bottlenecks', 'No correlation between test and production failures'],
+                    platformValue: ['Comprehensive visual inspection', 'Automated defect detection', 'Test-to-production correlation'],
+                    discoveryQuestions: [
+                        'What defects slip through your test coverage?',
+                        'How do you validate test effectiveness?',
+                        'What manual testing could be automated?'
+                    ],
+                    questionsAsked: [],
+                    responsesReceived: [],
+                    interestScore: 5,
+                    priorities: '',
+                    concerns: '',
+                    budget: '',
+                    timeline: '',
+                    decisionCriteria: '',
+                    nextSteps: '',
+                    followUpDate: '',
+                    notes: '',
+                    summary: ''
+                }
+            }
+        };
+
+        function updateField(func, field, value) {
+            if (field.includes('.')) {
+                const parts = field.split('.');
+                state.functions[func][parts[0]][parts[1]] = value;
+            } else {
+                state.functions[func][field] = value;
+            }
+            saveState();
+            updateStats();
+        }
+
+        function addInteraction(func) {
+            const interaction = {
+                date: new Date().toISOString(),
+                type: 'Meeting',
+                summary: '',
+                participants: '',
+                keyTakeaways: ''
+            };
+            state.functions[func].interactions.push(interaction);
+            saveState();
+            showSection('functions');
+        }
+
+        function updateInteraction(func, idx, field, value) {
+            state.functions[func].interactions[idx][field] = value;
+            saveState();
+        }
+
+        function addQuestion(func, question) {
+            if (!state.functions[func].questionsAsked.includes(question)) {
+                state.functions[func].questionsAsked.push(question);
+                saveState();
+            }
+        }
+
+        function addResponse(func, idx, response) {
+            state.functions[func].responsesReceived[idx] = response;
+            saveState();
+        }
+
+        function updateStatus(func, status) {
+            state.functions[func].status = status;
+            saveState();
+            updateStats();
+        }
+
+        function saveState() {
+            localStorage.setItem('stakeholderEngagement', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('stakeholderEngagement');
+            if (saved) {
+                const savedState = JSON.parse(saved);
+                Object.keys(savedState.functions).forEach(func => {
+                    if (state.functions[func]) {
+                        state.functions[func] = { ...state.functions[func], ...savedState.functions[func] };
+                    }
+                });
+            }
+        }
+
+        function updateStats() {
+            const functions = Object.values(state.functions);
+            const completed = functions.filter(f => f.status === 'completed').length;
+            const followUps = functions.filter(f => f.status === 'follow-up').length;
+            const avgInterest = (functions.reduce((sum, f) => sum + (f.interestScore || 5), 0) / functions.length).toFixed(1);
+
+            document.getElementById('completedMeetings').textContent = completed;
+            document.getElementById('followUpsNeeded').textContent = followUps;
+            document.getElementById('avgInterest').textContent = avgInterest;
+        }
+
+        function generateSummary() {
+            Object.keys(state.functions).forEach(func => {
+                const data = state.functions[func];
+                const summary = `
+FUNCTION: ${func}
+CONTACT: ${data.contact.name || 'Not specified'} (${data.contact.title || 'N/A'})
+STATUS: ${data.status.toUpperCase()}
+INTEREST LEVEL: ${data.interestScore}/10
+
+KEY PRIORITIES:
+${data.priorities || 'Not documented'}
+
+CONCERNS RAISED:
+${data.concerns || 'None documented'}
+
+QUESTIONS ASKED & RESPONSES:
+${data.questionsAsked.map((q, i) => `Q: ${q}\nA: ${data.responsesReceived[i] || 'No response recorded'}`).join('\n\n') || 'No questions asked'}
+
+NEXT STEPS:
+${data.nextSteps || 'To be determined'}
+
+FOLLOW-UP DATE: ${data.followUpDate || 'Not scheduled'}
+
+DECISION CRITERIA:
+${data.decisionCriteria || 'Not documented'}
+
+ADDITIONAL NOTES:
+${data.notes || 'None'}
+
+INTERACTIONS:
+${data.interactions.map(int => `[${new Date(int.date).toLocaleDateString()}] ${int.type}: ${int.summary || 'No summary'}`).join('\n') || 'No interactions recorded'}
+                `.trim();
+                
+                state.functions[func].summary = summary;
+            });
+            saveState();
+            alert('Summaries generated for all functions! View them in the Summary Report section.');
+            showSection('summary');
+        }
+
+        function exportDetailedData() {
+            const exportData = {
+                exportDate: new Date().toISOString(),
+                program: 'Meta Ray-Ban Smart Glasses',
+                phase: 'Pre-Proto Early Engagement',
+                functions: state.functions,
+                stats: {
+                    totalFunctions: Object.keys(state.functions).length,
+                    completed: Object.values(state.functions).filter(f => f.status === 'completed').length,
+                    avgInterest: (Object.values(state.functions).reduce((sum, f) => sum + (f.interestScore || 5), 0) / Object.keys(state.functions).length).toFixed(1)
+                }
+            };
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Quality Platform_Early_Engagement_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+
+        function showSection(section) {
+            state.currentSection = section;
+            
+            ['overview', 'functions', 'summary'].forEach(s => {
+                const btn = document.getElementById(s + 'Btn');
+                if (s === section) {
+                    btn.className = 'px-6 py-3 rounded-lg font-semibold btn-apq-primary';
+                } else {
+                    btn.className = 'px-6 py-3 rounded-lg font-semibold bg-white text-gray-700 border-2 border-gray-200 hover:border-blue-500';
+                }
+            });
+
+            render();
+        }
+
+        function render() {
+            const container = document.getElementById('contentContainer');
+            
+            if (state.currentSection === 'overview') {
+                container.innerHTML = renderOverview();
+            } else if (state.currentSection === 'functions') {
+                container.innerHTML = renderFunctions();
+            } else if (state.currentSection === 'summary') {
+                container.innerHTML = renderSummary();
+            }
+        }
+
+        function renderOverview() {
+            return `
+                <div class="section-card p-8 mb-6">
+                    <h2 class="text-3xl font-bold mb-4" style="color: #001F3F;">📱 Product Overview</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <h3 class="font-bold text-lg mb-3" style="color: #0066FF;">Meta Ray-Ban Wayfarer Smart Glasses</h3>
+                            <p class="text-gray-700 mb-4">Next-gen smart glasses with integrated 12MP ultra-wide camera, open-ear audio, and AI assistant</p>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-white p-3 rounded">
+                                    <div class="text-xs text-gray-600">Target Launch</div>
+                                    <div class="font-bold" style="color: #0066FF;">Q3 2025</div>
+                                </div>
+                                <div class="bg-white p-3 rounded">
+                                    <div class="text-xs text-gray-600">Daily Volume</div>
+                                    <div class="font-bold" style="color: #0066FF;">15,000 units</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg border-2" style="border-color: #0066FF;">
+                            <h4 class="font-bold mb-3" style="color: #0066FF;">Key Specifications</h4>
+                            <ul class="text-sm space-y-2 text-gray-700">
+                                <li>▸ 12MP ultra-wide camera with autofocus</li>
+                                <li>▸ Dual beamforming microphones</li>
+                                <li>▸ Open-ear directional speakers</li>
+                                <li>▸ 5-core Qualcomm AR processor</li>
+                                <li>▸ Prescription lens compatible</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exploded View / ID Review -->
+                <div class="section-card p-8 mb-6">
+                    <h2 class="text-3xl font-bold mb-4" style="color: #001F3F;">🔍 Product Exploded View - Industrial Design Review</h2>
+                    <div class="mb-4 bg-purple-50 p-4 rounded-lg">
+                        <div class="text-sm text-gray-700">
+                            <strong>Assembly Complexity:</strong> 7 major subassemblies | <strong>Critical Tolerances:</strong> Camera alignment (±0.2mm), Hinge gap (±0.15mm) | 
+                            <strong>Material Interfaces:</strong> Acetate-Metal, Glass-Plastic, Electronic-Mechanical
+                        </div>
+                    </div>
+
+                    <!-- 3D Exploded View Diagram -->
+                    <div class="bg-gradient-to-br from-gray-100 to-gray-50 rounded-xl p-8 mb-6 border-2" style="border-color: #E5E7EB;">
+                        <div class="text-center mb-4">
+                            <h3 class="text-2xl font-bold mb-2" style="color: #001F3F;">3D Exploded Assembly View</h3>
+                            <p class="text-gray-600 text-sm">Meta Ray-Ban Wayfarer Smart Glasses - Component Layout</p>
+                        </div>
+                        
+                        <svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" class="w-full" style="max-width: 1600px; margin: 0 auto;">
+                            <defs>
+                                <!-- Gradients for realistic shading -->
+                                <linearGradient id="blackFrame" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#2D3748;stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:#1A202C;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#2D3748;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="metalShine" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#718096;stop-opacity:1" />
+                                    <stop offset="30%" style="stop-color:#A0AEC0;stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:#E2E8F0;stop-opacity:1" />
+                                    <stop offset="70%" style="stop-color:#A0AEC0;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#718096;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="glassShine" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#F7FAFC;stop-opacity:0.3" />
+                                    <stop offset="100%" style="stop-color:#CBD5E0;stop-opacity:0.2" />
+                                </linearGradient>
+                                <radialGradient id="cameraLens">
+                                    <stop offset="0%" style="stop-color:#000000;stop-opacity:1" />
+                                    <stop offset="70%" style="stop-color:#1A202C;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#2D3748;stop-opacity:1" />
+                                </radialGradient>
+                                <!-- Shadow filter -->
+                                <filter id="dropShadow">
+                                    <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+                                    <feOffset dx="3" dy="3" result="offsetblur"/>
+                                    <feComponentTransfer>
+                                        <feFuncA type="linear" slope="0.3"/>
+                                    </feComponentTransfer>
+                                    <feMerge>
+                                        <feMergeNode/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+
+                            <!-- LEFT SIDE - Left Lens & Temple Components -->
+                            
+                            <!-- Left Lens -->
+                            <g transform="translate(50, 350)">
+                                <ellipse cx="80" cy="80" rx="70" ry="60" fill="url(#glassShine)" stroke="#1A202C" stroke-width="3" filter="url(#dropShadow)"/>
+                                <ellipse cx="75" cy="75" rx="65" ry="55" fill="none" stroke="#E2E8F0" stroke-width="1" opacity="0.3"/>
+                                <text x="80" y="170" text-anchor="middle" fill="#4A5568" font-size="11" font-weight="bold">Left Lens</text>
+                            </g>
+
+                            <!-- Left Temple Covers -->
+                            <g transform="translate(20, 150)">
+                                <path d="M 0,0 L 140,0 L 150,20 L 140,40 L 0,40 Z" fill="url(#blackFrame)" filter="url(#dropShadow)"/>
+                                <path d="M 5,5 L 135,5 L 143,20 L 135,35 L 5,35 Z" fill="#2D3748"/>
+                                <circle cx="30" cy="20" r="4" fill="#718096"/>
+                                <text x="75" y="60" text-anchor="middle" fill="#4A5568" font-size="10">Temple Cover</text>
+                            </g>
+
+                            <!-- Left Audio Speaker -->
+                            <g transform="translate(180, 200)">
+                                <rect x="0" y="0" width="60" height="35" rx="5" fill="#2D3748" filter="url(#dropShadow)"/>
+                                <circle cx="15" cy="17" r="8" fill="#1A202C" stroke="#4A5568" stroke-width="1"/>
+                                <circle cx="30" cy="17" r="8" fill="#1A202C" stroke="#4A5568" stroke-width="1"/>
+                                <circle cx="45" cy="17" r="8" fill="#1A202C" stroke="#4A5568" stroke-width="1"/>
+                                <text x="30" y="55" text-anchor="middle" fill="#4A5568" font-size="10">Speaker</text>
+                            </g>
+
+                            <!-- Left Microphones -->
+                            <g transform="translate(190, 280)">
+                                <circle cx="15" cy="15" r="12" fill="#1A202C" filter="url(#dropShadow)"/>
+                                <circle cx="15" cy="15" r="6" fill="#4A5568"/>
+                                <circle cx="45" cy="15" r="12" fill="#1A202C" filter="url(#dropShadow)"/>
+                                <circle cx="45" cy="15" r="6" fill="#4A5568"/>
+                                <text x="30" y="50" text-anchor="middle" fill="#4A5568" font-size="10">Microphones</text>
+                            </g>
+
+                            <!-- Left Hinge -->
+                            <g transform="translate(260, 340)">
+                                <rect x="0" y="0" width="25" height="50" rx="3" fill="url(#metalShine)" filter="url(#dropShadow)"/>
+                                <circle cx="12" cy="15" r="5" fill="#2D3748" stroke="#CBD5E0" stroke-width="1"/>
+                                <circle cx="12" cy="25" r="5" fill="#2D3748" stroke="#CBD5E0" stroke-width="1"/>
+                                <circle cx="12" cy="35" r="5" fill="#2D3748" stroke="#CBD5E0" stroke-width="1"/>
+                                <text x="12" y="70" text-anchor="middle" fill="#4A5568" font-size="10">Hinge</text>
+                            </g>
+
+                            <!-- CENTER - Main Frame & Camera -->
+                            
+                            <!-- Bottom Frame Front (large wayfarer shape) -->
+                            <g transform="translate(400, 520)">
+                                <!-- Main frame shape -->
+                                <path d="M 50,0 L 350,0 C 370,0 380,10 380,25 L 380,60 C 380,75 370,85 350,85 L 50,85 C 30,85 20,75 20,60 L 20,25 C 20,10 30,0 50,0 Z" 
+                                      fill="url(#blackFrame)" stroke="#000" stroke-width="4" filter="url(#dropShadow)"/>
+                                <!-- Left lens opening -->
+                                <ellipse cx="120" cy="42" rx="65" ry="35" fill="none" stroke="#000" stroke-width="3"/>
+                                <!-- Right lens opening -->
+                                <ellipse cx="280" cy="42" rx="65" ry="35" fill="none" stroke="#000" stroke-width="3"/>
+                                <!-- Bridge -->
+                                <rect x="175" y="35" width="50" height="15" rx="3" fill="#1A202C"/>
+                                <!-- Nose pads -->
+                                <ellipse cx="170" cy="70" rx="8" ry="12" fill="#718096" opacity="0.7"/>
+                                <ellipse cx="230" cy="70" rx="8" ry="12" fill="#718096" opacity="0.7"/>
+                                <text x="200" y="110" text-anchor="middle" fill="#1A202C" font-size="14" font-weight="bold">Frame Front</text>
+                            </g>
+
+                            <!-- Top Frame with Camera Mount -->
+                            <g transform="translate(420, 280)">
+                                <!-- Frame top bar -->
+                                <path d="M 30,0 L 330,0 C 345,0 355,8 355,20 L 355,45 C 355,57 345,65 330,65 L 30,65 C 15,65 5,57 5,45 L 5,20 C 5,8 15,0 30,0 Z" 
+                                      fill="url(#blackFrame)" stroke="#000" stroke-width="3" filter="url(#dropShadow)"/>
+                                
+                                <!-- Camera module mount (left side) -->
+                                <g transform="translate(60, 20)">
+                                    <rect x="0" y="0" width="50" height="30" rx="4" fill="#DC2626" stroke="#991B1B" stroke-width="2" filter="url(#dropShadow)"/>
+                                    <text x="25" y="-10" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="bold">CAMERA</text>
+                                    <text x="25" y="50" text-anchor="middle" fill="#DC2626" font-size="9">±0.2mm</text>
+                                </g>
+                                
+                                <text x="180" y="90" text-anchor="middle" fill="#1A202C" font-size="12" font-weight="bold">Frame Assembly</text>
+                            </g>
+
+                            <!-- Camera Module (CRITICAL - separate with callout) -->
+                            <g transform="translate(480, 150)">
+                                <rect x="0" y="0" width="70" height="50" rx="5" fill="#7F1D1D" stroke="#DC2626" stroke-width="3" filter="url(#dropShadow)"/>
+                                <!-- Lens -->
+                                <circle cx="35" cy="25" r="18" fill="url(#cameraLens)" stroke="#DC2626" stroke-width="2"/>
+                                <circle cx="35" cy="25" r="12" fill="#000"/>
+                                <circle cx="35" cy="25" r="6" fill="#1E3A8A" opacity="0.5"/>
+                                <!-- LED indicator -->
+                                <circle cx="60" cy="10" r="3" fill="#FCA5A5"/>
+                                <text x="35" y="70" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="bold">12MP Camera</text>
+                                <text x="35" y="85" text-anchor="middle" fill="#991B1B" font-size="9">CRITICAL</text>
+                                <!-- Warning indicator -->
+                                <circle cx="-15" cy="25" r="12" fill="#FCA5A5" stroke="#DC2626" stroke-width="2"/>
+                                <text x="-15" y="30" text-anchor="middle" fill="#7F1D1D" font-size="16" font-weight="bold">!</text>
+                            </g>
+
+                            <!-- PCB/Electronics -->
+                            <g transform="translate(620, 200)">
+                                <rect x="0" y="0" width="90" height="60" rx="3" fill="#065F46" stroke="#047857" stroke-width="2" filter="url(#dropShadow)"/>
+                                <!-- Circuit traces -->
+                                <line x1="10" y1="15" x2="80" y2="15" stroke="#FCD34D" stroke-width="1"/>
+                                <line x1="10" y1="25" x2="80" y2="25" stroke="#FCD34D" stroke-width="1"/>
+                                <line x1="10" y1="35" x2="80" y2="35" stroke="#FCD34D" stroke-width="1"/>
+                                <line x1="10" y1="45" x2="80" y2="45" stroke="#FCD34D" stroke-width="1"/>
+                                <!-- Components -->
+                                <rect x="15" y="10" width="15" height="15" fill="#1A202C"/>
+                                <rect x="35" y="10" width="15" height="15" fill="#1A202C"/>
+                                <rect x="55" y="10" width="15" height="15" fill="#1A202C"/>
+                                <circle cx="25" cy="40" r="5" fill="#FCD34D"/>
+                                <circle cx="45" cy="40" r="5" fill="#FCD34D"/>
+                                <circle cx="65" cy="40" r="5" fill="#FCD34D"/>
+                                <text x="45" y="80" text-anchor="middle" fill="#047857" font-size="10">Flex PCB</text>
+                            </g>
+
+                            <!-- Processor Chip -->
+                            <g transform="translate(750, 230)">
+                                <rect x="0" y="0" width="55" height="45" rx="2" fill="#1A202C" stroke="#4A5568" stroke-width="2" filter="url(#dropShadow)"/>
+                                <rect x="5" y="5" width="45" height="35" fill="#2D3748"/>
+                                <text x="27" y="25" text-anchor="middle" fill="#E2E8F0" font-size="8" font-weight="bold">Qualcomm</text>
+                                <text x="27" y="35" text-anchor="middle" fill="#A0AEC0" font-size="7">AR1</text>
+                                <text x="27" y="65" text-anchor="middle" fill="#4A5568" font-size="10">Processor</text>
+                            </g>
+
+                            <!-- Battery -->
+                            <g transform="translate(840, 240)">
+                                <rect x="0" y="0" width="65" height="30" rx="3" fill="#4A5568" filter="url(#dropShadow)"/>
+                                <rect x="65" y="8" width="6" height="14" fill="#718096"/>
+                                <text x="32" y="20" text-anchor="middle" fill="#E2E8F0" font-size="9" font-weight="bold">450mAh</text>
+                                <text x="32" y="50" text-anchor="middle" fill="#4A5568" font-size="10">Battery</text>
+                            </g>
+
+                            <!-- RIGHT SIDE - Right Temple & Lens Components -->
+                            
+                            <!-- Right Lens -->
+                            <g transform="translate(1100, 350)">
+                                <ellipse cx="80" cy="80" rx="70" ry="60" fill="url(#glassShine)" stroke="#1A202C" stroke-width="3" filter="url(#dropShadow)"/>
+                                <ellipse cx="75" cy="75" rx="65" ry="55" fill="none" stroke="#E2E8F0" stroke-width="1" opacity="0.3"/>
+                                <text x="80" y="170" text-anchor="middle" fill="#4A5568" font-size="11" font-weight="bold">Right Lens</text>
+                            </g>
+
+                            <!-- Right Temple Covers -->
+                            <g transform="translate(1250, 150)">
+                                <path d="M 0,0 L 140,0 L 150,20 L 140,40 L 0,40 Z" fill="url(#blackFrame)" filter="url(#dropShadow)"/>
+                                <path d="M 5,5 L 135,5 L 143,20 L 135,35 L 5,35 Z" fill="#2D3748"/>
+                                <rect x="100" y="12" width="25" height="16" rx="2" fill="#4A5568"/>
+                                <text x="75" y="60" text-anchor="middle" fill="#4A5568" font-size="10">Temple Cover</text>
+                                <text x="112" y="75" text-anchor="middle" fill="#718096" font-size="8">Touch Pad</text>
+                            </g>
+
+                            <!-- Right Audio Speaker -->
+                            <g transform="translate(1200, 200)">
+                                <rect x="0" y="0" width="60" height="35" rx="5" fill="#2D3748" filter="url(#dropShadow)"/>
+                                <circle cx="15" cy="17" r="8" fill="#1A202C" stroke="#4A5568" stroke-width="1"/>
+                                <circle cx="30" cy="17" r="8" fill="#1A202C" stroke="#4A5568" stroke-width="1"/>
+                                <circle cx="45" cy="17" r="8" fill="#1A202C" stroke="#4A5568" stroke-width="1"/>
+                                <text x="30" y="55" text-anchor="middle" fill="#4A5568" font-size="10">Speaker</text>
+                            </g>
+
+                            <!-- Right Microphones -->
+                            <g transform="translate(1210, 280)">
+                                <circle cx="15" cy="15" r="12" fill="#1A202C" filter="url(#dropShadow)"/>
+                                <circle cx="15" cy="15" r="6" fill="#4A5568"/>
+                                <circle cx="45" cy="15" r="12" fill="#1A202C" filter="url(#dropShadow)"/>
+                                <circle cx="45" cy="15" r="6" fill="#4A5568"/>
+                                <text x="30" y="50" text-anchor="middle" fill="#4A5568" font-size="10">Microphones</text>
+                            </g>
+
+                            <!-- Right Hinge -->
+                            <g transform="translate(1150, 340)">
+                                <rect x="0" y="0" width="25" height="50" rx="3" fill="url(#metalShine)" filter="url(#dropShadow)"/>
+                                <circle cx="12" cy="15" r="5" fill="#2D3748" stroke="#CBD5E0" stroke-width="1"/>
+                                <circle cx="12" cy="25" r="5" fill="#2D3748" stroke="#CBD5E0" stroke-width="1"/>
+                                <circle cx="12" cy="35" r="5" fill="#2D3748" stroke="#CBD5E0" stroke-width="1"/>
+                                <text x="12" y="70" text-anchor="middle" fill="#4A5568" font-size="10">Hinge</text>
+                            </g>
+
+                            <!-- Charging Case (separate, bottom) -->
+                            <g transform="translate(1350, 480)">
+                                <ellipse cx="90" cy="50" rx="90" ry="50" fill="#2D3748" filter="url(#dropShadow)"/>
+                                <ellipse cx="90" cy="45" rx="80" ry="40" fill="#1A202C"/>
+                                <line x1="30" y1="45" x2="150" y2="45" stroke="#4A5568" stroke-width="2"/>
+                                <rect x="70" y="55" width="40" height="8" rx="2" fill="#718096"/>
+                                <text x="90" y="120" text-anchor="middle" fill="#4A5568" font-size="11" font-weight="bold">Charging Case</text>
+                                <text x="90" y="135" text-anchor="middle" fill="#718096" font-size="9">8 Additional Charges</text>
+                            </g>
+
+                            <!-- Connector/Cable -->
+                            <g transform="translate(1360, 650)">
+                                <rect x="0" y="0" width="50" height="15" rx="3" fill="#4A5568" filter="url(#dropShadow)"/>
+                                <rect x="45" y="3" width="8" height="9" rx="1" fill="#1A202C"/>
+                                <text x="25" y="35" text-anchor="middle" fill="#4A5568" font-size="9">USB-C Cable</text>
+                            </g>
+
+                            <!-- Assembly Direction Indicators -->
+                            <g opacity="0.6">
+                                <!-- Left to center arrows -->
+                                <polygon points="245,370 265,360 265,380" fill="#0066FF"/>
+                                <polygon points="245,220 265,210 265,230" fill="#0066FF"/>
+                                <!-- Right to center arrows -->
+                                <polygon points="1095,370 1075,360 1075,380" fill="#0066FF"/>
+                                <polygon points="1095,220 1075,210 1075,230" fill="#0066FF"/>
+                                <!-- Top to center -->
+                                <polygon points="540,260 530,280 550,280" fill="#0066FF"/>
+                                <polygon points="670,275 660,295 680,295" fill="#0066FF"/>
+                            </g>
+
+                            <!-- Quality Platform Inspection Callouts -->
+                            <g>
+                                <!-- Camera critical callout -->
+                                <line x1="550" y1="150" x2="650" y2="100" stroke="#DC2626" stroke-width="2" stroke-dasharray="4,4"/>
+                                <rect x="655" y="70" width="180" height="55" rx="5" fill="#DC2626" opacity="0.95"/>
+                                <text x="745" y="90" text-anchor="middle" fill="white" font-size="11" font-weight="bold">✓ CRITICAL INSPECTION</text>
+                                <text x="745" y="105" text-anchor="middle" fill="#FEE2E2" font-size="9">100% Inline Vision Check</text>
+                                <text x="745" y="118" text-anchor="middle" fill="#FEE2E2" font-size="9">X/Y Position ±0.2mm Tolerance</text>
+                            </g>
+
+                            <!-- Legend -->
+                            <g transform="translate(50, 700)">
+                                <text x="0" y="0" fill="#1A202C" font-size="16" font-weight="bold">Component Legend:</text>
+                                
+                                <circle cx="10" cy="25" r="8" fill="#DC2626"/>
+                                <text x="25" y="30" fill="#4A5568" font-size="11">Critical Risk - 100% automated inspection required</text>
+                                
+                                <circle cx="10" cy="50" r="8" fill="#065F46"/>
+                                <text x="25" y="55" fill="#4A5568" font-size="11">High Value - automated inspection recommended</text>
+                                
+                                <circle cx="10" cy="75" r="8" fill="#2D3748"/>
+                                <text x="25" y="80" fill="#4A5568" font-size="11">Standard Components</text>
+
+                                <text x="450" y="30" fill="#1A202C" font-size="12" font-weight="bold">Assembly Sequence: Left Temple → Frame → Camera → Electronics → Right Temple → Lenses → Final Assembly</text>
+                                <text x="450" y="55" fill="#4A5568" font-size="10">7 Major Subassemblies | 39 Critical Components | 18 Suppliers</text>
+                            </g>
+
+                            <!-- Title -->
+                            <rect x="0" y="0" width="1600" height="45" fill="#1A202C" opacity="0.95"/>
+                            <text x="800" y="28" text-anchor="middle" fill="white" font-size="20" font-weight="bold">META RAY-BAN WAYFARER - 3D EXPLODED ASSEMBLY VIEW</text>
+                        </svg>
+                    </div>
+                            <defs>
+                                <!-- Gradients for 3D effect -->
+                                <linearGradient id="glassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#E0F2FE;stop-opacity:0.9" />
+                                    <stop offset="100%" style="stop-color:#BAE6FD;stop-opacity:0.7" />
+                                </linearGradient>
+                                <linearGradient id="frameGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#1E293B;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#0F172A;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="cameraGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#DC2626;stop-opacity:0.9" />
+                                    <stop offset="100%" style="stop-color:#991B1B;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="pcbGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.9" />
+                                    <stop offset="100%" style="stop-color:#047857;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#94A3B8;stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:#E2E8F0;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#64748B;stop-opacity:1" />
+                                </linearGradient>
+                                <!-- Shadow filter -->
+                                <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                                    <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+                                    <feOffset dx="2" dy="2" result="offsetblur"/>
+                                    <feComponentTransfer>
+                                        <feFuncA type="linear" slope="0.3"/>
+                                    </feComponentTransfer>
+                                    <feMerge>
+                                        <feMergeNode/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+
+                            <!-- Layer 7: Packaging (Top - furthest out) -->
+                            <g class="component" onclick="highlightComponent('pkg')" style="cursor: pointer;">
+                                <rect x="450" y="50" width="300" height="80" rx="10" fill="#0EA5E9" opacity="0.6" filter="url(#shadow)"/>
+                                <text x="600" y="85" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Protective Case</text>
+                                <text x="600" y="105" text-anchor="middle" fill="#E0F2FE" font-size="11">+ Cable & Docs</text>
+                                <circle cx="420" cy="90" r="15" fill="#FCD34D" stroke="#F59E0B" stroke-width="2"/>
+                                <text x="420" y="95" text-anchor="middle" fill="#78350F" font-size="12" font-weight="bold">7</text>
+                            </g>
+
+                            <!-- Assembly direction arrows -->
+                            <line x1="600" y1="140" x2="600" y2="170" stroke="#60A5FA" stroke-width="2" stroke-dasharray="5,5"/>
+                            <polygon points="595,165 600,175 605,165" fill="#60A5FA"/>
+
+                            <!-- Layer 6: Exterior Covers -->
+                            <g class="component" onclick="highlightComponent('covers')" style="cursor: pointer;">
+                                <ellipse cx="600" cy="200" rx="180" ry="25" fill="url(#metalGrad)" filter="url(#shadow)"/>
+                                <rect x="420" y="190" width="360" height="50" rx="8" fill="url(#metalGrad)" opacity="0.9"/>
+                                <text x="600" y="212" text-anchor="middle" fill="#1E293B" font-size="13" font-weight="bold">Temple Covers & Branding</text>
+                                <text x="600" y="228" text-anchor="middle" fill="#475569" font-size="10">Control Buttons | Port Cover | Logos</text>
+                                <circle cx="390" cy="215" r="15" fill="#D1D5DB" stroke="#9CA3AF" stroke-width="2"/>
+                                <text x="390" y="220" text-anchor="middle" fill="#1F2937" font-size="12" font-weight="bold">6</text>
+                            </g>
+
+                            <line x1="600" y1="250" x2="600" y2="280" stroke="#60A5FA" stroke-width="2" stroke-dasharray="5,5"/>
+                            <polygon points="595,275 600,285 605,275" fill="#60A5FA"/>
+
+                            <!-- Layer 5: Hinges & Structure -->
+                            <g class="component" onclick="highlightComponent('hinge')" style="cursor: pointer;">
+                                <!-- Left hinge -->
+                                <rect x="300" y="305" width="100" height="40" rx="5" fill="url(#metalGrad)" filter="url(#shadow)"/>
+                                <circle cx="330" cy="325" r="8" fill="#475569" stroke="#E2E8F0" stroke-width="2"/>
+                                <!-- Right hinge -->
+                                <rect x="800" y="305" width="100" height="40" rx="5" fill="url(#metalGrad)" filter="url(#shadow)"/>
+                                <circle cx="870" cy="325" r="8" fill="#475569" stroke="#E2E8F0" stroke-width="2"/>
+                                <!-- Center connection -->
+                                <rect x="390" y="310" width="420" height="30" rx="5" fill="#F97316" opacity="0.8" filter="url(#shadow)"/>
+                                <text x="600" y="330" text-anchor="middle" fill="white" font-size="13" font-weight="bold">Titanium Hinges + Temple Arms</text>
+                                <circle cx="270" cy="325" r="15" fill="#FDBA74" stroke="#F97316" stroke-width="2"/>
+                                <text x="270" y="330" text-anchor="middle" fill="#7C2D12" font-size="12" font-weight="bold">5</text>
+                            </g>
+
+                            <line x1="600" y1="355" x2="600" y2="385" stroke="#60A5FA" stroke-width="2" stroke-dasharray="5,5"/>
+                            <polygon points="595,380 600,390 605,380" fill="#60A5FA"/>
+
+                            <!-- Layer 4: Audio Components -->
+                            <g class="component" onclick="highlightComponent('audio')" style="cursor: pointer;">
+                                <!-- Left speaker -->
+                                <ellipse cx="350" cy="420" rx="45" ry="30" fill="#10B981" opacity="0.8" filter="url(#shadow)"/>
+                                <text x="350" y="423" text-anchor="middle" fill="white" font-size="10" font-weight="bold">SPKR</text>
+                                <!-- Right speaker -->
+                                <ellipse cx="850" cy="420" rx="45" ry="30" fill="#10B981" opacity="0.8" filter="url(#shadow)"/>
+                                <text x="850" y="423" text-anchor="middle" fill="white" font-size="10" font-weight="bold">SPKR</text>
+                                <!-- Microphones -->
+                                <circle cx="450" cy="420" r="18" fill="#34D399" filter="url(#shadow)"/>
+                                <text x="450" y="425" text-anchor="middle" fill="#064E3B" font-size="9" font-weight="bold">MIC</text>
+                                <circle cx="750" cy="420" r="18" fill="#34D399" filter="url(#shadow)"/>
+                                <text x="750" y="425" text-anchor="middle" fill="#064E3B" font-size="9" font-weight="bold">MIC</text>
+                                <!-- Label -->
+                                <text x="600" y="440" text-anchor="middle" fill="#10B981" font-size="13" font-weight="bold">Audio System</text>
+                                <circle cx="240" cy="420" r="15" fill="#6EE7B7" stroke="#10B981" stroke-width="2"/>
+                                <text x="240" y="425" text-anchor="middle" fill="#064E3B" font-size="12" font-weight="bold">4</text>
+                            </g>
+
+                            <line x1="600" y1="470" x2="600" y2="500" stroke="#60A5FA" stroke-width="2" stroke-dasharray="5,5"/>
+                            <polygon points="595,495 600,505 605,495" fill="#60A5FA"/>
+
+                            <!-- Layer 3: Electronics & PCB -->
+                            <g class="component" onclick="highlightComponent('pcb')" style="cursor: pointer;">
+                                <!-- Left PCB -->
+                                <rect x="280" y="525" width="120" height="60" rx="3" fill="url(#pcbGrad)" filter="url(#shadow)"/>
+                                <circle cx="320" cy="545" r="8" fill="#FCD34D"/>
+                                <circle cx="360" cy="545" r="8" fill="#FCD34D"/>
+                                <circle cx="320" cy="565" r="8" fill="#FCD34D"/>
+                                <circle cx="360" cy="565" r="8" fill="#FCD34D"/>
+                                <!-- Right PCB -->
+                                <rect x="800" y="525" width="120" height="60" rx="3" fill="url(#pcbGrad)" filter="url(#shadow)"/>
+                                <circle cx="840" cy="545" r="8" fill="#FCD34D"/>
+                                <circle cx="880" cy="545" r="8" fill="#FCD34D"/>
+                                <circle cx="840" cy="565" r="8" fill="#FCD34D"/>
+                                <circle cx="880" cy="565" r="8" fill="#FCD34D"/>
+                                <!-- Processor (center) -->
+                                <rect x="550" y="535" width="100" height="40" rx="3" fill="#8B5CF6" filter="url(#shadow)"/>
+                                <text x="600" y="557" text-anchor="middle" fill="white" font-size="11" font-weight="bold">Qualcomm</text>
+                                <text x="600" y="570" text-anchor="middle" fill="#E9D5FF" font-size="9">AR1 5-Core</text>
+                                <!-- Battery -->
+                                <rect x="430" y="540" width="80" height="30" rx="3" fill="#64748B" filter="url(#shadow)"/>
+                                <text x="470" y="558" text-anchor="middle" fill="white" font-size="9" font-weight="bold">450mAh</text>
+                                <circle cx="250" cy="555" r="15" fill="#C4B5FD" stroke="#8B5CF6" stroke-width="2"/>
+                                <text x="250" y="560" text-anchor="middle" fill="#5B21B6" font-size="12" font-weight="bold">3</text>
+                            </g>
+
+                            <line x1="600" y1="600" x2="600" y2="630" stroke="#60A5FA" stroke-width="3"/>
+                            <polygon points="595,625 600,640 605,625" fill="#60A5FA"/>
+                            <text x="650" y="620" fill="#FCA5A5" font-size="14" font-weight="bold">⚠️ CRITICAL</text>
+
+                            <!-- Layer 2: Camera Module (CRITICAL - Highlighted) -->
+                            <g class="component" onclick="highlightComponent('camera')" style="cursor: pointer;">
+                                <rect x="480" y="660" width="240" height="100" rx="8" fill="#7F1D1D" stroke="#FCA5A5" stroke-width="4" filter="url(#shadow)"/>
+                                <!-- Camera lens -->
+                                <circle cx="600" cy="700" r="35" fill="url(#cameraGrad)" stroke="#FCA5A5" stroke-width="3"/>
+                                <circle cx="600" cy="700" r="25" fill="#1E293B" opacity="0.9"/>
+                                <circle cx="600" cy="700" r="15" fill="#60A5FA" opacity="0.5"/>
+                                <text x="600" y="675" text-anchor="middle" fill="#FCA5A5" font-size="13" font-weight="bold">12MP CAMERA MODULE</text>
+                                <text x="600" y="740" text-anchor="middle" fill="#FECACA" font-size="11">±0.2mm Tolerance | UV-Cure Adhesive</text>
+                                <!-- Warning indicators -->
+                                <circle cx="520" cy="680" r="8" fill="#FCA5A5"/>
+                                <text x="520" y="685" text-anchor="middle" fill="#7F1D1D" font-size="12" font-weight="bold">!</text>
+                                <circle cx="680" cy="680" r="8" fill="#FCA5A5"/>
+                                <text x="680" y="685" text-anchor="middle" fill="#7F1D1D" font-size="12" font-weight="bold">!</text>
+                                <!-- Layer number -->
+                                <circle cx="220" cy="710" r="18" fill="#FCA5A5" stroke="#DC2626" stroke-width="3"/>
+                                <text x="220" y="716" text-anchor="middle" fill="#7F1D1D" font-size="14" font-weight="bold">2</text>
+                            </g>
+
+                            <line x1="600" y1="770" x2="600" y2="800" stroke="#60A5FA" stroke-width="2" stroke-dasharray="5,5"/>
+                            <polygon points="595,795 600,805 605,795" fill="#60A5FA"/>
+
+                            <!-- Layer 1: Optical/Frame -->
+                            <g class="component" onclick="highlightComponent('frame')" style="cursor: pointer;">
+                                <!-- Frame front -->
+                                <ellipse cx="600" cy="860" rx="280" ry="40" fill="url(#frameGrad)" filter="url(#shadow)"/>
+                                <rect x="320" y="835" width="560" height="50" rx="25" fill="url(#frameGrad)"/>
+                                <!-- Left lens -->
+                                <ellipse cx="450" cy="860" rx="85" ry="60" fill="url(#glassGrad)" stroke="#0EA5E9" stroke-width="2" filter="url(#shadow)"/>
+                                <!-- Right lens -->
+                                <ellipse cx="750" cy="860" rx="85" ry="60" fill="url(#glassGrad)" stroke="#0EA5E9" stroke-width="2" filter="url(#shadow)"/>
+                                <!-- Bridge -->
+                                <rect x="525" y="850" width="150" height="20" rx="10" fill="url(#frameGrad)"/>
+                                <!-- Nose pads -->
+                                <ellipse cx="540" cy="890" rx="12" ry="18" fill="#94A3B8" opacity="0.8"/>
+                                <ellipse cx="660" cy="890" rx="12" ry="18" fill="#94A3B8" opacity="0.8"/>
+                                <text x="600" y="940" text-anchor="middle" fill="#E2E8F0" font-size="14" font-weight="bold">Acetate Frame + Polarized Lenses</text>
+                                <circle cx="210" cy="860" r="15" fill="#7DD3FC" stroke="#0EA5E9" stroke-width="2"/>
+                                <text x="210" y="865" text-anchor="middle" fill="#0C4A6E" font-size="12" font-weight="bold">1</text>
+                            </g>
+
+                            <!-- Callout lines for Quality Platform inspection -->
+                            <g id="inspection-callouts" opacity="0">
+                                <line x1="720" y1="700" x2="850" y2="650" stroke="#10B981" stroke-width="2"/>
+                                <rect x="855" y="630" width="200" height="40" rx="5" fill="#10B981"/>
+                                <text x="955" y="650" text-anchor="middle" fill="white" font-size="11" font-weight="bold">✓ 100% Inspection</text>
+                                <text x="955" y="665" text-anchor="middle" fill="#D1FAE5" font-size="9">Position, Adhesive, Alignment</text>
+                            </g>
+
+                            <!-- Legend -->
+                            <g transform="translate(50, 1000)">
+                                <text x="0" y="0" fill="#E2E8F0" font-size="16" font-weight="bold">Assembly Layers:</text>
+                                <text x="0" y="25" fill="#BAE6FD" font-size="12">1️⃣ Optics → 2️⃣ Camera (CRITICAL) → 3️⃣ Electronics → 4️⃣ Audio → 5️⃣ Structure → 6️⃣ Covers → 7️⃣ Package</text>
+                                
+                                <rect x="0" y="45" width="20" height="20" fill="#DC2626"/>
+                                <text x="25" y="60" fill="#E2E8F0" font-size="11">Critical Risk (100% Quality Platform)</text>
+                                
+                                <rect x="250" y="45" width="20" height="20" fill="#F97316"/>
+                                <text x="275" y="60" fill="#E2E8F0" font-size="11">Medium Risk (Inspection Recommended)</text>
+                                
+                                <rect x="550" y="45" width="20" height="20" fill="#10B981"/>
+                                <text x="575" y="60" fill="#E2E8F0" font-size="11">Low Risk (Standard QC)</text>
+                            </g>
+
+                            <!-- Measurement annotations -->
+                            <g id="measurements">
+                                <!-- Camera tolerance -->
+                                <line x1="480" y1="700" x2="450" y2="700" stroke="#FCA5A5" stroke-width="1" stroke-dasharray="2,2"/>
+                                <text x="430" y="703" text-anchor="end" fill="#FCA5A5" font-size="10">±0.2mm</text>
+                                <!-- Hinge gap -->
+                                <line x1="390" y1="325" x2="420" y2="325" stroke="#FDBA74" stroke-width="1" stroke-dasharray="2,2"/>
+                                <text x="360" y="328" text-anchor="end" fill="#FDBA74" font-size="10">±0.15mm</text>
+                            </g>
+
+                            <!-- Title overlay -->
+                            <rect x="0" y="0" width="1200" height="35" fill="#1E293B" opacity="0.9"/>
+                            <text x="600" y="23" text-anchor="middle" fill="white" font-size="18" font-weight="bold">META RAY-BAN WAYFARER - 3D EXPLODED ASSEMBLY VIEW</text>
+                        </svg>
+                    </div>
+
+                    <!-- Exploded View Diagram -->
+                    <div class="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-8 border-2" style="border-color: #0066FF;">
+                        <div class="space-y-6">
+                            <!-- Layer 1: Lenses & Front Frame -->
+                            <div class="relative">
+                                <div class="absolute -left-16 top-0 text-6xl font-bold text-blue-200">1</div>
+                                <div class="bg-white rounded-lg p-6 shadow-md border-l-4" style="border-color: #0066FF;">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 class="text-xl font-bold mb-2" style="color: #0066FF;">Optical Assembly Layer</h3>
+                                            <p class="text-sm text-gray-600">Customer-facing components, primary aesthetic elements</p>
+                                        </div>
+                                        <div class="text-right text-xs">
+                                            <div class="text-gray-500">Parts: 3</div>
+                                            <div class="font-bold" style="color: #0066FF;">Assembly: Manual</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid md:grid-cols-3 gap-4">
+                                        <div class="bg-blue-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">Polarized Lenses (2x)</div>
+                                            <div class="text-xs text-gray-600 mb-2">G15 Green, Anti-reflective coating</div>
+                                            <div class="text-xs text-green-700"><strong>Quality Platform:</strong> Scratch detection, optical clarity, seating verification</div>
+                                        </div>
+                                        <div class="bg-blue-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">Acetate Frame Front</div>
+                                            <div class="text-xs text-gray-600 mb-2">Wayfarer profile, injection molded</div>
+                                            <div class="text-xs text-green-700"><strong>Quality Platform:</strong> Cosmetic inspection, dimensional verification, molding defects</div>
+                                        </div>
+                                        <div class="bg-blue-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">Nose Pads (2x)</div>
+                                            <div class="text-xs text-gray-600 mb-2">Silicone, adjustable</div>
+                                            <div class="text-xs text-gray-500"><strong>Quality Platform:</strong> Presence check, positioning</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <div class="inline-block bg-blue-200 text-blue-800 px-4 py-1 rounded-full text-xs font-bold">↓ ASSEMBLY DIRECTION ↓</div>
+                            </div>
+
+                            <!-- Layer 2: Camera & Sensor Module -->
+                            <div class="relative">
+                                <div class="absolute -left-16 top-0 text-6xl font-bold text-red-200">2</div>
+                                <div class="bg-white rounded-lg p-6 shadow-md border-l-4 border-red-500">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 class="text-xl font-bold mb-2 text-red-800">🎯 Camera & Vision Module (CRITICAL)</h3>
+                                            <p class="text-sm text-red-700">Highest risk area - Sub-0.2mm alignment tolerance required</p>
+                                        </div>
+                                        <div class="text-right text-xs">
+                                            <div class="text-gray-500">Parts: 4</div>
+                                            <div class="font-bold text-red-700">Assembly: Automated</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div class="bg-red-50 p-3 rounded border-2 border-red-300">
+                                            <div class="font-bold text-sm mb-1 text-red-900">12MP Camera Module ⚠️</div>
+                                            <div class="text-xs text-gray-600 mb-2">Sony IMX sensor, Ultra-wide lens, Autofocus actuator</div>
+                                            <div class="text-xs text-green-700 font-bold">✓ CRITICAL INSPECTION: X/Y position ±0.2mm, Z-height ±0.15mm, rotation <0.5°</div>
+                                            <div class="mt-2 bg-white p-2 rounded text-xs">
+                                                <strong>Bonding Method:</strong> UV-cure adhesive (65s cure)<br>
+                                                <strong>Historical Issue:</strong> 847 defects, $423K scrap
+                                            </div>
+                                        </div>
+                                        <div class="bg-red-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">Camera Support Bracket</div>
+                                            <div class="text-xs text-gray-600 mb-2">Aluminum, anodized black</div>
+                                            <div class="text-xs text-green-700"><strong>Quality Platform:</strong> Bracket position, adhesive pattern verification</div>
+                                            <div class="mt-2 bg-white p-2 rounded text-xs">
+                                                <strong>Interface:</strong> Bonds to frame front<br>
+                                                <strong>Tolerance Stack-up:</strong> ±0.08mm cumulative
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 bg-red-100 p-3 rounded border-l-4 border-red-600">
+                                        <div class="text-xs text-red-900">
+                                            <strong>⚠️ Critical Interface:</strong> Camera-to-frame alignment directly affects image quality. 
+                                            Misalignment >0.3mm causes visible distortion. Temperature cycling can induce stress. 
+                                            <strong class="text-red-700">100% Quality Platform inspection REQUIRED.</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <div class="inline-block bg-blue-200 text-blue-800 px-4 py-1 rounded-full text-xs font-bold">↓ ASSEMBLY DIRECTION ↓</div>
+                            </div>
+
+                            <!-- Layer 3: Electronics & PCB -->
+                            <div class="relative">
+                                <div class="absolute -left-16 top-0 text-6xl font-bold text-purple-200">3</div>
+                                <div class="bg-white rounded-lg p-6 shadow-md border-l-4 border-purple-500">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 class="text-xl font-bold mb-2 text-purple-800">Electronics & Processing Layer</h3>
+                                            <p class="text-sm text-gray-600">Compute, connectivity, and power management</p>
+                                        </div>
+                                        <div class="text-right text-xs">
+                                            <div class="text-gray-500">Parts: 8</div>
+                                            <div class="font-bold text-purple-700">Assembly: Semi-Auto</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid md:grid-cols-3 gap-4">
+                                        <div class="bg-purple-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">Flex PCB (2x)</div>
+                                            <div class="text-xs text-gray-600 mb-2">L/R temples, 4-layer, rigid-flex</div>
+                                            <div class="text-xs text-green-700"><strong>Quality Platform:</strong> Solder joints (complements AOI), trace integrity, component placement</div>
+                                        </div>
+                                        <div class="bg-purple-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">Qualcomm AR1 Processor</div>
+                                            <div class="text-xs text-gray-600 mb-2">5-core, AI accelerator, ISP</div>
+                                            <div class="text-xs text-blue-700"><strong>Quality Platform:</strong> Chip orientation, solder ball inspection</div>
+                                        </div>
+                                        <div class="bg-purple-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">Battery Module</div>
+                                            <div class="text-xs text-gray-600 mb-2">450mAh Li-Ion, protection circuit</div>
+                                            <div class="text-xs text-blue-700"><strong>Quality Platform:</strong> Placement, connector seating, clearance</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <div class="inline-block bg-blue-200 text-blue-800 px-4 py-1 rounded-full text-xs font-bold">↓ ASSEMBLY DIRECTION ↓</div>
+                            </div>
+
+                            <!-- Layer 4: Audio System -->
+                            <div class="relative">
+                                <div class="absolute -left-16 top-0 text-6xl font-bold text-green-200">4</div>
+                                <div class="bg-white rounded-lg p-6 shadow-md border-l-4 border-green-500">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 class="text-xl font-bold mb-2 text-green-800">Audio & Acoustic Layer</h3>
+                                            <p class="text-sm text-gray-600">Open-ear speakers and beamforming microphones</p>
+                                        </div>
+                                        <div class="text-right text-xs">
+                                            <div class="text-gray-500">Parts: 6</div>
+                                            <div class="font-bold text-green-700">Assembly: Manual</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid md:grid-cols-3 gap-4">
+                                        <div class="bg-green-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">Speakers (2x)</div>
+                                            <div class="text-xs text-gray-600 mb-2">Directional drivers, acoustic ports</div>
+                                            <div class="text-xs text-blue-700"><strong>Quality Platform:</strong> Physical placement only (acoustic test separate)</div>
+                                        </div>
+                                        <div class="bg-green-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">Microphones (2x)</div>
+                                            <div class="text-xs text-gray-600 mb-2">MEMS, beamforming array</div>
+                                            <div class="text-xs text-green-700"><strong>Quality Platform:</strong> Placement accuracy, port alignment</div>
+                                        </div>
+                                        <div class="bg-green-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">Acoustic Chambers</div>
+                                            <div class="text-xs text-gray-600 mb-2">Sealed cavities, dampening foam</div>
+                                            <div class="text-xs text-blue-700"><strong>Quality Platform:</strong> Seal integrity, foam placement</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <div class="inline-block bg-blue-200 text-blue-800 px-4 py-1 rounded-full text-xs font-bold">↓ ASSEMBLY DIRECTION ↓</div>
+                            </div>
+
+                            <!-- Layer 5: Mechanical Structure -->
+                            <div class="relative">
+                                <div class="absolute -left-16 top-0 text-6xl font-bold text-orange-200">5</div>
+                                <div class="bg-white rounded-lg p-6 shadow-md border-l-4 border-orange-500">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 class="text-xl font-bold mb-2 text-orange-800">Structural & Hinge Assembly</h3>
+                                            <p class="text-sm text-gray-600">Mechanical support, articulation, durability</p>
+                                        </div>
+                                        <div class="text-right text-xs">
+                                            <div class="text-gray-500">Parts: 5</div>
+                                            <div class="font-bold text-orange-700">Assembly: Semi-Auto</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div class="bg-orange-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">Titanium Hinges (2x)</div>
+                                            <div class="text-xs text-gray-600 mb-2">5-barrel, spring-loaded, 180° range</div>
+                                            <div class="text-xs text-green-700"><strong>Quality Platform:</strong> Alignment ±0.15mm, gap measurements, screw torque verification</div>
+                                            <div class="mt-2 bg-white p-2 rounded text-xs">
+                                                <strong>Critical Dimension:</strong> Hinge pin alignment affects temple fold<br>
+                                                <strong>Wear Test:</strong> 30,000 cycles minimum
+                                            </div>
+                                        </div>
+                                        <div class="bg-orange-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">Temple Arms (2x)</div>
+                                            <div class="text-xs text-gray-600 mb-2">Acetate + metal core, cable routing channels</div>
+                                            <div class="text-xs text-green-700"><strong>Quality Platform:</strong> Alignment to hinges, cable routing verification, cosmetic quality</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <div class="inline-block bg-blue-200 text-blue-800 px-4 py-1 rounded-full text-xs font-bold">↓ ASSEMBLY DIRECTION ↓</div>
+                            </div>
+
+                            <!-- Layer 6: Exterior Covers -->
+                            <div class="relative">
+                                <div class="absolute -left-16 top-0 text-6xl font-bold text-gray-300">6</div>
+                                <div class="bg-white rounded-lg p-6 shadow-md border-l-4 border-gray-500">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 class="text-xl font-bold mb-2 text-gray-800">Exterior Covers & Trim</h3>
+                                            <p class="text-sm text-gray-600">Protective covers, branding, buttons</p>
+                                        </div>
+                                        <div class="text-right text-xs">
+                                            <div class="text-gray-500">Parts: 8</div>
+                                            <div class="font-bold text-gray-700">Assembly: Manual</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid md:grid-cols-4 gap-3">
+                                        <div class="bg-gray-50 p-3 rounded">
+                                            <div class="font-bold text-xs mb-1">Temple Covers (2x)</div>
+                                            <div class="text-xs text-gray-600 mb-2">Snap-fit, logo placement</div>
+                                            <div class="text-xs text-green-700"><strong>Quality Platform:</strong> Seating, gaps, logo alignment</div>
+                                        </div>
+                                        <div class="bg-gray-50 p-3 rounded">
+                                            <div class="font-bold text-xs mb-1">Control Buttons (4x)</div>
+                                            <div class="text-xs text-gray-600 mb-2">Touch-sensitive, tactile feedback</div>
+                                            <div class="text-xs text-blue-700"><strong>Quality Platform:</strong> Placement, flush verification</div>
+                                        </div>
+                                        <div class="bg-gray-50 p-3 rounded">
+                                            <div class="font-bold text-xs mb-1">Charge Port Cover</div>
+                                            <div class="text-xs text-gray-600 mb-2">Magnetic, waterproofing</div>
+                                            <div class="text-xs text-blue-700"><strong>Quality Platform:</strong> Seal integrity, magnet alignment</div>
+                                        </div>
+                                        <div class="bg-gray-50 p-3 rounded">
+                                            <div class="font-bold text-xs mb-1">Ray-Ban Branding</div>
+                                            <div class="text-xs text-gray-600 mb-2">Etched logos, temple prints</div>
+                                            <div class="text-xs text-green-700"><strong>Quality Platform:</strong> Logo clarity, placement accuracy</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <div class="inline-block bg-blue-200 text-blue-800 px-4 py-1 rounded-full text-xs font-bold">↓ ASSEMBLY DIRECTION ↓</div>
+                            </div>
+
+                            <!-- Layer 7: Packaging -->
+                            <div class="relative">
+                                <div class="absolute -left-16 top-0 text-6xl font-bold text-teal-200">7</div>
+                                <div class="bg-white rounded-lg p-6 shadow-md border-l-4 border-teal-500">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 class="text-xl font-bold mb-2 text-teal-800">Final Assembly & Packaging</h3>
+                                            <p class="text-sm text-gray-600">Protective case, accessories, serialization</p>
+                                        </div>
+                                        <div class="text-right text-xs">
+                                            <div class="text-gray-500">Parts: 5</div>
+                                            <div class="font-bold text-teal-700">Assembly: Automated</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid md:grid-cols-3 gap-4">
+                                        <div class="bg-teal-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">Protective Case</div>
+                                            <div class="text-xs text-gray-600 mb-2">Hard shell, magnetic closure</div>
+                                            <div class="text-xs text-gray-500"><strong>Quality Platform:</strong> N/A (packaging only)</div>
+                                        </div>
+                                        <div class="bg-teal-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">USB-C Cable</div>
+                                            <div class="text-xs text-gray-600 mb-2">Braided, 1m length, fast charge</div>
+                                            <div class="text-xs text-gray-500"><strong>Quality Platform:</strong> N/A (accessory)</div>
+                                        </div>
+                                        <div class="bg-teal-50 p-3 rounded">
+                                            <div class="font-bold text-sm mb-1">Documentation</div>
+                                            <div class="text-xs text-gray-600 mb-2">Quick start, safety, warranty</div>
+                                            <div class="text-xs text-gray-500"><strong>Quality Platform:</strong> N/A (printed materials)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Insights -->
+                    <div class="mt-6 grid md:grid-cols-3 gap-4">
+                        <div class="bg-red-50 p-5 rounded-lg border-l-4 border-red-500">
+                            <div class="font-bold text-red-800 mb-2">🎯 Critical Layer: #2</div>
+                            <div class="text-sm text-gray-700">
+                                Camera & Vision Module requires 100% Quality Platform inspection. 
+                                Alignment tolerance stack-up creates highest risk area in entire product.
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 p-5 rounded-lg border-l-4" style="border-color: #0066FF;">
+                            <div class="font-bold mb-2" style="color: #0066FF;">📊 Quality Platform Coverage</div>
+                            <div class="text-sm text-gray-700">
+                                <strong>18 of 39 components</strong> across 6 layers benefit from Quality Platform inspection.
+                                Layers 2, 3, 5, 6 have highest inspection value.
+                            </div>
+                        </div>
+                        <div class="bg-green-50 p-5 rounded-lg border-l-4 border-green-500">
+                            <div class="font-bold text-green-800 mb-2">✓ Assembly Complexity</div>
+                            <div class="text-sm text-gray-700">
+                                7 major subassemblies with mixed automation levels. 
+                                Manual steps (Layers 1, 4, 6) require extra quality control.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-purple-50 p-5 rounded-lg border-2" style="border-color: #8B5CF6;">
+                        <div class="flex items-start gap-4">
+                            <div class="text-4xl">💡</div>
+                            <div>
+                                <div class="font-bold text-purple-900 mb-2">ID Review Recommendation</div>
+                                <div class="text-sm text-gray-700">
+                                    Based on exploded view analysis, recommend Quality Platform deployment at:
+                                    <strong class="text-purple-900">Layer 2 (Camera - CRITICAL)</strong>, 
+                                    <strong class="text-purple-900">Layer 3 (Electronics - HIGH)</strong>, 
+                                    <strong class="text-purple-900">Layer 5 (Hinges - MEDIUM)</strong>.
+                                    This covers the highest-risk interfaces and dimensional tolerances.
+                                    Estimated first-year value: <strong class="text-green-700">$1.8M-$2.4M</strong> in defect prevention.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOM List -->
+                <div class="section-card p-8 mb-6">
+                    <h2 class="text-3xl font-bold mb-4" style="color: #001F3F;">📦 Bill of Materials (BOM)</h2>
+                    <div class="mb-4 bg-blue-50 p-4 rounded-lg">
+                        <div class="grid grid-cols-4 gap-4 text-sm">
+                            <div><strong>Total Components:</strong> 127</div>
+                            <div><strong>Critical Parts:</strong> 23</div>
+                            <div><strong>Suppliers:</strong> 18</div>
+                            <div><strong>BOM Cost:</strong> $187.50/unit</div>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="apq-gradient text-white">
+                                <tr>
+                                    <th class="p-3 text-left">Part Number</th>
+                                    <th class="p-3 text-left">Description</th>
+                                    <th class="p-3 text-left">Supplier</th>
+                                    <th class="p-3 text-center">Qty</th>
+                                    <th class="p-3 text-right">Unit Cost</th>
+                                    <th class="p-3 text-center">Lead Time</th>
+                                    <th class="p-3 text-center">Risk</th>
+                                    <th class="p-3 text-left">Quality Platform Inspection</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white border-b hover:bg-gray-50">
+                                    <td class="p-3 font-mono text-xs">CAM-12MP-001</td>
+                                    <td class="p-3 font-semibold">12MP Camera Module</td>
+                                    <td class="p-3">Supplier B (Sony)</td>
+                                    <td class="p-3 text-center">1</td>
+                                    <td class="p-3 text-right">$48.00</td>
+                                    <td class="p-3 text-center">12 weeks</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">HIGH</span></td>
+                                    <td class="p-3 text-green-700 font-semibold">✓ Position, alignment, defects</td>
+                                </tr>
+                                <tr class="bg-gray-50 border-b hover:bg-gray-100">
+                                    <td class="p-3 font-mono text-xs">ADH-UV-047</td>
+                                    <td class="p-3 font-semibold">UV-Cure Adhesive (Camera)</td>
+                                    <td class="p-3">Adhesive Corp</td>
+                                    <td class="p-3 text-center">0.2g</td>
+                                    <td class="p-3 text-right">$0.85</td>
+                                    <td class="p-3 text-center">4 weeks</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">HIGH</span></td>
+                                    <td class="p-3 text-green-700 font-semibold">✓ Application pattern, coverage</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-gray-50">
+                                    <td class="p-3 font-mono text-xs">PCB-FLEX-203</td>
+                                    <td class="p-3 font-semibold">Flex PCB Assembly</td>
+                                    <td class="p-3">FlexTech Industries</td>
+                                    <td class="p-3 text-center">2</td>
+                                    <td class="p-3 text-right">$12.00</td>
+                                    <td class="p-3 text-center">8 weeks</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">MED</span></td>
+                                    <td class="p-3 text-blue-700 font-semibold">✓ Solder joints, trace integrity</td>
+                                </tr>
+                                <tr class="bg-gray-50 border-b hover:bg-gray-100">
+                                    <td class="p-3 font-mono text-xs">PROC-QC-AR5</td>
+                                    <td class="p-3 font-semibold">Qualcomm AR1 Processor</td>
+                                    <td class="p-3">Qualcomm</td>
+                                    <td class="p-3 text-center">1</td>
+                                    <td class="p-3 text-right">$42.00</td>
+                                    <td class="p-3 text-center">16 weeks</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">MED</span></td>
+                                    <td class="p-3 text-blue-700 font-semibold">✓ Placement, orientation</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-gray-50">
+                                    <td class="p-3 font-mono text-xs">AUD-SPK-L/R</td>
+                                    <td class="p-3 font-semibold">Acoustic Driver (Pair)</td>
+                                    <td class="p-3">Audio Innovations Inc</td>
+                                    <td class="p-3 text-center">2</td>
+                                    <td class="p-3 text-right">$8.00</td>
+                                    <td class="p-3 text-center">6 weeks</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">MED</span></td>
+                                    <td class="p-3 text-gray-500">Physical only (audio test separate)</td>
+                                </tr>
+                                <tr class="bg-gray-50 border-b hover:bg-gray-100">
+                                    <td class="p-3 font-mono text-xs">MIC-BF-001</td>
+                                    <td class="p-3 font-semibold">Beamforming Microphone</td>
+                                    <td class="p-3">Audio Innovations Inc</td>
+                                    <td class="p-3 text-center">2</td>
+                                    <td class="p-3 text-right">$6.50</td>
+                                    <td class="p-3 text-center">6 weeks</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">LOW</span></td>
+                                    <td class="p-3 text-blue-700 font-semibold">✓ Placement, port alignment</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-gray-50">
+                                    <td class="p-3 font-mono text-xs">HINGE-TI-SS</td>
+                                    <td class="p-3 font-semibold">Titanium Hinge Assembly</td>
+                                    <td class="p-3">Precision Metalworks</td>
+                                    <td class="p-3 text-center">2</td>
+                                    <td class="p-3 text-right">$15.00</td>
+                                    <td class="p-3 text-center">10 weeks</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">MED</span></td>
+                                    <td class="p-3 text-green-700 font-semibold">✓ Alignment, gap measurements</td>
+                                </tr>
+                                <tr class="bg-gray-50 border-b hover:bg-gray-100">
+                                    <td class="p-3 font-mono text-xs">FRAME-ACE-BLK</td>
+                                    <td class="p-3 font-semibold">Acetate Frame (Wayfarer)</td>
+                                    <td class="p-3">Italian Eyewear Co</td>
+                                    <td class="p-3 text-center">1</td>
+                                    <td class="p-3 text-right">$18.50</td>
+                                    <td class="p-3 text-center">8 weeks</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">LOW</span></td>
+                                    <td class="p-3 text-green-700 font-semibold">✓ Cosmetic defects, dimensions</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-gray-50">
+                                    <td class="p-3 font-mono text-xs">BATT-LI-450</td>
+                                    <td class="p-3 font-semibold">Li-Ion Battery (450mAh)</td>
+                                    <td class="p-3">PowerCell Systems</td>
+                                    <td class="p-3 text-center">1</td>
+                                    <td class="p-3 text-right">$9.20</td>
+                                    <td class="p-3 text-center">12 weeks</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">MED</span></td>
+                                    <td class="p-3 text-blue-700 font-semibold">✓ Placement, connector seating</td>
+                                </tr>
+                                <tr class="bg-gray-50 border-b hover:bg-gray-100">
+                                    <td class="p-3 font-mono text-xs">LENS-POL-G15</td>
+                                    <td class="p-3 font-semibold">Polarized Lens (G15)</td>
+                                    <td class="p-3">Optical Components Ltd</td>
+                                    <td class="p-3 text-center">2</td>
+                                    <td class="p-3 text-right">$22.00</td>
+                                    <td class="p-3 text-center">6 weeks</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">LOW</span></td>
+                                    <td class="p-3 text-green-700 font-semibold">✓ Scratches, optical clarity</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-gray-50">
+                                    <td class="p-3 font-mono text-xs">PKG-CASE-001</td>
+                                    <td class="p-3 font-semibold">Protective Case + Cable</td>
+                                    <td class="p-3">Accessories Plus</td>
+                                    <td class="p-3 text-center">1 set</td>
+                                    <td class="p-3 text-right">$6.45</td>
+                                    <td class="p-3 text-center">4 weeks</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">LOW</span></td>
+                                    <td class="p-3 text-gray-500">Not applicable</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4 bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                        <div class="font-bold text-green-800 mb-2">💡 Quality Platform Value for BOM</div>
+                        <div class="text-sm text-gray-700">
+                            <strong>8 of 11 critical components</strong> can benefit from Quality Platform inspection. 
+                            High-risk parts (Camera Module, Adhesive) have <strong>CRITICAL</strong> inspection value. 
+                            Estimated defect prevention value: <strong>$850K-$1.2M annually</strong> based on catch rate improvements.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FATP Flow Chart -->
+                <div class="section-card p-8 mb-6">
+                    <h2 class="text-3xl font-bold mb-4" style="color: #001F3F;">🔧 FATP (Final Assembly, Test & Pack) Flow Chart</h2>
+                    <div class="mb-4 bg-blue-50 p-4 rounded-lg">
+                        <div class="grid grid-cols-4 gap-4 text-sm">
+                            <div><strong>Total Stations:</strong> 19</div>
+                            <div><strong>Cycle Time:</strong> 665 seconds</div>
+                            <div><strong>Target Yield:</strong> 98.5%</div>
+                            <div><strong>Takt Time:</strong> 5.76 sec/unit</div>
+                        </div>
+                    </div>
+
+                    <!-- Flow Chart -->
+                    <div class="bg-white border-2 rounded-lg p-6" style="border-color: #0066FF;">
+                        <div class="space-y-4">
+                            <!-- Station 1 -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl apq-gradient flex-shrink-0">1</div>
+                                <div class="flex-1 bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <div class="font-bold text-lg">Frame Preparation & Cleaning</div>
+                                            <div class="text-sm text-gray-600">Stations: 2 | Cycle: 45s | Manual</div>
+                                        </div>
+                                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">LOW RISK</span>
+                                    </div>
+                                    <div class="text-sm text-gray-700 mb-2">Clean acetate frame, inspect for cosmetic defects, verify dimensions</div>
+                                    <div class="text-xs" style="color: #0066FF;"><strong>Quality Platform:</strong> Cosmetic inspection (scratches, discoloration, molding defects)</div>
+                                </div>
+                            </div>
+                            <div class="text-center text-2xl text-gray-400">↓</div>
+
+                            <!-- Station 2 -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl apq-gradient flex-shrink-0">2</div>
+                                <div class="flex-1 bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <div class="font-bold text-lg">Hinge Installation</div>
+                                            <div class="text-sm text-gray-600">Stations: 1 | Cycle: 60s | Semi-Auto</div>
+                                        </div>
+                                        <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">MEDIUM RISK</span>
+                                    </div>
+                                    <div class="text-sm text-gray-700 mb-2">Install titanium hinges, verify alignment, torque screws to spec</div>
+                                    <div class="text-xs text-green-700"><strong>Quality Platform:</strong> Hinge alignment, gap measurements, screw seating verification</div>
+                                </div>
+                            </div>
+                            <div class="text-center text-2xl text-gray-400">↓</div>
+
+                            <!-- Station 3 - CRITICAL -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0" style="background: #EF4444;">3</div>
+                                <div class="flex-1 p-4 rounded-lg border-4" style="background: #FEE2E2; border-color: #EF4444;">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <div class="font-bold text-lg text-red-900">⚠️ Camera Module Bonding (CRITICAL)</div>
+                                            <div class="text-sm text-red-800">Stations: 1 | Cycle: 65s | Automated</div>
+                                        </div>
+                                        <span class="px-3 py-1 bg-red-600 text-white rounded-full text-xs font-bold">CRITICAL RISK</span>
+                                    </div>
+                                    <div class="text-sm text-red-900 mb-2">Apply UV-cure adhesive, place camera module, UV cure, verify position ±0.2mm tolerance</div>
+                                    <div class="text-xs text-green-800 font-bold">✓ CRITICAL INSPECTION: Camera alignment (X/Y position), adhesive pattern, bond quality - 100% inspection required</div>
+                                    <div class="mt-2 bg-white p-2 rounded text-xs text-red-800"><strong>Historical Issue:</strong> 847 defects in Week 3 - Quality Platform detected in 2.3hrs, prevented $1.17M scrap</div>
+                                </div>
+                            </div>
+                            <div class="text-center text-2xl text-gray-400">↓</div>
+
+                            <!-- Station 4 -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl apq-gradient flex-shrink-0">4</div>
+                                <div class="flex-1 bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <div class="font-bold text-lg">PCB Assembly Integration</div>
+                                            <div class="text-sm text-gray-600">Stations: 4 | Cycle: 120s | Semi-Auto</div>
+                                        </div>
+                                        <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">MEDIUM RISK</span>
+                                    </div>
+                                    <div class="text-sm text-gray-700 mb-2">Place flex PCB, solder connections, install processor, verify electrical continuity</div>
+                                    <div class="text-xs text-green-700"><strong>Quality Platform:</strong> Solder joint inspection, component placement, trace integrity (complements AOI)</div>
+                                </div>
+                            </div>
+                            <div class="text-center text-2xl text-gray-400">↓</div>
+
+                            <!-- Station 5 -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl apq-gradient flex-shrink-0">5</div>
+                                <div class="flex-1 bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <div class="font-bold text-lg">Audio Component Installation</div>
+                                            <div class="text-sm text-gray-600">Stations: 2 | Cycle: 90s | Manual</div>
+                                        </div>
+                                        <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">MEDIUM RISK</span>
+                                    </div>
+                                    <div class="text-sm text-gray-700 mb-2">Install speakers, microphones, verify acoustic chamber sealing</div>
+                                    <div class="text-xs" style="color: #0066FF;"><strong>Quality Platform:</strong> Physical placement only (acoustic testing done separately at Station 7)</div>
+                                </div>
+                            </div>
+                            <div class="text-center text-2xl text-gray-400">↓</div>
+
+                            <!-- Station 6 -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl apq-gradient flex-shrink-0">6</div>
+                                <div class="flex-1 bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <div class="font-bold text-lg">Temple Assembly</div>
+                                            <div class="text-sm text-gray-600">Stations: 3 | Cycle: 75s | Semi-Auto</div>
+                                        </div>
+                                        <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">MEDIUM RISK</span>
+                                    </div>
+                                    <div class="text-sm text-gray-700 mb-2">Attach temples to hinges, route cables, install battery, secure covers</div>
+                                    <div class="text-xs text-green-700"><strong>Quality Platform:</strong> Cable routing verification, battery placement, connector seating, temple alignment</div>
+                                </div>
+                            </div>
+                            <div class="text-center text-2xl text-gray-400">↓</div>
+
+                            <!-- Station 7 -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl apq-gradient flex-shrink-0">7</div>
+                                <div class="flex-1 bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <div class="font-bold text-lg">Functional Test (Camera, Audio, BT)</div>
+                                            <div class="text-sm text-gray-600">Stations: 3 | Cycle: 180s | Automated</div>
+                                        </div>
+                                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">LOW RISK</span>
+                                    </div>
+                                    <div class="text-sm text-gray-700 mb-2">Power on, firmware flash, camera test, audio test, Bluetooth pairing, sensor calibration</div>
+                                    <div class="text-xs text-gray-600"><strong>Quality Platform:</strong> N/A (handled by electrical test equipment)</div>
+                                </div>
+                            </div>
+                            <div class="text-center text-2xl text-gray-400">↓</div>
+
+                            <!-- Station 8 -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl apq-gradient flex-shrink-0">8</div>
+                                <div class="flex-1 bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <div class="font-bold text-lg">Lens Installation</div>
+                                            <div class="text-sm text-gray-600">Stations: 2 | Cycle: 50s | Manual</div>
+                                        </div>
+                                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">LOW RISK</span>
+                                    </div>
+                                    <div class="text-sm text-gray-700 mb-2">Install polarized lenses, verify seating, check optical clarity</div>
+                                    <div class="text-xs text-green-700"><strong>Quality Platform:</strong> Lens scratches, optical defects, proper seating verification</div>
+                                </div>
+                            </div>
+                            <div class="text-center text-2xl text-gray-400">↓</div>
+
+                            <!-- Station 9 -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl apq-gradient flex-shrink-0">9</div>
+                                <div class="flex-1 bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <div class="font-bold text-lg">Final Cosmetic Inspection & QC</div>
+                                            <div class="text-sm text-gray-600">Stations: 2 | Cycle: 30s | Manual + AI</div>
+                                        </div>
+                                        <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">MEDIUM RISK</span>
+                                    </div>
+                                    <div class="text-sm text-gray-700 mb-2">360° visual inspection, verify all components, check for damage/defects</div>
+                                    <div class="text-xs text-green-700 font-bold">✓ AUTOMATED INSPECTION: Comprehensive final inspection - scratches, marks, alignment, completeness check</div>
+                                </div>
+                            </div>
+                            <div class="text-center text-2xl text-gray-400">↓</div>
+
+                            <!-- Station 10 -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl apq-gradient flex-shrink-0">10</div>
+                                <div class="flex-1 bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <div class="font-bold text-lg">Packaging & Serialization</div>
+                                            <div class="text-sm text-gray-600">Stations: 1 | Cycle: 35s | Automated</div>
+                                        </div>
+                                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">LOW RISK</span>
+                                    </div>
+                                    <div class="text-sm text-gray-700 mb-2">Scan serial number, place in case with accessories, seal box, apply labels</div>
+                                    <div class="text-xs text-gray-600"><strong>Quality Platform:</strong> N/A (packaging verification handled by vision systems)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 grid md:grid-cols-3 gap-4">
+                        <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
+                            <div class="font-bold text-red-800 mb-2">🚨 Critical Stations (1)</div>
+                            <div class="text-sm text-gray-700">Station 3: Camera Module Bonding - Requires 100% Quality Platform inspection</div>
+                        </div>
+                        <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                            <div class="font-bold text-yellow-800 mb-2">⚠️ Medium Risk (5)</div>
+                            <div class="text-sm text-gray-700">Stations 2, 4, 5, 6, 9 - Quality Platform provides significant value</div>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                            <div class="font-bold text-green-800 mb-2">✓ Total Quality Platform Coverage</div>
+                            <div class="text-sm text-gray-700"><strong>7 of 10 stations</strong> benefit from Quality Platform inspection</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card p-8">
+                    <h2 class="text-3xl font-bold mb-4" style="color: #001F3F;">🎯 NUDD Analysis</h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-white p-5 rounded-lg border-l-4 border-green-500">
+                            <div class="font-bold mb-2 text-green-700">🆕 NEW</div>
+                            <ul class="text-sm space-y-1 text-gray-700">
+                                <li>• First consumer 12MP smart glasses</li>
+                                <li>• Novel adhesive bonding for camera</li>
+                                <li>• Custom PCB flex design</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg border-l-4" style="border-color: #0066FF;">
+                            <div class="font-bold mb-2" style="color: #0066FF;">⭐ UNIQUE</div>
+                            <ul class="text-sm space-y-1 text-gray-700">
+                                <li>• Sub-0.2mm camera positioning tolerance</li>
+                                <li>• Acoustic chamber precision assembly</li>
+                                <li>• Bi-material thermal expansion</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg border-l-4 border-purple-500">
+                            <div class="font-bold mb-2 text-purple-700">🔄 DIFFERENT</div>
+                            <ul class="text-sm space-y-1 text-gray-700">
+                                <li>• UV-cure vs ultrasonic welding</li>
+                                <li>• New camera module supplier</li>
+                                <li>• Redesigned hinge mechanism</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg border-l-4 border-red-500">
+                            <div class="font-bold mb-2 text-red-700">🚨 DIFFICULT</div>
+                            <ul class="text-sm space-y-1 text-gray-700">
+                                <li>• Camera alignment (manual, 15% coverage)</li>
+                                <li>• Adhesive cure temp sensitivity</li>
+                                <li>• Stress-induced misalignment</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFunctions() {
+            return Object.keys(state.functions).map(func => {
+                const data = state.functions[func];
+                return `
+                    <div class="section-card p-6 mb-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-2" style="color: #001F3F;">${func}</h3>
+                                <div class="flex gap-2 items-center">
+                                    <select onchange="updateStatus('${func}', this.value)" class="status-badge status-${data.status} cursor-pointer">
+                                        <option value="not-contacted" ${data.status === 'not-contacted' ? 'selected' : ''}>Not Contacted</option>
+                                        <option value="scheduled" ${data.status === 'scheduled' ? 'selected' : ''}>Meeting Scheduled</option>
+                                        <option value="completed" ${data.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                        <option value="follow-up" ${data.status === 'follow-up' ? 'selected' : ''}>Follow-up Needed</option>
+                                    </select>
+                                    <span class="text-sm text-gray-600">Interest: ${data.interestScore}/10</span>
+                                    <input type="range" min="1" max="10" value="${data.interestScore}" 
+                                           onchange="updateField('${func}', 'interestScore', parseInt(this.value))"
+                                           class="w-32">
+                                </div>
+                            </div>
+                            <button onclick="addInteraction('${func}')" class="btn-apq-primary px-4 py-2 rounded-lg text-sm font-semibold">
+                                + Add Interaction
+                            </button>
+                        </div>
+
+                        <!-- Contact Info -->
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div>
+                                <label class="text-xs font-semibold text-gray-600 block mb-1">Contact Name</label>
+                                <input type="text" value="${data.contact.name}" 
+                                       onchange="updateField('${func}', 'contact.name', this.value)"
+                                       class="w-full p-2 border rounded editable-field text-sm"
+                                       placeholder="Full name">
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-600 block mb-1">Email</label>
+                                <input type="email" value="${data.contact.email}"
+                                       onchange="updateField('${func}', 'contact.email', this.value)"
+                                       class="w-full p-2 border rounded editable-field text-sm"
+                                       placeholder="email@meta.com">
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-600 block mb-1">Title</label>
+                                <input type="text" value="${data.contact.title}"
+                                       onchange="updateField('${func}', 'contact.title', this.value)"
+                                       class="w-full p-2 border rounded editable-field text-sm"
+                                       placeholder="Job title">
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- Left Column -->
+                            <div>
+                                <!-- Pain Points -->
+                                <div class="mb-4">
+                                    <h4 class="font-bold text-sm mb-2 text-red-700">🚨 Known Pain Points</h4>
+                                    <ul class="text-xs space-y-1 bg-red-50 p-3 rounded">
+                                        ${data.painPoints.map(p => `<li>• ${p}</li>`).join('')}
+                                    </ul>
+                                </div>
+
+                                <!-- Quality Platform Value -->
+                                <div class="mb-4">
+                                    <h4 class="font-bold text-sm mb-2 text-green-700">✅ Quality Platform Value</h4>
+                                    <ul class="text-xs space-y-1 bg-green-50 p-3 rounded">
+                                        ${data.platformValue.map(v => `<li>• ${v}</li>`).join('')}
+                                    </ul>
+                                </div>
+
+                                <!-- Discovery Questions -->
+                                <div class="mb-4">
+                                    <h4 class="font-bold text-sm mb-2" style="color: #0066FF;">❓ Discovery Questions</h4>
+                                    ${data.discoveryQuestions.map((q, i) => `
+                                        <div class="mb-3 bg-blue-50 p-3 rounded">
+                                            <div class="flex items-start gap-2 mb-2">
+                                                <input type="checkbox" ${data.questionsAsked.includes(q) ? 'checked' : ''}
+                                                       onchange="this.checked ? addQuestion('${func}', '${q.replace(/'/g, "\\'")}') : null"
+                                                       class="mt-1">
+                                                <label class="text-xs font-semibold">${q}</label>
+                                            </div>
+                                            ${data.questionsAsked.includes(q) ? `
+                                                <textarea onchange="addResponse('${func}', ${i}, this.value)"
+                                                          class="w-full p-2 text-xs border rounded editable-field"
+                                                          placeholder="Customer response..."
+                                                          rows="2">${data.responsesReceived[i] || ''}</textarea>
+                                            ` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div>
+                                <!-- Priorities -->
+                                <div class="mb-4">
+                                    <label class="font-bold text-sm block mb-2" style="color: #0066FF;">🎯 Their Priorities</label>
+                                    <textarea onchange="updateField('${func}', 'priorities', this.value)"
+                                              class="w-full p-3 border rounded editable-field text-sm"
+                                              rows="3" placeholder="What are their top priorities for this program?">${data.priorities}</textarea>
+                                </div>
+
+                                <!-- Concerns -->
+                                <div class="mb-4">
+                                    <label class="font-bold text-sm block mb-2 text-orange-700">⚠️ Concerns Raised</label>
+                                    <textarea onchange="updateField('${func}', 'concerns', this.value)"
+                                              class="w-full p-3 border rounded editable-field text-sm"
+                                              rows="3" placeholder="What concerns or objections did they raise?">${data.concerns}</textarea>
+                                </div>
+
+                                <!-- Decision Criteria -->
+                                <div class="mb-4">
+                                    <label class="font-bold text-sm block mb-2" style="color: #00B8D4;">✓ Decision Criteria</label>
+                                    <textarea onchange="updateField('${func}', 'decisionCriteria', this.value)"
+                                              class="w-full p-3 border rounded editable-field text-sm"
+                                              rows="2" placeholder="What criteria will they use to make a decision?">${data.decisionCriteria}</textarea>
+                                </div>
+
+                                <!-- Budget & Timeline -->
+                                <div class="grid grid-cols-2 gap-3 mb-4">
+                                    <div>
+                                        <label class="font-bold text-xs block mb-1">💰 Budget Authority</label>
+                                        <input type="text" value="${data.budget}"
+                                               onchange="updateField('${func}', 'budget', this.value)"
+                                               class="w-full p-2 border rounded editable-field text-sm"
+                                               placeholder="Budget range">
+                                    </div>
+                                    <div>
+                                        <label class="font-bold text-xs block mb-1">📅 Timeline</label>
+                                        <input type="text" value="${data.timeline}"
+                                               onchange="updateField('${func}', 'timeline', this.value)"
+                                               class="w-full p-2 border rounded editable-field text-sm"
+                                               placeholder="Decision timeline">
+                                    </div>
+                                </div>
+
+                                <!-- Next Steps -->
+                                <div class="mb-4">
+                                    <label class="font-bold text-sm block mb-2 text-green-700">➡️ Next Steps</label>
+                                    <textarea onchange="updateField('${func}', 'nextSteps', this.value)"
+                                              class="w-full p-3 border rounded editable-field text-sm"
+                                              rows="2" placeholder="What are the agreed next steps?">${data.nextSteps}</textarea>
+                                </div>
+
+                                <!-- Follow-up Date -->
+                                <div class="mb-4">
+                                    <label class="font-bold text-sm block mb-2">📆 Follow-up Date</label>
+                                    <input type="date" value="${data.followUpDate}"
+                                           onchange="updateField('${func}', 'followUpDate', this.value)"
+                                           class="w-full p-2 border rounded editable-field">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interactions Timeline -->
+                        ${data.interactions.length > 0 ? `
+                            <div class="mt-6 pt-6 border-t-2">
+                                <h4 class="font-bold text-sm mb-4" style="color: #001F3F;">📝 Interaction History</h4>
+                                <div class="interaction-timeline">
+                                    ${data.interactions.map((int, idx) => `
+                                        <div class="interaction-item">
+                                            <div class="bg-gray-50 p-4 rounded-lg">
+                                                <div class="flex justify-between items-start mb-2">
+                                                    <div class="font-semibold text-sm">${int.type} - ${new Date(int.date).toLocaleDateString()}</div>
+                                                    <input type="text" value="${int.participants}"
+                                                           onchange="updateInteraction('${func}', ${idx}, 'participants', this.value)"
+                                                           class="text-xs p-1 border rounded w-48"
+                                                           placeholder="Participants">
+                                                </div>
+                                                <textarea onchange="updateInteraction('${func}', ${idx}, 'summary', this.value)"
+                                                          class="w-full p-2 text-sm border rounded mb-2"
+                                                          rows="2" placeholder="Meeting summary...">${int.summary}</textarea>
+                                                <textarea onchange="updateInteraction('${func}', ${idx}, 'keyTakeaways', this.value)"
+                                                          class="w-full p-2 text-sm border rounded"
+                                                          rows="2" placeholder="Key takeaways...">${int.keyTakeaways}</textarea>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <!-- General Notes -->
+                        <div class="mt-6 pt-6 border-t-2">
+                            <label class="font-bold text-sm block mb-2" style="color: #001F3F;">📋 Additional Notes</label>
+                            <textarea onchange="updateField('${func}', 'notes', this.value)"
+                                      class="w-full p-4 border-2 rounded-lg editable-field"
+                                      rows="4" placeholder="Any additional notes, observations, or context...">${data.notes}</textarea>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderSummary() {
+            return `
+                <div class="section-card p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold" style="color: #001F3F;">📑 Engagement Summary Report</h2>
+                        <button onclick="exportSummaryReport()" class="btn-apq-primary px-6 py-3 rounded-lg font-semibold">
+                            📄 Export Report
+                        </button>
+                    </div>
+
+                    <div class="mb-6 bg-blue-50 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-3" style="color: #0066FF;">Program Overview</h3>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div><strong>Program:</strong> Meta Ray-Ban Smart Glasses</div>
+                            <div><strong>Phase:</strong> Pre-Proto Early Engagement</div>
+                            <div><strong>Date:</strong> ${new Date().toLocaleDateString()}</div>
+                        </div>
+                    </div>
+
+                    ${Object.keys(state.functions).map(func => {
+                        const data = state.functions[func];
+                        return `
+                            <div class="mb-6 bg-white p-6 rounded-lg border-2" style="border-color: #E5E7EB;">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h3 class="text-xl font-bold" style="color: #001F3F;">${func}</h3>
+                                    <span class="status-badge status-${data.status}">${data.status.replace('-', ' ').toUpperCase()}</span>
+                                </div>
+                                
+                                <div class="grid md:grid-cols-2 gap-4 text-sm mb-4">
+                                    <div><strong>Contact:</strong> ${data.contact.name || 'Not specified'}</div>
+                                    <div><strong>Interest Score:</strong> ${data.interestScore}/10</div>
+                                    <div><strong>Email:</strong> ${data.contact.email || 'Not specified'}</div>
+                                    <div><strong>Follow-up:</strong> ${data.followUpDate || 'Not scheduled'}</div>
+                                </div>
+
+                                ${data.summary ? `
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <pre class="text-xs whitespace-pre-wrap font-mono">${data.summary}</pre>
+                                    </div>
+                                ` : `
+                                    <div class="bg-yellow-50 p-4 rounded-lg text-sm text-yellow-800">
+                                        No summary generated yet. Click "Generate Summary" to create automated summaries.
+                                    </div>
+                                `}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function exportSummaryReport() {
+            const report = {
+                program: 'Meta Ray-Ban Smart Glasses',
+                phase: 'Pre-Proto Early Engagement',
+                reportDate: new Date().toISOString(),
+                summaries: Object.keys(state.functions).map(func => ({
+                    function: func,
+                    contact: state.functions[func].contact,
+                    status: state.functions[func].status,
+                    interestScore: state.functions[func].interestScore,
+                    summary: state.functions[func].summary
+                }))
+            };
+
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Quality Platform_Summary_Report_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+
+        // Initialize
+        loadState();
+        updateStats();
+        render();
+    </script>
+</body>
+</html>
