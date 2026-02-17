@@ -487,8 +487,9 @@
         /* ============ ABOUT ============ */
         .about-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: 1fr;
             gap: 4rem;
+            max-width: 800px;
         }
 
         .about-text p {
@@ -498,42 +499,6 @@
             margin-bottom: 1.5rem;
         }
 
-        .about-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            margin-top: 2rem;
-        }
-
-        .about-tag {
-            padding: 0.4rem 1rem;
-            border: 1px solid var(--color-border);
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            letter-spacing: 0.08em;
-            color: var(--color-text-light);
-        }
-
-        .about-metrics {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            padding-left: 2rem;
-            border-left: 1px solid var(--color-border);
-        }
-
-        .metric-value {
-            font-family: var(--font-display);
-            font-size: 2.5rem;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        .metric-label {
-            font-size: 0.85rem;
-            color: var(--color-text-muted);
-            margin-top: 0.25rem;
-        }
 
         /* ============ APQ PHILOSOPHY ============ */
         .apq-section {
@@ -1046,7 +1011,6 @@
             .hero-grid { grid-template-columns: 1fr; gap: 3rem; }
             .hero-image-wrapper { order: -1; max-width: 400px; margin: 0 auto; }
             .about-grid { grid-template-columns: 1fr; }
-            .about-metrics { flex-direction: row; flex-wrap: wrap; border-left: none; padding-left: 0; border-top: 1px solid var(--color-border); padding-top: 2rem; }
         }
 
         @media (max-width: 768px) {
@@ -1115,7 +1079,7 @@
             <div class="hero-tag">Manufacturing & Quality Engineering Leader</div>
             <h1 class="hero-title">Hello,<br>I'm <em>Mukund</em></h1>
             <p class="hero-name">— Mukund Vijay · APQ Pioneer</p>
-            <p class="hero-desc">Senior Operations Program Manager with 15+ years driving quality excellence in consumer electronics manufacturing. Pioneering the integration of AI tools into quality systems — $6M+ in cost savings while maintaining the highest quality standards across global markets.</p>
+            <p class="hero-desc">Pioneering AI-powered quality systems in consumer electronics — transforming how products are built, tested, and shipped to millions worldwide.</p>
             <div class="hero-stats">
                 <div>
                     <div class="hero-stat-number">$6M+</div>
@@ -1159,32 +1123,6 @@
             <p>As a Senior Operations Program Manager at Amazon, I bring 15+ years of expertise spanning product design, manufacturing operations, and quality engineering. I've built my career leading high-stakes product launches — from concept through mass production — for consumer electronics reaching millions of customers globally.</p>
             <p>My approach combines technical depth with strategic thinking — I align business needs with organizational goals to drive innovation and deliver high-quality products that exceed customer expectations. I pioneer the use of emerging AI technologies (ChatGPT, Claude, Amazon Q) to automate quality processes, reduce cycle times, and ensure project milestones are achieved with unprecedented efficiency.</p>
             <p>In my current role, I oversee product launches spanning four international markets while serving as an Amazon Bar Raiser — participating in 100+ hiring decisions to maintain the company's leadership standards. My quality engineering initiatives have delivered over $850K in cost avoidance in the past year alone, with career-total savings exceeding $6M while consistently enhancing customer safety and product reliability.</p>
-            <div class="about-tags">
-                <span class="about-tag">New Product Introduction</span>
-                <span class="about-tag">AI-Powered Quality Systems</span>
-                <span class="about-tag">Operations Management</span>
-                <span class="about-tag">Manufacturing Design</span>
-                <span class="about-tag">Cross-Functional Leadership</span>
-                <span class="about-tag">Data-Driven Decision Making</span>
-            </div>
-        </div>
-        <div class="about-metrics fade-up stagger-2">
-            <div>
-                <div class="metric-value">$6M+</div>
-                <div class="metric-label">Career Cost Savings</div>
-            </div>
-            <div>
-                <div class="metric-value">40%</div>
-                <div class="metric-label">Time Reduction via AI Automation</div>
-            </div>
-            <div>
-                <div class="metric-value">100+</div>
-                <div class="metric-label">Hiring Decisions as Bar Raiser</div>
-            </div>
-            <div>
-                <div class="metric-value">15+</div>
-                <div class="metric-label">Years of Experience</div>
-            </div>
         </div>
     </div>
 </section>
@@ -1197,31 +1135,23 @@
             <h2 class="section-title">APQ Philosophy</h2>
             <div class="section-line"></div>
         </div>
-        <p class="apq-intro fade-up stagger-1">APQ represents my pioneering approach to modern quality engineering — leveraging artificial intelligence to transform traditional quality processes. By integrating tools like ChatGPT, Claude, and Amazon Q into quality workflows, I've achieved what was previously impossible: real-time insights, predictive analytics, and automated decision support at scale.</p>
+        <p class="apq-intro fade-up stagger-1">APQ is my framework for modern quality engineering — where AI doesn't replace human expertise, it amplifies it. By embedding intelligent automation into every stage of the product lifecycle, quality engineers shift from reactive firefighting to proactive, data-driven decision making at scale.</p>
         <div class="apq-grid">
             <div class="apq-card fade-up stagger-1">
-                <h4>Automated Documentation</h4>
-                <p>AI-generated quality reports, phase gate reviews, and technical documentation — reducing manual effort by 60% while improving accuracy and consistency.</p>
+                <h4>Shift Left, Not React</h4>
+                <p>AI-driven insights surface quality risks during design — not after production. Earlier intervention means fewer escapes, lower costs, and faster time-to-market.</p>
             </div>
             <div class="apq-card fade-up stagger-2">
-                <h4>Predictive Analytics</h4>
-                <p>Machine learning models analyzing manufacturing data to predict quality issues before they occur, enabling proactive interventions.</p>
+                <h4>Data as a First-Class Citizen</h4>
+                <p>Every manufacturing signal — from torque data to customer reviews — feeds a unified quality intelligence layer that learns and adapts with each product generation.</p>
             </div>
             <div class="apq-card fade-up stagger-3">
-                <h4>Intelligent Process Optimization</h4>
-                <p>AI-powered analysis of assembly processes identifying bottlenecks and recommending improvements in real-time.</p>
-            </div>
-            <div class="apq-card fade-up stagger-1">
-                <h4>Natural Language Quality Systems</h4>
-                <p>Conversational interfaces for quality data queries, making insights accessible to all stakeholders without technical barriers.</p>
-            </div>
-            <div class="apq-card fade-up stagger-2">
-                <h4>Accelerated Decision Making</h4>
-                <p>40% reduction in phase gate review cycles through AI-assisted analysis and automated compliance checking.</p>
+                <h4>Accessible to All Stakeholders</h4>
+                <p>Natural language interfaces break down technical barriers, giving program managers, executives, and engineers equal access to quality insights without specialized training.</p>
             </div>
         </div>
         <div class="apq-result fade-up">
-            <p><strong>The Result:</strong> APQ doesn't replace human expertise — it amplifies it. By automating routine tasks and providing intelligent insights, quality engineers can focus on high-value strategic work, innovation, and continuous improvement. This is the future of quality engineering.</p>
+            <p><strong>The Result:</strong> Routine analysis that took days now takes minutes. Phase gate reviews that stalled for weeks now flow in hours. Engineers focus on innovation and continuous improvement — not paperwork. This is what quality engineering looks like when AI is built into the foundation.</p>
         </div>
     </div>
 </div>
@@ -1584,7 +1514,7 @@
 
     // Fade-in on scroll
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+         entries.forEach(entry => {
             if (entry.isIntersecting) entry.target.classList.add('visible');
         });
     }, { threshold: 0.1, rootMargin: '0px 0px -80px 0px' });
