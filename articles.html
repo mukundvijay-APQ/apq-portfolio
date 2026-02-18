@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles & Insights | Mukund Vijay — APQ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #FAFAF8;
+            --color-bg-alt: #F0EFEB;
+            --color-bg-dark: #0A0A0A;
+            --color-text: #0A0A0A;
+            --color-text-light: #5A5A58;
+            --color-text-muted: #8A8A88;
+            --color-white: #FAFAF8;
+            --color-accent: #0A0A0A;
+            --color-border: #D8D8D4;
+            --color-border-light: #E8E8E4;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'DM Sans', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ============ NAVBAR ============ */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 10000;
+            padding: 1rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(250, 250, 248, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--color-text);
+        }
+
+        .nav-logo-mark {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-logo-sub {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            border-left: 1px solid var(--color-border);
+            padding-left: 0.75rem;
+        }
+
+        .nav-divider {
+            width: 1px;
+            height: 18px;
+            background: var(--color-border);
+        }
+
+        .nav-section-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--color-text-light);
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover { color: var(--color-text); }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 1px;
+            background: var(--color-text);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-cta {
+            font-family: var(--font-body) !important;
+            font-size: 0.8rem !important;
+            font-weight: 500 !important;
+            letter-spacing: 0.05em !important;
+            padding: 0.6rem 1.5rem !important;
+            background: var(--color-bg-dark) !important;
+            color: var(--color-white) !important;
+            border-radius: 100px;
+            transition: transform 0.3s, box-shadow 0.3s !important;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .nav-cta::after { display: none !important; }
+
+        /* ============ PAGE HEADER ============ */
+        .page-header {
+            padding: 10rem 3rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-tag {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-tag::before {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--color-text-muted);
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+        }
+
+        .page-title em {
+            font-style: italic;
+        }
+
+        .page-desc {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--color-text-light);
+            max-width: 600px;
+        }
+
+        /* ============ ARTICLES LIST ============ */
+        .articles-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 3rem 6rem;
+        }
+
+        .article-divider {
+            height: 1px;
+            background: var(--color-border);
+            margin-bottom: 3rem;
+        }
+
+        /* Featured Article */
+        .featured-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            background: var(--color-bg-dark);
+            color: var(--color-white);
+            padding: 4rem;
+            margin-bottom: 4rem;
+            transition: transform 0.3s;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.15);
+        }
+
+        .featured-label {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .featured-label::before {
+            content: '';
+            width: 24px;
+            height: 1px;
+            background: rgba(255,255,255,0.3);
+        }
+
+        .featured-badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.55rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 0.25rem 0.7rem;
+            background: var(--color-white);
+            color: var(--color-bg-dark);
+            margin-bottom: 1.25rem;
+        }
+
+        .featured-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+            font-weight: 500;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.25rem;
+        }
+
+        .featured-excerpt {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 2rem;
+        }
+
+        .featured-meta {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.35);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .featured-meta-dot { opacity: 0.4; }
+
+        .featured-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .featured-topic {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.25rem 0.6rem;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.5);
+        }
+
+        .featured-right {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .featured-stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .featured-stat {
+            border-left: 1px solid rgba(255,255,255,0.12);
+            padding-left: 1rem;
+        }
+
+        .featured-stat-number {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .featured-stat-label {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            margin-top: 0.25rem;
+        }
+
+        .featured-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 2rem;
+            background: var(--color-white);
+            color: var(--color-bg-dark);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 100px;
+            transition: all 0.3s;
+            align-self: flex-start;
+        }
+
+        .featured-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 30px rgba(255,255,255,0.15);
+        }
+
+        /* Coming Soon Articles */
+        .upcoming-header {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .upcoming-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .upcoming-card {
+            border: 1px solid var(--color-border);
+            padding: 2rem;
+            opacity: 0.55;
+            position: relative;
+        }
+
+        .upcoming-badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.55rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 0.2rem 0.6rem;
+            border: 1px solid var(--color-border);
+            color: var(--color-text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .upcoming-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+        }
+
+        .upcoming-excerpt {
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: var(--color-text-light);
+        }
+
+        /* ============ FOOTER ============ */
+        .footer {
+            border-top: 1px solid var(--color-border);
+            padding: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+
+        .footer-back {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--color-text-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.3s;
+        }
+
+        .footer-back:hover { color: var(--color-text); }
+
+        /* ============ ANIMATIONS ============ */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+
+        @media (max-width: 900px) {
+            .featured-card {
+                grid-template-columns: 1fr;
+                padding: 2.5rem;
+                gap: 2.5rem;
+            }
+            .page-header { padding: 8rem 1.5rem 3rem; }
+            .articles-container { padding: 0 1.5rem 4rem; }
+            .navbar { padding: 0.8rem 1.5rem; }
+            .nav-links { display: none; }
+            .nav-section-label { display: none; }
+        }
+
+        @media (max-width: 640px) {
+            .upcoming-grid { grid-template-columns: 1fr; }
+            .featured-stat-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============ NAVBAR ============ -->
+<nav class="navbar">
+    <div class="nav-left">
+        <a href="index.html" class="nav-logo">
+            <span class="nav-logo-mark">MV</span>
+            <span class="nav-logo-sub">AI Powered Quality</span>
+        </a>
+        <div class="nav-divider"></div>
+        <span class="nav-section-label">Articles</span>
+    </div>
+    <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#apq-tools">Tools</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Get In Touch</a></li>
+    </ul>
+</nav>
+
+<!-- ============ PAGE HEADER ============ -->
+<header class="page-header">
+    <div class="page-tag fade-up">Perspectives & Analysis</div>
+    <h1 class="page-title fade-up stagger-1">Articles & <em>Insights</em></h1>
+    <p class="page-desc fade-up stagger-2">Perspectives on the future of manufacturing, AI-powered quality systems, and the convergence of autonomous agents with hardware product development.</p>
+</header>
+
+<!-- ============ ARTICLES ============ -->
+<main class="articles-container">
+    <div class="article-divider"></div>
+
+    <!-- Featured Article -->
+    <article class="featured-card fade-up">
+        <div class="featured-left">
+            <div class="featured-label">Latest Article</div>
+            <span class="featured-badge">New · February 2026</span>
+            <h2 class="featured-title">One Human, Unlimited Agents: The Future of Consumer Electronics Manufacturing</h2>
+            <p class="featured-excerpt">How autonomous AI agent systems can orchestrate entire product lifecycles — from design to field feedback — with a single human governor. Covers the three-layer architecture, human data ingestion challenges, escalation frameworks, and autonomous field-to-design feedback loops.</p>
+            <div class="featured-meta">
+                <span>8 min read</span>
+                <span class="featured-meta-dot">·</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                <span>23 comments</span>
+            </div>
+            <div class="featured-topics">
+                <span class="featured-topic">Agentic AI</span>
+                <span class="featured-topic">Manufacturing</span>
+                <span class="featured-topic">NPI</span>
+                <span class="featured-topic">Quality Systems</span>
+                <span class="featured-topic">Autonomous Ops</span>
+            </div>
+        </div>
+        <div class="featured-right">
+            <div class="featured-stat-grid">
+                <div class="featured-stat">
+                    <div class="featured-stat-number">3</div>
+                    <div class="featured-stat-label">Architecture Layers</div>
+                </div>
+                <div class="featured-stat">
+                    <div class="featured-stat-number">4</div>
+                    <div class="featured-stat-label">Escalation Tiers</div>
+                </div>
+                <div class="featured-stat">
+                    <div class="featured-stat-number">6</div>
+                    <div class="featured-stat-label">Agent Clusters</div>
+                </div>
+                <div class="featured-stat">
+                    <div class="featured-stat-number">23</div>
+                    <div class="featured-stat-label">Community Comments</div>
+                </div>
+            </div>
+            <a href="article.html" class="featured-cta">Read Full Article →</a>
+        </div>
+    </article>
+
+    <!-- Upcoming Articles -->
+    <div class="upcoming-header fade-up">Coming Soon</div>
+    <div class="upcoming-grid">
+        <div class="upcoming-card fade-up stagger-1">
+            <span class="upcoming-badge">Coming Soon</span>
+            <h3 class="upcoming-title">Building a VOC Pipeline: From Amazon Reviews to Cpk Metrics</h3>
+            <p class="upcoming-excerpt">How to build an automated Voice of Customer pipeline that transforms unstructured product reviews into statistical quality metrics — and feeds them directly into your NPI process.</p>
+        </div>
+        <div class="upcoming-card fade-up stagger-2">
+            <span class="upcoming-badge">Coming Soon</span>
+            <h3 class="upcoming-title">The Stakeholder Engagement Gap in Consumer Electronics NPI</h3>
+            <p class="upcoming-excerpt">Why 73% of production crises trace back to missed stakeholder engagement during early NPI phases — and a systematic framework to prevent them.</p>
+        </div>
+        <div class="upcoming-card fade-up stagger-3">
+            <span class="upcoming-badge">Coming Soon</span>
+            <h3 class="upcoming-title">AI-Powered Failure Analysis: From 5-Why to Fault Trees at Machine Speed</h3>
+            <p class="upcoming-excerpt">A deep dive into how LLMs can automate root cause analysis, generate fault trees, and close the loop from field failure to design change in hours instead of months.</p>
+        </div>
+    </div>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+    <a href="index.html" class="footer-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Portfolio
+    </a>
+    <span class="footer-text">© 2026 Mukund Vijay · Berkeley, California · APQ — AI Powered Quality™</span>
+</footer>
+
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

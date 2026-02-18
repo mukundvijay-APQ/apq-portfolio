@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Human, Unlimited Agents: The Future of Consumer Electronics Manufacturing</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600;8..60,700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0A0A0A;
+    --text: #E8E6E1;
+    --text-muted: #C4C0B8;
+    --text-dim: #9A9890;
+    --text-faint: #6B6960;
+    --text-ghost: #4A4840;
+    --accent: #C5F24B;
+    --accent-dark: #7B9A1E;
+    --surface: rgba(255,255,255,0.03);
+    --border: rgba(255,255,255,0.08);
+    --border-accent: rgba(197,242,75,0.3);
+    --serif: 'Source Serif 4', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 820px; margin: 0 auto; padding: 0 24px; }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    padding: 100px 0 80px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: heroIn 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+  }
+  @keyframes heroIn { to { opacity: 1; transform: translateY(0); } }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -200px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(197,242,75,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 30px; height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: #FFF;
+    margin-bottom: 24px;
+  }
+
+  .subtitle {
+    font-size: clamp(16px, 2vw, 20px);
+    line-height: 1.5;
+    color: var(--text-dim);
+    font-weight: 300;
+    max-width: 650px;
+    margin-bottom: 40px;
+  }
+
+  .author-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text-faint);
+  }
+  .avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: var(--bg); font-size: 16px;
+    flex-shrink: 0;
+  }
+  .author-name { color: var(--text); font-weight: 500; }
+  .author-meta { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+  .author-meta svg { flex-shrink: 0; }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #2A2A25, transparent);
+  }
+
+  /* Table of Contents */
+  .toc { padding: 40px 0; font-family: var(--sans); }
+  .toc-label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-faint); margin-bottom: 16px;
+  }
+  .toc-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toc-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: var(--sans);
+  }
+  .toc-btn:hover, .toc-btn.active {
+    background: rgba(197,242,75,0.12);
+    border-color: var(--border-accent);
+    color: var(--accent);
+  }
+
+  /* Article Sections */
+  .article-body { padding: 20px 0 60px; }
+
+  .section { margin-bottom: 64px; scroll-margin-top: 40px; }
+
+  .section-head {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 20px;
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    opacity: 0.6;
+    min-width: 24px;
+  }
+  .section h2 {
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 600;
+    color: #FFF;
+    letter-spacing: -0.01em;
+  }
+  .section-content {
+    font-size: clamp(15px, 1.8vw, 17px);
+    color: var(--text-muted);
+    border-left: 2px solid rgba(197,242,75,0.15);
+    padding-left: 28px;
+    margin-left: 11px;
+  }
+  .section-content p { margin-bottom: 1.2em; line-height: 1.85; }
+  .section-content strong { color: var(--accent); font-weight: 600; }
+
+  /* Comments */
+  .comments-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 40px;
+  }
+  .comments-header h3 {
+    font-size: 22px; font-weight: 600;
+    font-family: var(--sans); color: #FFF;
+  }
+
+  .comment-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 40px;
+  }
+  .comment-form input,
+  .comment-form textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .comment-form input { font-family: var(--sans); margin-bottom: 12px; }
+  .comment-form textarea {
+    font-family: var(--serif);
+    line-height: 1.7;
+    margin-bottom: 16px;
+    resize: vertical;
+    min-height: 100px;
+  }
+  .comment-form input:focus,
+  .comment-form textarea:focus { border-color: rgba(197,242,75,0.4); }
+
+  .comment-form .actions { display: flex; justify-content: flex-end; }
+
+  .submit-btn {
+    background: rgba(255,255,255,0.08);
+    color: var(--text-faint);
+    border: none; border-radius: 8px;
+    padding: 12px 28px;
+    font-size: 14px; font-weight: 600;
+    font-family: var(--sans);
+    cursor: default;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.3s ease;
+  }
+  .submit-btn.ready {
+    background: linear-gradient(135deg, #C5F24B, #A8D43A);
+    color: var(--bg);
+    cursor: pointer;
+  }
+  .submit-btn.ready:hover { transform: scale(1.03); }
+
+  .success-toast {
+    background: rgba(197,242,75,0.1);
+    border: 1px solid rgba(197,242,75,0.25);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: var(--accent);
+    font-family: var(--sans);
+    display: none;
+  }
+  .success-toast.show { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .comment {
+    padding: 24px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .comment:last-child { border-bottom: none; }
+
+  .comment-author {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 12px;
+  }
+  .comment-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    font-family: var(--sans); color: #FFF;
+    flex-shrink: 0;
+  }
+  .comment-name { font-size: 14px; font-weight: 600; font-family: var(--sans); color: var(--text); }
+  .comment-time { font-size: 12px; color: var(--text-faint); font-family: var(--sans); }
+
+  .comment-text {
+    font-size: 15px; line-height: 1.75;
+    color: #B0ACA4;
+    margin: 0 0 12px 44px;
+  }
+
+  .like-btn {
+    background: none; border: none;
+    color: var(--text-faint);
+    font-size: 13px; font-family: var(--sans);
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    padding: 4px 0; margin-left: 44px;
+    transition: color 0.2s;
+  }
+  .like-btn:hover { color: var(--accent); }
+  .like-btn.liked { color: var(--accent); }
+
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 40px 24px;
+    text-align: center;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text-ghost);
+  }
+
+  /* Sticky Nav */
+  .article-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 0.9rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-family: var(--sans);
+  }
+
+  .article-nav-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .article-nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    transition: color 0.3s;
+    white-space: nowrap;
+  }
+  .article-nav-back:hover { color: var(--accent); }
+
+  .article-nav-divider {
+    width: 1px;
+    height: 16px;
+    background: rgba(255,255,255,0.12);
+  }
+
+  .article-nav-logo {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  .article-nav-logo-sub {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-left: 0.6rem;
+    border-left: 1px solid rgba(255,255,255,0.12);
+    padding-left: 0.6rem;
+  }
+
+  .article-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .article-nav-link {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .article-nav-link:hover { color: var(--text); }
+
+  @media (max-width: 640px) {
+    .article-nav { padding: 0.8rem 1rem; }
+    .article-nav-logo-sub { display: none; }
+    .article-nav-right { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Sticky Navigation -->
+<nav class="article-nav">
+  <div class="article-nav-left">
+    <a href="index.html" class="article-nav-logo">MV<span class="article-nav-logo-sub">AI Powered Quality</span></a>
+    <div class="article-nav-divider"></div>
+    <a href="articles.html" class="article-nav-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      All Articles
+    </a>
+  </div>
+  <div class="article-nav-right">
+    <a href="index.html#apq-tools" class="article-nav-link">Tools</a>
+    <a href="index.html#contact" class="article-nav-link">Contact</a>
+  </div>
+</nav>
+
+<div class="container">
+  <!-- Hero -->
+  <header class="hero" style="padding-top:140px;">
+    <div class="hero-tag">Manufacturing × AI</div>
+    <h1>One Human, Unlimited Agents: The Future of Consumer Electronics Manufacturing</h1>
+    <p class="subtitle">How autonomous AI agent systems can orchestrate entire product lifecycles — from design to field feedback — with a single human governor.</p>
+    <div class="author-row">
+      <div class="avatar">M</div>
+      <div>
+        <div class="author-name">Mukund</div>
+        <div class="author-meta">
+          February 2026
+          <span style="opacity:0.4">·</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          8 min read
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- Table of Contents -->
+  <nav class="toc">
+    <div class="toc-label">In this article</div>
+    <div class="toc-buttons" id="tocButtons"></div>
+  </nav>
+
+  <!-- Article Body -->
+  <main class="article-body" id="articleBody"></main>
+
+  <div class="divider"></div>
+
+  <!-- Comments Section -->
+  <section style="padding:60px 0 100px">
+    <div class="comments-header">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <h3>Discussion (<span id="commentCount">3</span>)</h3>
+    </div>
+
+    <div class="comment-form">
+      <div class="success-toast" id="successToast">Comment posted successfully!</div>
+      <input type="text" id="nameInput" placeholder="Your name">
+      <textarea id="commentInput" placeholder="Share your thoughts on this architecture..." rows="4"></textarea>
+      <div class="actions">
+        <button class="submit-btn" id="submitBtn" onclick="submitComment()">
+          Post Comment
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 8h14M9 2l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="commentsList"></div>
+  </section>
+</div>
+
+<footer style="border-top:1px solid rgba(255,255,255,0.06);padding:40px 24px;">
+  <div style="max-width:820px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+    <a href="articles.html" style="font-family:'DM Sans',sans-serif;font-size:14px;color:#9A9890;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.3s;" onmouseover="this.style.color='#C5F24B'" onmouseout="this.style.color='#9A9890'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to All Articles
+    </a>
+    <span style="font-family:'DM Sans',sans-serif;font-size:13px;color:#4A4840;">© 2026 Mukund Vijay · APQ — AI Powered Quality™</span>
+    <a href="index.html" style="font-family:'DM Sans',sans-serif;font-size:14px;color:#9A9890;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.3s;" onmouseover="this.style.color='#C5F24B'" onmouseout="this.style.color='#9A9890'">
+      Portfolio
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</footer>
+
+<script>
+const sections = [
+  {
+    id: "premise",
+    heading: "The Premise",
+    content: `What if an entire consumer electronics manufacturing operation — from sourcing components to analyzing field failures — could be run by AI agents, with just one human providing strategic oversight?
+
+This isn't science fiction. The convergence of large language models, computer vision, and autonomous agent frameworks makes this architecture not only feasible but inevitable. The question isn't whether it will happen, but who will build it first.
+
+The core idea: one human shifts from operator to governor. External humans — suppliers, contract manufacturers, QA teams, beta testers, end users — still exist, but they become data sources, not decision-makers within the system. Agents ingest, interpret, and act on their inputs autonomously.`
+  },
+  {
+    id: "architecture",
+    heading: "The Three-Layer Architecture",
+    content: `The system is organized into three distinct layers, each with a clear responsibility boundary.
+
+**Layer 1: The Orchestrator Agent** — This meta-agent maintains the overall product state machine, tracking the product through concept, DFM, tooling, pilot builds, mass production, and field deployment. It routes decisions to specialized agents and escalates to the human only when predefined thresholds are breached.
+
+**Layer 2: Specialized Agent Clusters** — These are grouped by function: Design & DFM agents handle BOM optimization, manufacturability scoring, and tolerance analysis. Supply chain agents manage procurement, supplier communication, and incoming quality. Manufacturing execution agents monitor SPC, line throughput, and equipment health. Quality agents automate failure analysis, CAPA tracking, and compliance. Field intelligence agents process VOC data, beta feedback, and warranty claims.
+
+**Layer 3: The Human Interface** — A dashboard showing agent activity, decisions made, and an escalation queue. The human approves at key NPI gates (EVT → DVT → PVT → MP) and can override any agent decision at any time.`
+  },
+  {
+    id: "data-ingestion",
+    heading: "The Hard Problem: Human Data Ingestion",
+    content: `The system lives or dies on its ability to ingest messy, unstructured human inputs and normalize them into actionable data.
+
+Supplier emails with quotes in different formats. Photos of defects from the factory floor. WhatsApp messages from Shenzhen at 2 AM. Beta tester feedback ranging from detailed bug reports to "it just feels weird." Amazon reviews in twelve languages.
+
+Every input follows a universal pipeline: Receive → Parse → Validate → Classify → Route → Act. The key innovation is a confidence gate — every parsed input receives a confidence score. High confidence data is auto-processed. Low confidence data queues for the human's review, with the raw input and the agent's best interpretation displayed side by side.
+
+The design principle is simple: structured where you can, smart parsing where you can't. Controlled sources like suppliers and contract manufacturers get enforced templates. Uncontrolled sources like end users and social media get LLM-powered ingestion agents that extract signal from noise.`
+  },
+  {
+    id: "escalation",
+    heading: "The Escalation Framework",
+    content: `Not every decision needs human approval, and not every anomaly needs human attention. The escalation taxonomy has four tiers:
+
+**Auto-execute:** Cpk drops but stays above threshold — the process control agent adjusts parameters autonomously. No human notification needed.
+
+**Inform:** A supplier misses delivery by two days — the procurement agent activates an alternate source and notifies the human after the fact.
+
+**Approve:** BOM cost exceeds target by more than 5% — agents propose options with trade-off analysis, and the human makes the final call.
+
+**Stop:** A safety or regulatory issue is detected — everything halts immediately, and the human is pulled in for resolution.
+
+This framework prevents two failure modes: the human being overwhelmed by trivial decisions, and agents making consequential calls without oversight.`
+  },
+  {
+    id: "feedback-loops",
+    heading: "Closing the Loop: Field to Design",
+    content: `The most powerful capability of this architecture is the autonomous feedback loop from field data back to design.
+
+In traditional manufacturing, a field failure takes weeks or months to trace back to a design decision. In the agent system, the field intelligence agent detects a pattern in warranty claims, the failure analysis agent performs automated 5-why and fault tree analysis, identifies the root cause as a tolerance issue in a specific subassembly, and the DFM agent proposes a design change — all before the human's morning coffee.
+
+The human reviews a complete package: the field data, the analysis, the proposed fix, the cost impact, and the risk assessment. One approval, and the change propagates through the entire system — updated specs to the supplier agent, revised test criteria to the QA agent, updated monitoring parameters to the SPC agent.`
+  },
+  {
+    id: "why-now",
+    heading: "Why Now?",
+    content: `Three capabilities have converged to make this possible:
+
+First, LLMs can now parse unstructured data — supplier PDFs, customer reviews, engineering emails — with sufficient accuracy to drive automated decisions. Second, agent frameworks allow multiple AI systems to coordinate, share state, and maintain persistent goals over time. Third, manufacturing data infrastructure (MES, ERP, PLM systems) has matured enough to provide the structured data backbone these agents need.
+
+The companies that build this first won't just reduce headcount. They'll achieve something more fundamental: manufacturing systems that learn and adapt continuously, closing feedback loops in hours instead of months, and making quality decisions based on the full picture rather than the subset one human can hold in their head.`
+  },
+  {
+    id: "call-to-action",
+    heading: "What's Next",
+    content: `This architecture isn't theoretical. Every component — LLM-based parsing, autonomous agent orchestration, SPC monitoring, VOC analysis, failure analysis automation — exists today. The challenge is integration: stitching these capabilities into a coherent system with the right escalation boundaries and human oversight model.
+
+If you're building consumer electronics and thinking about how AI transforms your manufacturing operations, I'd love to discuss how this architecture applies to your specific product and supply chain. The future of manufacturing isn't lights-out factories — it's intelligent systems with human governors.`
+  }
+];
+
+let comments = [
+  { id: 1, name: "Sarah Chen", text: "The escalation framework is key. I've seen too many 'autonomous' systems that either escalate everything or nothing. The four-tier model with confidence scoring is exactly right.", time: "3 days ago", likes: 41, liked: false },
+  { id: 2, name: "Raj Patel", text: "How would you handle the cold start problem? Agents need historical data to calibrate confidence thresholds, but a new product has no history. Do you start fully manual and gradually hand off? — One approach: seed agents with data from analogous products, then use a graduated autonomy model where the human approval rate starts at 80% and decreases as confidence calibration improves.", time: "3 days ago", likes: 67, liked: false },
+  { id: 3, name: "Lisa Yamamoto", text: "The field-to-design feedback loop resonated with me. We're doing this manually today and it takes 6-8 weeks. Having agents close that loop in hours would be transformative for our iteration speed.", time: "3 days ago", likes: 33, liked: false },
+  { id: 4, name: "Marcus Webb", text: "What happens when two agents disagree? For example, the DFM agent says a design is manufacturable but the quality agent flags high defect risk on the same geometry. Who wins? — You'd need a conflict resolution protocol: the orchestrator agent should detect contradictions, weight each agent's confidence score, and escalate to the human with both analyses side by side when confidence is within a defined margin.", time: "2 days ago", likes: 52, liked: false },
+  { id: 5, name: "Priya Sundaram", text: "Biggest failure risk I see: supplier data poisoning. A supplier could learn the system's parsing logic and game their inputs — submitting borderline specs that the agent accepts but a human would catch. Suggestion: implement adversarial validation where the IQC agent periodically cross-checks supplier claims against independent measurement data, and flag statistical anomalies in supplier self-reported quality metrics.", time: "2 days ago", likes: 48, liked: false },
+  { id: 6, name: "Tom Kessler", text: "What about regulatory compliance? FDA, FCC, UL — these require human-signed documentation and accountability. An agent can't sign a Declaration of Conformity. How do you handle the legal accountability gap? — The system should auto-generate compliance packages but route them to the human for legal sign-off. The agents prepare, the human certifies. This is one gate that should never be fully autonomous.", time: "2 days ago", likes: 39, liked: false },
+  { id: 7, name: "Anya Petrova", text: "I worry about cascading failures. If the SPC agent misreads a trend and adjusts a process parameter incorrectly, that bad output feeds into the quality agent which might not catch it because it trusts the SPC agent's adjustments. You need circuit breakers — automatic rollback triggers if KPIs deviate beyond X% within Y minutes of any autonomous parameter change.", time: "2 days ago", likes: 71, liked: false },
+  { id: 8, name: "David Okonkwo", text: "How does this handle a factory going dark — network outage, power failure, or the CM just stops responding? The agents would be operating on stale data without knowing it. Suggestion: implement heartbeat monitoring for every data source. If any critical feed goes silent beyond a threshold, the orchestrator should freeze decisions dependent on that source and escalate immediately.", time: "2 days ago", likes: 44, liked: false },
+  { id: 9, name: "Jennifer Liu", text: "The single human is also a single point of failure. What if they're sick, on vacation, or simply overwhelmed during a production crisis where 15 escalations hit simultaneously? You need a priority queue with SLA timers — if the human doesn't respond within the window, the system should have pre-authorized fallback actions for each escalation tier, or a designated backup human.", time: "2 days ago", likes: 86, liked: false },
+  { id: 10, name: "Carlos Mendez", text: "Cultural and language barriers in the supply chain are a real challenge. Your Shenzhen supplier's email about a 'minor deviation' might actually mean a significant spec miss — the LLM needs to understand cultural communication norms, not just translate words. Consider fine-tuning the supplier ingestion agent on historical supplier communications mapped to actual outcomes.", time: "1 day ago", likes: 37, liked: false },
+  { id: 11, name: "Emma Thornton", text: "What about IP security? These agents will have access to your entire BOM, process parameters, supplier pricing, and yield data. If the LLM provider's systems are breached or data leaks through API calls, you've exposed your entire manufacturing operation. Suggestion: run sensitive agents on-premise with air-gapped models, and use data classification tiers that restrict which information flows to cloud-based agents.", time: "1 day ago", likes: 55, liked: false },
+  { id: 12, name: "Kenji Watanabe", text: "The VOC agent will drown in noise. Most Amazon reviews are about shipping, price, or seller issues — not product quality. And beta tester feedback is heavily biased toward power users. How do you prevent the field intelligence agents from optimizing for vocal minorities? — Weight feedback by statistical significance, require minimum sample sizes before triggering actions, and segment feedback by user profile to distinguish signal from noise.", time: "1 day ago", likes: 42, liked: false },
+  { id: 13, name: "Rachel Foster", text: "What about the cost of being wrong? If the failure analysis agent incorrectly identifies a root cause and triggers a design change, you could spend $200K on new tooling to fix a problem that didn't exist. Every autonomous action should have a cost-impact estimate attached, and any action above a dollar threshold should require human approval regardless of the agent's confidence.", time: "1 day ago", likes: 63, liked: false },
+  { id: 14, name: "Vikram Singh", text: "Model drift is a silent killer here. The LLMs powering these agents will be updated by their providers, and a model update could subtly change how the ingestion agent parses supplier data or how the failure analysis agent weights root causes. You need regression testing on every model update — a benchmark suite of known inputs with expected outputs that runs before any model change goes live.", time: "1 day ago", likes: 58, liked: false },
+  { id: 15, name: "Sophie Brennan", text: "How do you handle the 'unknown unknowns'? Your failure taxonomy is built from known failure modes, but novel products have novel failures. If the quality agent encounters a failure mode it's never seen, does it just classify it as 'other' and move on? — Build in an anomaly detection layer that flags anything outside the known taxonomy with high urgency. Novel failures should always escalate to the human with raw data attached.", time: "23 hours ago", likes: 45, liked: false },
+  { id: 16, name: "Andre Dupont", text: "Supplier relationship management is deeply human. Negotiating price breaks, managing tensions after a quality escape, building trust for co-development — these are relationship-driven activities. If a supplier feels like they're talking to a bot, you'll lose strategic partnerships. The supplier-facing agent should augment human relationships, not replace them. Keep a human in the loop for strategic supplier interactions.", time: "20 hours ago", likes: 36, liked: false },
+  { id: 17, name: "Michelle Tang", text: "What's the disaster recovery plan? If the orchestrator agent crashes or corrupts its state, you lose the central brain. Every agent starts operating in isolation with no coordination. You need a distributed state store with versioned snapshots, and each agent should be able to enter a safe-mode where it pauses non-critical actions and waits for orchestrator recovery.", time: "18 hours ago", likes: 49, liked: false },
+  { id: 18, name: "Oluwaseun Adeyemi", text: "Testing and validation of the agents themselves is a massive challenge. How do you QA the QA system? You'd need a simulation environment with synthetic manufacturing data that covers edge cases — yield crashes, supplier fraud, conflicting test results, simultaneous multi-product launches. Run chaos engineering scenarios monthly to stress-test the agent system before it faces real production.", time: "15 hours ago", likes: 54, liked: false },
+  { id: 19, name: "Laura Kim", text: "Traceability and audit trails could be a nightmare. When a regulator asks 'why was this lot released?' and the answer is 'an agent decided based on parsed data from three sources with confidence scores,' that might not satisfy an ISO auditor. Every agent decision should generate a structured, human-readable audit log with inputs, reasoning chain, confidence score, and outcome — basically an explainable AI requirement baked into the architecture.", time: "12 hours ago", likes: 61, liked: false },
+  { id: 20, name: "James Hartley", text: "I'd be concerned about the human governor becoming a rubber stamp over time. If 95% of escalations are approved without changes, the human stops critically evaluating and just clicks 'approve.' This is the automation complacency problem. Suggestion: periodically inject synthetic escalations with known-wrong recommendations to keep the human engaged and measure their catch rate.", time: "10 hours ago", likes: 78, liked: false },
+  { id: 21, name: "Nina Kovac", text: "How do you handle multi-product complexity? One human governing one product line is plausible. But if you scale to 5 products across 3 CMs with different supply chains, the orchestrator needs sub-orchestrators and the human needs context-switching support. The architecture should define scalability limits and a clear model for when you need a second human governor.", time: "8 hours ago", likes: 40, liked: false },
+  { id: 22, name: "Ryan Gallagher", text: "Latency could kill this in practice. If the failure analysis agent takes 20 minutes to run a fault tree while the production line is spitting out defective units, you've already built inventory you'll have to scrap. Critical quality agents need hard SLA requirements — if analysis exceeds the time limit, default to 'stop the line' rather than 'wait for analysis.' Speed of response matters as much as accuracy.", time: "5 hours ago", likes: 47, liked: false },
+  { id: 23, name: "Diana Reyes", text: "Has anyone considered the change management challenge? Getting a traditional manufacturing organization to trust AI agents with production decisions is a cultural transformation, not just a technical deployment. Start with a shadow mode — agents make recommendations, humans still execute, and you track concordance rates. Only transition to autonomous mode once trust is earned through demonstrated accuracy over months.", time: "2 hours ago", likes: 53, liked: false }
+];
+
+function renderMarkdown(text) {
+  return text.split('\n\n').map(para => {
+    const html = para.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    return `<p>${html}</p>`;
+  }).join('');
+}
+
+function getAvatarColor(name) {
+  const hue = (name.charCodeAt(0) * 37) % 360;
+  return `hsl(${hue}, 45%, 35%)`;
+}
+
+// Build TOC
+const tocEl = document.getElementById('tocButtons');
+sections.forEach(s => {
+  const btn = document.createElement('button');
+  btn.className = 'toc-btn';
+  btn.textContent = s.heading;
+  btn.dataset.section = s.id;
+  btn.onclick = () => {
+    document.getElementById(s.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  tocEl.appendChild(btn);
+});
+
+// Build Article
+const bodyEl = document.getElementById('articleBody');
+sections.forEach((s, i) => {
+  const section = document.createElement('section');
+  section.className = 'section';
+  section.id = s.id;
+  section.innerHTML = `
+    <div class="section-head">
+      <span class="section-num">0${i + 1}</span>
+      <h2>${s.heading}</h2>
+    </div>
+    <div class="section-content">${renderMarkdown(s.content)}</div>
+  `;
+  bodyEl.appendChild(section);
+});
+
+// Intersection Observer for TOC highlighting
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      document.querySelectorAll('.toc-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.section === entry.target.id);
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -60% 0px' });
+
+document.querySelectorAll('.section').forEach(s => observer.observe(s));
+
+// Comments
+function renderComments() {
+  const el = document.getElementById('commentsList');
+  document.getElementById('commentCount').textContent = comments.length;
+  el.innerHTML = comments.map(c => `
+    <div class="comment">
+      <div class="comment-author">
+        <div class="comment-avatar" style="background:${getAvatarColor(c.name)}">${c.name.charAt(0).toUpperCase()}</div>
+        <div>
+          <div class="comment-name">${c.name}</div>
+          <div class="comment-time">${c.time}</div>
+        </div>
+      </div>
+      <p class="comment-text">${c.text}</p>
+      <button class="like-btn ${c.liked ? 'liked' : ''}" onclick="toggleLike(${c.id})">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="${c.liked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+        </svg>
+        ${c.likes > 0 ? c.likes : ''}
+      </button>
+    </div>
+  `).join('');
+}
+
+function toggleLike(id) {
+  comments = comments.map(c => {
+    if (c.id === id) {
+      return { ...c, liked: !c.liked, likes: c.liked ? c.likes - 1 : c.likes + 1 };
+    }
+    return c;
+  });
+  renderComments();
+}
+
+function updateSubmitBtn() {
+  const name = document.getElementById('nameInput').value.trim();
+  const text = document.getElementById('commentInput').value.trim();
+  const btn = document.getElementById('submitBtn');
+  btn.classList.toggle('ready', name && text);
+}
+
+document.getElementById('nameInput').addEventListener('input', updateSubmitBtn);
+document.getElementById('commentInput').addEventListener('input', updateSubmitBtn);
+
+function submitComment() {
+  const nameEl = document.getElementById('nameInput');
+  const textEl = document.getElementById('commentInput');
+  const name = nameEl.value.trim();
+  const text = textEl.value.trim();
+  if (!name || !text) return;
+
+  comments.unshift({
+    id: Date.now(),
+    name,
+    text,
+    time: 'Just now',
+    likes: 0,
+    liked: false
+  });
+
+  nameEl.value = '';
+  textEl.value = '';
+  updateSubmitBtn();
+  renderComments();
+
+  const toast = document.getElementById('successToast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+renderComments();
+</script>
+</body>
+</html>
