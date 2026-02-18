@@ -1654,7 +1654,7 @@
             <div class="contact-item fade-up stagger-1">
                 <div class="contact-icon">📧</div>
                 <div class="contact-label">Email</div>
-                <a href="mailto:mukund.vijay@gmail.com" class="contact-value">mukund.vijay@gmail.com</a>
+                <!--email_off--><a href="mailto:mukund.vijay@gmail.com" class="contact-value">mukund.vijay@gmail.com</a><!--/email_off-->
             </div>
             <div class="contact-item fade-up stagger-2">
                 <div class="contact-icon">📱</div>
@@ -1673,7 +1673,7 @@
             </div>
         </div>
         <div class="contact-cta fade-up">
-            <a href="mailto:mukund.vijay@gmail.com" class="btn-primary">Send Message →</a>
+            <!--email_off--><a href="mailto:mukund.vijay@gmail.com" class="btn-primary">Send Message →</a><!--/email_off-->
         </div>
     </div>
 </div>
@@ -1731,4 +1731,14 @@
 
     // Fade-in on scroll
     const observer = new IntersectionObserver((entries) => {
-  
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
