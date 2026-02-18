@@ -374,10 +374,63 @@
   }
   .article-nav-link:hover { color: var(--text); }
 
+  .article-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    z-index: 10002;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+  .article-menu-toggle span {
+    width: 22px;
+    height: 1.5px;
+    background: var(--text-dim);
+    transition: all 0.3s;
+  }
+
+  .article-mobile-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 10001;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .article-mobile-overlay.active {
+    display: flex;
+    opacity: 1;
+  }
+  .article-mobile-overlay a {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 400;
+  }
+  .article-mobile-close {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.5rem;
+    font-size: 1.8rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-dim);
+  }
+
   @media (max-width: 640px) {
     .article-nav { padding: 0.8rem 1rem; }
     .article-nav-logo-sub { display: none; }
     .article-nav-right { display: none; }
+    .article-menu-toggle { display: flex; }
   }
 </style>
 </head>
@@ -397,7 +450,19 @@
     <a href="index.html#apq-tools" class="article-nav-link">Tools</a>
     <a href="index.html#contact" class="article-nav-link">Contact</a>
   </div>
+  <button class="article-menu-toggle" id="articleMenuToggle" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- Mobile Overlay -->
+<div class="article-mobile-overlay" id="articleMobileOverlay">
+  <button class="article-mobile-close" id="articleMobileClose" aria-label="Close menu">✕</button>
+  <a href="articles.html" class="article-mobile-link">All Articles</a>
+  <a href="index.html" class="article-mobile-link">Portfolio</a>
+  <a href="index.html#apq-tools" class="article-mobile-link">APQ Tools</a>
+  <a href="index.html#contact" class="article-mobile-link">Contact</a>
+</div>
 
 <div class="container">
   <!-- Hero -->
@@ -470,6 +535,29 @@
 </footer>
 
 <script>
+// Mobile Menu
+const articleMenuToggle = document.getElementById('articleMenuToggle');
+const articleMobileOverlay = document.getElementById('articleMobileOverlay');
+const articleMobileClose = document.getElementById('articleMobileClose');
+const articleMobileLinks = document.querySelectorAll('.article-mobile-link');
+
+articleMenuToggle.addEventListener('click', () => {
+    articleMobileOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+});
+
+articleMobileClose.addEventListener('click', () => {
+    articleMobileOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+});
+
+articleMobileLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        articleMobileOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+});
+
 const sections = [
   {
     id: "premise",

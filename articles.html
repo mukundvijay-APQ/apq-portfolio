@@ -452,6 +452,63 @@
         .stagger-2 { transition-delay: 0.2s; }
         .stagger-3 { transition-delay: 0.3s; }
 
+        /* Mobile menu toggle */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 10002;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+
+        .menu-toggle span {
+            width: 24px;
+            height: 1.5px;
+            background: var(--color-text);
+            transition: all 0.3s;
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--color-bg);
+            z-index: 10001;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .mobile-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .mobile-overlay a {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            text-decoration: none;
+            color: var(--color-text);
+            font-weight: 400;
+        }
+
+        .mobile-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 2rem;
+            font-size: 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--color-text);
+        }
+
         @media (max-width: 900px) {
             .featured-card {
                 grid-template-columns: 1fr;
@@ -463,6 +520,7 @@
             .navbar { padding: 0.8rem 1.5rem; }
             .nav-links { display: none; }
             .nav-section-label { display: none; }
+            .menu-toggle { display: flex; }
         }
 
         @media (max-width: 640px) {
@@ -488,7 +546,19 @@
         <li><a href="index.html#apq-tools">Tools</a></li>
         <li><a href="index.html#contact" class="nav-cta">Get In Touch</a></li>
     </ul>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
 </nav>
+
+<!-- Mobile Overlay -->
+<div class="mobile-overlay" id="mobileOverlay">
+    <button class="mobile-close" id="mobileClose" aria-label="Close menu">✕</button>
+    <a href="index.html" class="mobile-link">Portfolio</a>
+    <a href="index.html#about" class="mobile-link">About</a>
+    <a href="index.html#apq-tools" class="mobile-link">APQ Tools</a>
+    <a href="index.html#contact" class="mobile-link">Contact</a>
+</div>
 
 <!-- ============ PAGE HEADER ============ -->
 <header class="page-header">
@@ -576,6 +646,30 @@
 </footer>
 
 <script>
+    // Mobile Menu
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+    const mobileClose = document.getElementById('mobileClose');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    menuToggle.addEventListener('click', () => {
+        mobileOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+
+    mobileClose.addEventListener('click', () => {
+        mobileOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
+
+    // Fade-in on scroll
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
