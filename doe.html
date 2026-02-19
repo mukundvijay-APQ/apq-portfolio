@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Case Studies &mdash; Mukund Vijay | APQ</title>
+<title>DESIGN OF EXPERIMENTS Case Study &mdash; Mukund Vijay | APQ</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{--cream:#F5F0EB;--bg:#FAFAF7;--black:#1a1a1a;--dark:#333;--med:#666;--light:#999;--rule:#ddd;
@@ -77,72 +77,35 @@ a{color:inherit;text-decoration:none}
 <body>
 <nav class="nav">
   <a href="../index.html" class="nav-brand"><span class="mv">MV</span><span class="pipe">|</span><span class="label">AI POWERED QUALITY</span></a>
-  <div class="nav-links"><a href="../index.html">Portfolio</a><a href="../index.html#apq-tools">Tools</a><a href="../articles.html">Articles</a><a href="../index.html#contact">Contact</a></div>
+  <div class="nav-links"><a href="index.html">Case Studies</a><a href="../index.html">Portfolio</a><a href="../index.html#apq-tools">Tools</a><a href="../index.html#contact">Contact</a></div>
 </nav>
-
-<section class="hero">
-  <div class="hero-label">QUALITY METHODOLOGY CASE STUDIES</div>
-  <h1>Real Methods,<br><em>Fictional Scenarios</em></h1>
-  <p class="subtitle">Each case study demonstrates a core quality methodology applied to a realistic consumer electronics manufacturing scenario — the kind of problems I solve every day.</p>
-</section>
-<section class="grid-section">
-  <div class="grid-section-label">9 METHODOLOGIES — CLICK TO EXPLORE</div>
-  <div class="case-grid"><a href="capa.html" class="case-card">
-  <span class="tag">CORRECTIVE & PREVENTIVE ACTION</span>
-  <h3>CAPA</h3>
-  <p>Recurring battery swelling in a fitness wearable traced to supplier material change — from detection through systemic prevention.</p>
-  <span class="arrow">READ CASE STUDY &rarr;</span>
-</a>
-<a href="8d.html" class="case-card">
-  <span class="tag">8 DISCIPLINES</span>
-  <h3>8D Problem Solving</h3>
-  <p>Field returns spike for a smart ring's charging dock — structured 8D investigation from team formation through verification.</p>
-  <span class="arrow">READ CASE STUDY &rarr;</span>
-</a>
-<a href="fmea.html" class="case-card">
-  <span class="tag">FAILURE MODE & EFFECTS ANALYSIS</span>
-  <h3>FMEA</h3>
-  <p>Pre-production risk assessment for a next-gen wearable's PPG sensor assembly — identifying and mitigating failures before they happen.</p>
-  <span class="arrow">READ CASE STUDY &rarr;</span>
-</a>
-<a href="spc.html" class="case-card">
-  <span class="tag">STATISTICAL PROCESS CONTROL</span>
-  <h3>SPC</h3>
-  <p>Real-time Cp/Cpk monitoring catches LED-to-photodiode alignment drift at a contract manufacturer — weeks before yield impact.</p>
-  <span class="arrow">READ CASE STUDY &rarr;</span>
-</a>
-<a href="doe.html" class="case-card">
-  <span class="tag">DESIGN OF EXPERIMENTS</span>
-  <h3>DOE</h3>
-  <p>Optimizing ultrasonic welding parameters for a waterproof enclosure — full factorial design isolating the critical factors.</p>
-  <span class="arrow">READ CASE STUDY &rarr;</span>
-</a>
-<a href="dfm.html" class="case-card">
-  <span class="tag">DESIGN FOR MANUFACTURABILITY</span>
-  <h3>DFM</h3>
-  <p>Redesigning a titanium ring shell for high-volume PVD coating yield — balancing aesthetics, cost, and process capability.</p>
-  <span class="arrow">READ CASE STUDY &rarr;</span>
-</a>
-<a href="gdt.html" class="case-card">
-  <span class="tag">GEOMETRIC DIMENSIONING & TOLERANCING</span>
-  <h3>GD&amp;T</h3>
-  <p>Defining datum structure and tolerance stack-up for a multi-sensor wearable — ensuring assembly fit across 12 ring sizes.</p>
-  <span class="arrow">READ CASE STUDY &rarr;</span>
-</a>
-<a href="six-sigma.html" class="case-card">
-  <span class="tag">SIX SIGMA — DMAIC</span>
-  <h3>Six Sigma</h3>
-  <p>Reducing BLE antenna impedance variation from 4σ to 6σ capability — full DMAIC cycle from define through control.</p>
-  <span class="arrow">READ CASE STUDY &rarr;</span>
-</a>
-<a href="lean.html" class="case-card">
-  <span class="tag">LEAN MANUFACTURING</span>
-  <h3>LEAN</h3>
-  <p>Eliminating 40% of NPI-to-sustaining handoff waste through value stream mapping and structured quality gate design.</p>
-  <span class="arrow">READ CASE STUDY &rarr;</span>
-</a>
+<article class="article">
+  <a href="index.html" class="back-link">&larr; ALL CASE STUDIES</a>
+  <div class="article-label">DESIGN OF EXPERIMENTS</div>
+  <h1>DOE: <em>Optimizing Ultrasonic Welding for a Waterproof Enclosure</em></h1>
+  <div class="meta">Mukund Vijay &middot; Fictional scenario</div>
+  <h2>Situation</h2>
+  <p>A next-generation fitness tracker required IP68 waterproof rating. Initial PVT builds showed 8% water ingress failure rate — far above the 0.5% target. OFAT experiments had failed to improve yield after 3 weeks of iteration.</p>
+  <h2>DOE Design &amp; Results</h2>
+  <h3>Factor Selection</h3>
+<table><tr><th>FACTOR</th><th>LOW (−1)</th><th>HIGH (+1)</th></tr><tr><td>A: Weld amplitude</td><td>30 μm</td><td>45 μm</td></tr><tr><td>B: Weld force</td><td>200 N</td><td>350 N</td></tr><tr><td>C: Hold time</td><td>0.3 sec</td><td>0.8 sec</td></tr><tr><td>D: Energy limit</td><td>150 J</td><td>250 J</td></tr></table>
+<h3>Experiment Structure</h3>
+<p>Full factorial 2⁴ = 16 runs × 3 replicates = 48 total units. Response: seal leak rate (cc/min at 30 psi). Pass criteria: ≤0.05 cc/min. Randomized run order.</p>
+<div class="hbox"><h4>KEY FINDING: A×B INTERACTION</h4><p>High amplitude + high force produced seal quality significantly better than either factor alone would predict. This interaction explained why OFAT failed — adjusting amplitude or force independently missed the synergistic optimum.</p>
+<p>Hold time (Factor C) was not statistically significant (p=0.42), eliminating an unnecessary variable from the control plan.</p>
 </div>
-</section>
-<footer class="footer"><span>&copy; 2026 Mukund Vijay &middot; APQ &mdash; AI Powered Quality&trade;</span><a href="../index.html">Back to Portfolio</a></footer>
+<h3>Optimal Settings</h3>
+<p>Amplitude: 42 μm (±2 μm process window)</p>
+<p>Force: 320 N (±20 N process window)</p>
+<p>Hold time: 0.5 sec (midpoint — not significant)</p>
+<p>Energy limit: 230 J (±15 J process window)</p>
+<h3>Confirmation Results</h3>
+<table><tr><th>METRIC</th><th>BEFORE DOE</th><th>AFTER DOE</th></tr><tr><td>Water ingress failure rate</td><td>8.0%</td><td>0.3%</td></tr><tr><td>Mean leak rate</td><td>0.072 cc/min</td><td>0.012 cc/min</td></tr><tr><td>Cpk (leak rate)</td><td>0.62</td><td>2.14</td></tr><tr><td>Cycle time impact</td><td>Baseline</td><td>+0.2 sec</td></tr></table>
+
+  <h2>Key Takeaways</h2>
+  <p>The full factorial DOE resolved in 2 days what 3 weeks of OFAT had failed to solve. The interaction effect was invisible to one-variable-at-a-time testing. Total DOE cost: ~$3K (48 units + 2 days engineering time). Value: transformed a build-stopping 8% failure rate into production-ready 0.3%.</p>
+  <a href="index.html" class="back-link" style="margin-top:48px">&larr; ALL CASE STUDIES</a>
+</article>
+<footer class="footer"><span>&copy; 2026 Mukund Vijay &middot; APQ &mdash; AI Powered Quality&trade;</span><a href="index.html">Case Studies</a></footer>
 </body>
 </html>
