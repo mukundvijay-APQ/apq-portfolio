@@ -20,6 +20,21 @@
 (function () {
   'use strict';
 
+  // Wait for Firebase SDK to be available
+  function waitForFirebase(callback, maxRetries) {
+    if (typeof firebase !== 'undefined' && firebase.app) {
+      callback();
+    } else if (maxRetries > 0) {
+      setTimeout(() => waitForFirebase(callback, maxRetries - 1), 100);
+    } else {
+      console.error('[APQ] Firebase SDK not loaded');
+    }
+  }
+
+  waitForFirebase(initComments, 50);
+
+  function initComments() {
+
   // ========================
   //  🔧 CONFIGURATION
   // ========================
@@ -733,5 +748,7 @@
   } else {
     init();
   }
+
+  } // end initComments
 
 })();
