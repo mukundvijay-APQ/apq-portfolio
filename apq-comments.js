@@ -61,6 +61,13 @@
   const db = firebase.database();
   const googleProvider = new firebase.auth.GoogleAuthProvider();
 
+  // Handle redirect result (Google sign-in returns here after redirect)
+  auth.getRedirectResult().catch(err => {
+    if (err.code !== 'auth/no-auth-event') {
+      console.error('Redirect sign-in error:', err);
+    }
+  });
+
   // ========================
   //  State
   // ========================
@@ -144,11 +151,9 @@
   // ========================
 
   function signInGoogle() {
-    auth.signInWithPopup(googleProvider).catch(err => {
+    // Use redirect instead of popup — GitHub Pages COOP headers block popup detection
+    auth.signInWithRedirect(googleProvider).catch(err => {
       console.error('Google sign-in error:', err);
-      if (err.code === 'auth/popup-blocked') {
-        auth.signInWithRedirect(googleProvider);
-      }
     });
   }
 
