@@ -159,11 +159,10 @@
   // ========================
 
   function signInGoogle() {
-    console.log('[APQ] signInGoogle called — opening popup...');
-    auth.signInWithPopup(googleProvider).then(result => {
-      console.log('[APQ] Popup sign-in success:', result.user.email);
-    }).catch(err => {
-      console.warn('[APQ] Popup sign-in error:', err.code, err.message);
+    auth.signInWithPopup(googleProvider).catch(err => {
+      if (err.code === 'auth/popup-blocked') {
+        auth.signInWithRedirect(googleProvider);
+      }
     });
   }
 
@@ -584,8 +583,8 @@
       const action = btn.dataset.action;
 
       switch (action) {
-        case 'signin-google': console.log('[APQ] Google button clicked'); signInGoogle(); break;
-        case 'signin-linkedin': console.log('[APQ] LinkedIn button clicked'); signInLinkedIn(); break;
+        case 'signin-google': signInGoogle(); break;
+        case 'signin-linkedin': signInLinkedIn(); break;
         case 'signout': signOut(); break;
 
         case 'post': {
