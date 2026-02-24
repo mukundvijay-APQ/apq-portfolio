@@ -151,9 +151,19 @@
   // ========================
 
   function signInGoogle() {
-    // Use redirect instead of popup — GitHub Pages COOP headers block popup detection
-    auth.signInWithRedirect(googleProvider).catch(err => {
-      console.error('Google sign-in error:', err);
+    // signInWithPopup works but COOP headers on GitHub Pages prevent
+    // the promise from resolving. The auth state still updates via
+    // onAuthStateChanged, so we just need to handle the unresolved promise.
+    auth.signInWithPopup(googleProvider).catch(err => {
+      // auth/popup-closed-by-user is expected with COOP — auth still succeeds
+      // via onAuthStateChanged listener, so we can safely ignore this
+      if (err.code !== 'auth/popup-closed-by-user') {
+        console.warn('Google sign-in:', err.code);
+        // True popup block — try redirect as fallback
+        if (err.code === 'auth/popup-blocked') {
+          auth.signInWithRedirect(googleProvider);
+        }
+      }
     });
   }
 
@@ -561,9 +571,12 @@
   //  Event Binding
   // ========================
 
+  let eventsBound = false;
+
   function bindEvents() {
     const container = document.getElementById('apq-comments');
-    if (!container) return;
+    if (!container || eventsBound) return;
+    eventsBound = true;
 
     container.addEventListener('click', function (e) {
       const btn = e.target.closest('[data-action]');
