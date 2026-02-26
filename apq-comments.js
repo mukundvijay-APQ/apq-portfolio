@@ -54,7 +54,7 @@
 
   // LinkedIn OAuth — from LinkedIn Developer Portal
   // TODO: Replace with your LinkedIn app's Client ID
-  const LINKEDIN_CLIENT_ID = 'YOUR_LINKEDIN_CLIENT_ID';
+  const LINKEDIN_CLIENT_ID = '869327qgqfgyhh';
 
   // Your Cloud Function URL for LinkedIn token exchange
   // After deploying, it will be something like:
