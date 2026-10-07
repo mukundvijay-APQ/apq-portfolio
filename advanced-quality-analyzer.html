@@ -159,24 +159,25 @@
 
         // Enhanced Pareto Chart Component
         function ParetoChart({ data }) {
+          const items = (data && data.top3Issues) || [];
           const chartRef = useRef(null);
           const chartInstance = useRef(null);
           
           useEffect(() => {
-            if (chartRef.current) {
+            if (chartRef.current && items.length > 0) {
               const ctx = chartRef.current.getContext('2d');
               
               if (chartInstance.current) {
                 chartInstance.current.destroy();
               }
               
-              const percentages = data.top3Issues.map(item => parseInt(item.percentage));
-              const cumulative = data.top3Issues.map(item => parseInt(item.cumulativePercentage));
+              const percentages = items.map(item => parseInt(item.percentage));
+              const cumulative = items.map(item => parseInt(item.cumulativePercentage));
               
               chartInstance.current = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                  labels: ['Audio Issues', 'Camera Defects', 'Battery Issues'],
+                  labels: items.map((item) => item.issue),
                   datasets: [{
                     label: 'Defect %',
                     data: percentages,
@@ -239,6 +240,14 @@
             };
           }, [data]);
           
+          if (items.length === 0) {
+            return (
+              <div style={{ padding: '2.5rem 1rem', textAlign: 'center', color: '#94a3b8', background: 'rgba(15, 23, 42, 0.6)', borderRadius: '0.5rem', border: '1px dashed rgba(148, 163, 184, 0.3)' }}>
+                📊 No defect data parsed yet — list defects one per line above (e.g. &quot;Scratches: 45&quot;) and the Pareto builds itself.
+              </div>
+            );
+          }
+
           const exportChart = () => {
             if (chartRef.current) {
               const url = chartRef.current.toDataURL('image/png');
@@ -278,10 +287,11 @@
         }
 
         // Control Chart Component with Western Electric Rules Detection
-        function ControlChart() {
+        function ControlChart({ series }) {
           const chartRef = useRef(null);
           const chartInstance = useRef(null);
           const [violations, setViolations] = useState([]);
+          const _custom = !!(series && series.length >= 5);
           
           useEffect(() => {
             // Generate data with ACTUAL 8 consecutive points below CL
@@ -307,9 +317,11 @@
               84,  // 19: at CL
               85   // 20: above
             ];
-            const mean = 84;
-            const ucl = 90;
-            const lcl = 78;
+            const plotData = _custom ? series : dataPoints;
+            const mean = _custom ? series.reduce((a, b) => a + b, 0) / series.length : 84;
+            const _sd = _custom ? Math.sqrt(series.reduce((a, b) => a + (b - mean) * (b - mean), 0) / series.length) : 4;
+            const ucl = _custom ? mean + 3 * _sd : 90;
+            const lcl = _custom ? mean - 3 * _sd : 78;
             
             // Detect Rule 4: 8+ consecutive on one side of CL
             const detectRule4 = (data, CL) => {
@@ -339,11 +351,17 @@
             };
             
             // Run detection
-            const rule4Result = detectRule4(dataPoints, mean);
+            const rule4Result = detectRule4(plotData, mean);
             if (rule4Result.found) {
               setViolations([{
-                message: `OUT OF CONTROL at Station 3: ${rule4Result.count} consecutive points ${rule4Result.side} centerline (samples ${rule4Result.start + 1}-${rule4Result.end + 1})`
+                message: `OUT OF CONTROL${_custom ? '' : ' at Station 3'}: ${rule4Result.count} consecutive points ${rule4Result.side} centerline (samples ${rule4Result.start + 1}-${rule4Result.end + 1})`
               }]);
+            }
+            if (_custom) {
+              const beyondIdx = plotData.map((v, i) => (v > ucl || v < lcl) ? (i + 1) : null).filter((x) => x !== null);
+              if (beyondIdx.length > 0) {
+                setViolations((prev) => [...prev, { message: `${beyondIdx.length} point(s) beyond control limits (samples ${beyondIdx.join(', ')}). Investigate special causes.` }]);
+              }
             }
             
             if (chartRef.current) {
@@ -356,10 +374,10 @@
               chartInstance.current = new Chart(ctx, {
                 type: 'line',
                 data: {
-                  labels: Array.from({length: 20}, (_, i) => i + 1),
+                  labels: Array.from({length: plotData.length}, (_, i) => i + 1),
                   datasets: [{
                     label: 'Measurement',
-                    data: dataPoints,
+                    data: plotData,
                     borderColor: '#64ffda',
                     backgroundColor: 'rgba(100, 255, 218, 0.1)',
                     borderWidth: 2,
@@ -367,20 +385,20 @@
                     pointBackgroundColor: '#64ffda'
                   }, {
                     label: 'UCL',
-                    data: Array(20).fill(ucl),
+                    data: Array(plotData.length).fill(ucl),
                     borderColor: '#ef4444',
                     borderWidth: 2,
                     borderDash: [5, 5],
                     pointRadius: 0
                   }, {
                     label: 'CL',
-                    data: Array(20).fill(mean),
+                    data: Array(plotData.length).fill(mean),
                     borderColor: '#3b82f6',
                     borderWidth: 2,
                     pointRadius: 0
                   }, {
                     label: 'LCL',
-                    data: Array(20).fill(lcl),
+                    data: Array(plotData.length).fill(lcl),
                     borderColor: '#ef4444',
                     borderWidth: 2,
                     borderDash: [5, 5],
@@ -415,8 +433,16 @@
                 chartInstance.current.destroy();
               }
             };
-          }, []);
-          
+          }, [series]);
+
+          if (series === null) {
+            return (
+              <div style={{ padding: '2.5rem 1rem', textAlign: 'center', color: '#94a3b8', background: 'rgba(15, 23, 42, 0.6)', borderRadius: '0.5rem', border: '1px dashed rgba(148, 163, 184, 0.3)' }}>
+                📉 Enter at least 5 process measurements above (comma-separated numbers, e.g. &quot;85, 82, 88, 82, 81&quot;) to run SPC analysis.
+              </div>
+            );
+          }
+
           const exportChart = () => {
             if (chartRef.current) {
               const url = chartRef.current.toDataURL('image/png');
@@ -447,7 +473,7 @@
         }
 
         // Capability Analysis Chart
-        function CapabilityChart({ cpk = 0.89 }) {
+        function CapabilityChart({ cpk = 0.89, single = false }) {
           const chartRef = useRef(null);
           const chartInstance = useRef(null);
           
@@ -466,17 +492,17 @@
               chartInstance.current = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                  labels: ['Cp', 'Cpk', 'Pp', 'Ppk'],
+                  labels: single ? ['Cpk'] : ['Cp', 'Cpk', 'Pp', 'Ppk'],
                   datasets: [{
                     label: 'Capability Index',
-                    data: [cp, cpk, pp, ppk],
-                    backgroundColor: [
+                    data: single ? [cpk] : [cp, cpk, pp, ppk],
+                    backgroundColor: single ? [cpk >= 1.33 ? 'rgba(34, 197, 94, 0.6)' : 'rgba(239, 68, 68, 0.6)'] : [
                       cp >= 1.33 ? 'rgba(34, 197, 94, 0.6)' : 'rgba(239, 68, 68, 0.6)',
                       cpk >= 1.33 ? 'rgba(34, 197, 94, 0.6)' : 'rgba(239, 68, 68, 0.6)',
                       pp >= 1.33 ? 'rgba(34, 197, 94, 0.6)' : 'rgba(239, 68, 68, 0.6)',
                       ppk >= 1.33 ? 'rgba(34, 197, 94, 0.6)' : 'rgba(239, 68, 68, 0.6)'
                     ],
-                    borderColor: [
+                    borderColor: single ? [cpk >= 1.33 ? '#22c55e' : '#ef4444'] : [
                       cp >= 1.33 ? '#22c55e' : '#ef4444',
                       cpk >= 1.33 ? '#22c55e' : '#ef4444',
                       pp >= 1.33 ? '#22c55e' : '#ef4444',
@@ -544,6 +570,43 @@
           );
         }
 
+        // APQ: parse plain-text custom input into structured analysis
+        const parseDefects = (text) => {
+          const items = [];
+          (text || '').split('\n').forEach((rawLine) => {
+            const line = rawLine.replace(/^\s*[-•*]\s*/, '');
+            const m = line.match(/^\s*([^:,\-\d][^:,]*?)\s*[:,\-]\s*(\d+(?:\.\d+)?)\s*%?(?=[\s.,;]|$)/);
+            if (m) {
+              const name = m[1].trim();
+              if (/^(yield|cpk|dpmo|samples?|\bn\b)/i.test(name)) return;
+              if (name.length > 60 || name.length < 2) return;
+              items.push({ issue: name, count: parseFloat(m[2]) });
+            }
+          });
+          const total = items.reduce((a, b) => a + b.count, 0);
+          let cum = 0;
+          return items.sort((a, b) => b.count - a.count).map((it) => {
+            const pct = total > 0 ? (it.count / total) * 100 : 0;
+            cum += pct;
+            return { issue: it.issue, count: it.count, percentage: pct.toFixed(1) + '%', cumulativePercentage: cum.toFixed(1) + '%' };
+          });
+        };
+        const parseSeries = (text) => {
+          const nums = [];
+          (text || '').split('\n').forEach((rawLine) => {
+            const t = rawLine.trim().replace(/^\s*[-•*]\s*/, '');
+            if (t && /\d/.test(t) && /^[-+\d\s,;.*eE]+$/.test(t)) {
+              const found = t.match(/-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?/g);
+              if (found) found.forEach((n) => nums.push(parseFloat(n)));
+            }
+          });
+          return nums;
+        };
+        const parseCpk = (text) => {
+          const m = (text || '').match(/cpk\s*[:=]?\s*(\d+(?:\.\d+)?)/i);
+          return m ? parseFloat(m[1]) : null;
+        };
+
         function QualityAnalyzerToggle() {
           const [useDemo, setUseDemo] = useState(true);
           const [showReport, setShowReport] = useState(true);
@@ -576,18 +639,73 @@
             setShowReport(true);
           };
 
-          const currentReport = useDemo ? metaReport : {
+          const customDefects = useDemo ? [] : parseDefects(formData.qualityIssues);
+          const customSeries = useDemo ? [] : parseSeries(formData.processData);
+          const customCpk = useDemo ? null : (parseCpk(formData.testResults) ?? parseCpk(formData.qualityIssues) ?? parseCpk(formData.processData));
+          const customYieldM = useDemo ? null : (formData.testResults || '').match(/yield\s*[:=]?\s*(\d+(?:\.\d+)?)/i);
+          const customYield = customYieldM ? parseFloat(customYieldM[1]) : null;
+
+          const customPareto = customDefects.length > 0 ? {
+            top3Issues: customDefects.slice(0, 5),
+            recommendation: `Focus immediate resources on ${customDefects[0].issue} (${customDefects[0].percentage} of defects)` + (customDefects[1] ? ` and ${customDefects[1].issue} (${customDefects[1].percentage}) — the vital few.` : '.')
+          } : {
+            top3Issues: [],
+            recommendation: 'Enter your defect data above — one per line, like "Scratches: 45" — and the Pareto builds itself.'
+          };
+
+          const _cs = customSeries.length >= 5 ? customSeries : null;
+          const _cMean = _cs ? _cs.reduce((a, b) => a + b, 0) / _cs.length : null;
+          const _cSd = _cs ? Math.sqrt(_cs.reduce((a, b) => a + (b - _cMean) * (b - _cMean), 0) / _cs.length) : null;
+          const _runMax = _cs ? (() => { let run = 0, side = 0, max = 0; _cs.forEach((v) => { const sd = v > _cMean ? 1 : v < _cMean ? -1 : 0; if (sd !== 0 && sd === side) { run++; } else { run = sd !== 0 ? 1 : 0; side = sd; } max = Math.max(max, run); }); return max; })() : 0;
+          const _beyond = _cs ? _cs.filter((v) => v > _cMean + 3 * _cSd || v < _cMean - 3 * _cSd).length : 0;
+          const _inControl = _cs ? (_runMax < 8 && _beyond === 0) : true;
+
+          const customReport = {
             productName: formData.productName || "Custom Product",
             phase: formData.phase,
             sampleSize: formData.sampleSize || "N/A",
             executiveSummary: formData.qualityIssues || "No quality issues data provided.",
-            phaseStatus: "ANALYSIS_PENDING",
-            qualityToolsApplied: ["Custom Analysis"],
+            phaseStatus: (customDefects.length > 0 || _cs) ? "ANALYZED" : "ANALYSIS_PENDING",
+            qualityToolsApplied: ["Pareto", "SPC", "Capability", "5-Why", "FMEA"],
             keyMetrics: {
-              status: "Custom data entered - contact for AI-powered analysis"
+              defectTypes: customDefects.length > 0 ? String(customDefects.length) : "—",
+              topDefect: customDefects.length > 0 ? `${customDefects[0].issue} (${customDefects[0].percentage})` : "—",
+              cpk: customCpk != null ? String(customCpk) : "—",
+              yield: customYield != null ? customYield + "%" : "—"
             },
-            customNote: "This is a formatted display of your input data. For comprehensive AI-powered analysis using 8D, 5-Why, FMEA, Pareto, Fishbone, and SPC tools, please contact mukundvijay@gmail.com"
+            paretoAnalysis: customPareto,
+            rootCauseAnalysis: {
+              method: "5-Why (guided starter)",
+              primaryCause: customDefects.length > 0 ? `Top defect: ${customDefects[0].issue} — ${customDefects[0].percentage} of reported defects` : "Enter defect data above to seed the 5-Why",
+              whyChain: customDefects.length > 0 ? [
+                `Why does "${customDefects[0].issue}" occur? → ${formData.failureAnalysis ? formData.failureAnalysis.split('\n')[0] : "Describe the direct physical cause"}`,
+                "Why does that cause exist? → Trace one level deeper into the process or design",
+                "Why wasn’t it caught? → Check detection controls and inspection coverage",
+                "Why did the process allow it? → Look for the systemic or procedural gap",
+                "→ ROOT CAUSE: state the systemic cause and the corrective action that prevents recurrence"
+              ] : ["Enter your defect data above, then work this chain with your team."]
+            },
+            fmeaAnalysis: customDefects.length > 0 ? customDefects.slice(0, 5).map((d) => {
+              const pct = parseFloat(d.percentage);
+              const occurrence = pct >= 30 ? 8 : pct >= 15 ? 6 : pct >= 5 ? 4 : 2;
+              return { failureMode: d.issue, severity: "5", occurrence: String(occurrence), detection: "5", rpn: String(5 * occurrence * 5), recommendedActions: "Score severity and detection in your gate review; occurrence auto-estimated from defect share." };
+            }) : [],
+            processStability: _cs ? {
+              controlChartAnalysis: _inControl ? `IN CONTROL: ${_cs.length} samples within limits, no rule violations detected` : `OUT OF CONTROL: ${_beyond > 0 ? _beyond + " point(s) beyond limits. " : ""}${_runMax >= 8 ? "Run of " + _runMax + " on one side of centerline. " : ""}Investigate special causes.`,
+              processCapability: customCpk != null ? (customCpk >= 1.33 ? `CAPABLE - Cpk=${customCpk} (target: >1.33)` : `NOT CAPABLE - Cpk=${customCpk} (target: >1.33)`) : "Add Cpk to test results (e.g. “Cpk: 1.1”) for a capability verdict",
+              recommendation: _inControl ? "Process stable — proceed with monitoring" : "Stabilize the process before gate sign-off"
+            } : {
+              controlChartAnalysis: "Enter at least 5 process measurements above to run SPC analysis",
+              processCapability: "—",
+              recommendation: "—"
+            },
+            gateDecision: (customCpk != null && customCpk < 1.33) || !_inControl || (customYield != null && customYield < 95)
+              ? "CONDITIONAL HOLD — resolve the flagged items above before gate sign-off"
+              : (customDefects.length > 0 || _cs || customCpk != null)
+                ? "PRELIMINARY PASS — based on entered data; validate with your quality team"
+                : "Enter your data above to generate a gate recommendation"
           };
+          const currentReport = useDemo ? metaReport : customReport;
           
           const addActionItem = () => {
             const newAction = {
@@ -742,11 +860,12 @@
                               name="qualityIssues"
                               value={formData.qualityIssues}
                               onChange={handleInputChange}
-                              placeholder="Describe defects, failure rates, critical issues...
-Example:
-- Audio distortion: 12% failure rate at high volume
-- Battery life: 15% below target (4.2hrs vs 5.0hrs)
-- Camera focus sticking in cold weather: 5.2% failure"
+                              placeholder="One defect per line — name, then a number. These parse into the Pareto automatically:
+Scratches: 45
+Dents: 30
+Bubbles: 12
+
+Free text works too — the agent extracts what it can."
                               rows="6"
                               style={{ width: '100%', padding: '0.75rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.5rem', color: 'white', fontSize: '0.95rem', fontFamily: 'monospace', lineHeight: '1.6' }}
                             />
@@ -758,12 +877,8 @@ Example:
                               name="testResults"
                               value={formData.testResults}
                               onChange={handleInputChange}
-                              placeholder="Enter test data, pass/fail rates, key metrics...
-Example:
-- First Pass Yield: 78% (Target: 95%)
-- Defect Density: 1,200 DPMO
-- Test Coverage: 87%
-- Cpk: 0.89 (Target: >1.33)"
+                              placeholder="Test results, pass/fail rates, key metrics...
+Tip: write “Yield: 92%”, “Cpk: 1.1”, “DPMO: 1200” and the agent flags threshold breaches automatically."
                               rows="5"
                               style={{ width: '100%', padding: '0.75rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.5rem', color: 'white', fontSize: '0.95rem', fontFamily: 'monospace', lineHeight: '1.6' }}
                             />
@@ -791,11 +906,10 @@ Example:
                               name="processData"
                               value={formData.processData}
                               onChange={handleInputChange}
-                              placeholder="Enter SPC data, control chart notes, Cpk values...
-Example:
-- Station 3: OUT OF CONTROL (8 points below centerline)
-- Station 7: Cpk = 1.15 (marginal)
-- Special causes: Process parameter changes, supplier variation"
+                              placeholder="Raw measurements as comma-separated numbers — these build your control chart:
+85, 82, 88, 82, 81, 79, 80, 83, 82, 81
+
+Add “Cpk: 1.1” here or in test results for a capability verdict."
                               rows="5"
                               style={{ width: '100%', padding: '0.75rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.5rem', color: 'white', fontSize: '0.95rem', fontFamily: 'monospace', lineHeight: '1.6' }}
                             />
@@ -902,7 +1016,7 @@ Example:
                             {/* NEW: Control Chart */}
                             <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
                               <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#3b82f6', marginBottom: '1rem' }}>📉 Statistical Process Control Chart</h2>
-                              <ControlChart />
+                              <ControlChart series={useDemo ? undefined : (customSeries.length >= 5 ? customSeries : null)} />
                               <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '0.5rem' }}>
                                 <p style={{ color: '#ef4444', fontSize: '0.875rem', fontWeight: '600' }}>⚠️ {currentReport.processStability.controlChartAnalysis}</p>
                               </div>
@@ -911,7 +1025,11 @@ Example:
                             {/* NEW: Capability Analysis */}
                             <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
                               <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#22c55e', marginBottom: '1rem' }}>📊 Process Capability Analysis</h2>
-                              <CapabilityChart cpk={0.89} />
+                              {useDemo ? (<CapabilityChart cpk={0.89} />) : (customCpk != null ? (<CapabilityChart cpk={customCpk} single={true} />) : (
+                              <div style={{ padding: '2.5rem 1rem', textAlign: 'center', color: '#94a3b8', background: 'rgba(15, 23, 42, 0.6)', borderRadius: '0.5rem', border: '1px dashed rgba(148, 163, 184, 0.3)' }}>
+                                📊 Add your Cpk to the test results above (e.g. &quot;Cpk: 1.1&quot;) for a capability verdict.
+                              </div>
+                            ))}
                               <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '0.5rem' }}>
                                 <p style={{ color: '#ef4444', fontSize: '0.875rem', fontWeight: '600' }}>{currentReport.processStability.processCapability}</p>
                                 <p style={{ color: '#cbd5e1', fontSize: '0.875rem', marginTop: '0.5rem' }}>{currentReport.processStability.recommendation}</p>
