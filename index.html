@@ -1909,8 +1909,8 @@
     <div id="apq-msgs"></div>
     <div class="apq-chips">
         <button data-q="What is APQ?">What is APQ?</button>
-        <button data-q="How can I work with Mukund?">Work with me</button>
-        <button data-q="What AI tools has he built?">The tools</button>
+        <button data-q="What does it cost to work with Mukund?">Pricing & offers</button>
+        <button data-q="Where is the readiness quiz?">Take the quiz</button>
     </div>
     <div class="apq-input">
         <input id="apq-text" type="text" placeholder="Ask about APQ, quality AI, working together…" maxlength="500" autocomplete="off">
@@ -1919,72 +1919,97 @@
 </div>
 <script>
 (function () {
-    // ── Set this to your deployed Cloudflare Worker URL after following apq-concierge-worker.js ──
-    const WORKER_URL = "https://apq-concierge.YOUR-SUBDOMAIN.workers.dev/chat";
-
+    // ── Keyless APQ concierge: fully self-contained, no backend, no API key. ──
+    // Answers from a built-in knowledge base. Optional LLM upgrade lives in
+    // apq-concierge-worker.js if you ever want freeform conversation.
     const fab = document.getElementById('apq-fab');
     const panel = document.getElementById('apq-panel');
     const msgs = document.getElementById('apq-msgs');
     const input = document.getElementById('apq-text');
     const sendBtn = document.getElementById('apq-send');
-    const history = [];
     let opened = false;
 
-    function addMsg(text, who) {
+    const LINK_WORK = "<a href='#work-with-me'>Work With Me</a>";
+    const LINK_QUIZ = "<a href='ai-readiness.html'>AI Readiness Assessment</a>";
+    const LINK_TOOLS = "<a href='#apq-tools'>live AI tools</a>";
+    const MAIL = "<a href='mailto:mukund.vijay@gmail.com'>mukund.vijay@gmail.com</a>";
+
+    const INTENTS = [
+        { k: ["hello", "hi", "hey", "yo", "morning", "afternoon", "sup"],
+          r: "Hey! I'm the APQ concierge \u26a1. Ask me about Mukund, the APQ framework, the live AI tools, or how to work together — or try the " + LINK_QUIZ + " to see where your org stands." },
+        { k: ["audit"],
+          r: "<b>AI Opportunity Audit — $299\u2013500, 1 week.</b> A focused review of where AI can cut costs or cycle time in your quality/manufacturing ops. You get a prioritized, no-fluff roadmap. <a href='mailto:mukund.vijay@gmail.com?subject=AI%20Opportunity%20Audit'>Request one \u2192</a>" },
+        { k: ["quick win", "build", "automation", "prototype"],
+          r: "<b>Quick-Win Build — $2,500\u20135,000, 2\u20134 weeks.</b> Mukund builds one working AI automation inside your process — reporting, analysis, or monitoring — so your team sees value in weeks. <a href='mailto:mukund.vijay@gmail.com?subject=Quick-Win%20Build'>Start a build \u2192</a>" },
+        { k: ["retainer", "advisor", "ongoing", "fractional"],
+          r: "<b>Advisor Retainer — $1,000\u20132,500/mo, cancel anytime.</b> Ongoing counsel on launch readiness, supplier quality, and AI tooling. <a href='mailto:mukund.vijay@gmail.com?subject=Advisor%20Retainer'>Become a client \u2192</a>" },
+        { k: ["price", "pricing", "cost", "how much", "rate", "fee", "charge"],
+          r: "Three ways to engage: <b>Audit</b> $299\u2013500 \u00b7 <b>Quick-Win Build</b> $2,500\u20135,000 \u00b7 <b>Advisor Retainer</b> $1,000\u20132,500/mo. Details in " + LINK_WORK + "." },
+        { k: ["work with", "hire", "engage", "consult", "freelance", "service", "offer"],
+          r: "Three ways to work with Mukund: an <b>AI Opportunity Audit</b> ($299\u2013500), a <b>Quick-Win Build</b> ($2,500\u20135,000), or an <b>Advisor Retainer</b> ($1,000\u20132,500/mo). See " + LINK_WORK + ", or email " + MAIL + "." },
+        { k: ["apq", "ai powered quality", "framework", "agentic"],
+          r: "<b>APQ = AI-Powered Quality.</b> Mukund's framework for embedding AI into every stage of the product lifecycle — shifting teams from reactive firefighting to proactive, data-driven decisions. Three pillars: <b>shift left</b> (catch risks in design), <b>connected quality data</b>, and <b>natural-language access</b> for everyone. See it running in the " + LINK_TOOLS + " below." },
+        { k: ["tool", "demo", "generator", "analyzer", "tracker", "software", "app"],
+          r: "Four live AI tools on this site: <b>Quality Report Generator</b> (8D, 5-Why, FMEA, SPC\u2026), <b>Voice of Customer Analysis</b>, <b>Stakeholder Engagement Tracker</b>, and the " + LINK_QUIZ + " — all free to try under " + LINK_TOOLS + "." },
+        { k: ["quiz", "assessment", "readiness", "score", "test"],
+          r: "The " + LINK_QUIZ + " takes 2 minutes and gives you a scored readout (Reactive / Emerging / AI-Ready) plus your highest-leverage next move. Worth a spin." },
+        { k: ["who", "about", "background", "experience", "bio", "career", "meta", "amazon"],
+          r: "Mukund Vijay is a <b>Product Manager at Meta</b> with 15+ years across product design, manufacturing operations, and quality engineering (previously Amazon). Career highlights: <b>$6M+ in cost savings</b>, 40% faster phase-gate reviews via AI, 100+ hiring decisions as a Bar Raiser." },
+        { k: ["contact", "email", "phone", "call", "reach", "talk to", "speak"],
+          r: "Easiest: email " + MAIL + " — he reads everything himself. Or start from " + LINK_WORK + " and pick the engagement that fits." },
+        { k: ["thank", "thanks", "great", "awesome", "cool", "nice"],
+          r: "Anytime! If this was useful, the " + LINK_QUIZ + " is the best next click — or just say hi at " + MAIL + "." },
+    ];
+    const FALLBACK = "Good question — that's one for Mukund himself. Email " + MAIL + " and he'll reply personally. Meanwhile: " + LINK_WORK + " \u00b7 " + LINK_QUIZ + " \u00b7 " + LINK_TOOLS + ".";
+
+    function replyFor(text) {
+        const t = " " + text.toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ") + " ";
+        let best = null, bestScore = 0;
+        for (const intent of INTENTS) {
+            let s = 0;
+            for (const k of intent.k) {
+                const needle = k.indexOf(" ") === -1 ? " " + k + " " : k;
+                if (t.indexOf(needle) !== -1) s++;
+            }
+            if (s > bestScore) { bestScore = s; best = intent; }
+        }
+        return bestScore >= 1 ? best.r : FALLBACK;
+    }
+
+    function addMsg(html, who) {
         const d = document.createElement('div');
         d.className = 'apq-msg ' + who;
-        d.innerHTML = text;
+        d.innerHTML = html;
         msgs.appendChild(d);
         msgs.scrollTop = msgs.scrollHeight;
         return d;
     }
-    function greet() {
-        addMsg("Hi, I'm the APQ concierge ⚡ — I can answer questions about Mukund, the APQ framework, the live AI tools on this site, or how to work together. What's on your mind?", 'bot');
-    }
     fab.addEventListener('click', () => {
         panel.hidden = !panel.hidden;
-        if (!panel.hidden && !opened) { opened = true; greet(); input.focus(); }
+        if (!panel.hidden && !opened) {
+            opened = true;
+            addMsg("Hi, I'm the APQ concierge \u26a1 — ask me about Mukund, the APQ framework, the live AI tools, or how to work together.", 'bot');
+            input.focus();
+        }
     });
     document.getElementById('apq-close').addEventListener('click', () => { panel.hidden = true; });
     document.querySelectorAll('.apq-chips button').forEach(b =>
         b.addEventListener('click', () => { input.value = b.dataset.q; send(); }));
 
-    function fallbackReply() {
-        return "The live concierge isn't connected yet — but Mukund reads every note himself. " +
-            "Email him at <a href='mailto:mukund.vijay@gmail.com'>mukund.vijay@gmail.com</a> " +
-            "or explore the <a href='#work-with-me'>Work With Me</a> section for the three ways to engage.";
-    }
-
-    async function send() {
+    function send() {
         const text = input.value.trim();
         if (!text) return;
         input.value = '';
-        addMsg(text.replace(/</g, '&lt;'), 'user');
-        history.push({ role: 'user', content: text });
-
-        if (WORKER_URL.includes('YOUR-SUBDOMAIN')) {
-            addMsg(fallbackReply(), 'bot');
-            return;
-        }
+        const safe = text.replace(/</g, '&lt;').slice(0, 500);
+        addMsg(safe, 'user');
         sendBtn.disabled = true;
-        const typing = addMsg('<span class="apq-typing">thinking…</span>', 'bot');
-        try {
-            const r = await fetch(WORKER_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messages: history.slice(-10) })
-            });
-            if (!r.ok) throw new Error('bad response');
-            const data = await r.json();
+        const typing = addMsg('<span class="apq-typing">thinking\u2026</span>', 'bot');
+        setTimeout(() => {
             typing.remove();
-            const reply = (data.reply || '').replace(/</g, '&lt;').replace(/\n/g, '<br>');
-            addMsg(reply || fallbackReply(), 'bot');
-            history.push({ role: 'assistant', content: data.reply || '' });
-        } catch (e) {
-            typing.remove();
-            addMsg("Hmm, I lost my connection for a moment. Try again — or reach Mukund directly at <a href='mailto:mukund.vijay@gmail.com'>mukund.vijay@gmail.com</a>.", 'bot');
-        }
-        sendBtn.disabled = false;
+            addMsg(replyFor(text), 'bot');
+            sendBtn.disabled = false;
+            input.focus();
+        }, 450);
     }
     sendBtn.addEventListener('click', send);
     input.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });

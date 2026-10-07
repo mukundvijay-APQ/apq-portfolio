@@ -1,5 +1,9 @@
 /**
- * APQ Concierge — Cloudflare Worker backend for the chat widget on
+ * APQ Concierge — Cloudflare Worker backend (OPTIONAL LLM UPGRADE).
+ *
+ * The on-site chat widget currently runs KEYLESS: it answers from a built-in
+ * knowledge base in index.html, at $0/month with no accounts needed.
+ * Deploy this Worker only if you want freeform LLM conversation instead.
  * https://mukundvijay-apq.github.io/apq-portfolio/
  *
  * ── SETUP (5 minutes, ~$0–5/month) ──────────────────────────────
