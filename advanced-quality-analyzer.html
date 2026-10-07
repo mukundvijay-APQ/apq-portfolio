@@ -28,7 +28,16 @@
     <button onclick="document.getElementById('agent-brief').remove();sessionStorage.setItem('ab-hide','1');" aria-label="Dismiss" style="background:none;border:1px solid #475569;color:#64748b;border-radius:8px;padding:4px 12px;cursor:pointer;font-size:.85rem;">✕</button>
 </div>
 <script>if(sessionStorage.getItem('ab-hide'))document.getElementById('agent-brief').remove();</script>
-<style>.ab-step{background:#f1f5f9;border:1px solid #334155;border-radius:20px;padding:3px 12px;font-size:.78rem;color:#475569;}</style>
+<style>.ab-step{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:20px;padding:3px 12px;font-size:.78rem;color:#475569;}</style>
+<style>
+@media (max-width: 640px) {
+  .apq-root { padding: 1rem !important; }
+  .apq-h1 { font-size: 1.7rem !important; }
+  .apq-meta-row span { display: block !important; margin-left: 0 !important; margin-bottom: 0.3rem !important; }
+  .apq-main-grid { grid-template-columns: 1fr !important; }
+  .apq-section { padding: 1.25rem !important; }
+}
+</style>
 <div id="root"></div>
     
     <script type="text/babel">
@@ -765,7 +774,7 @@
           };
 
           return (
-            <div style={{ minHeight: '100vh', background: '#f1f5f9', color: '#0f172a', padding: '2rem' }}>
+            <div className="apq-root" style={{ minHeight: '100vh', background: '#f1f5f9', color: '#0f172a', padding: '2rem' }}>
               <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
                 
                 {/* Header - UNCHANGED */}
@@ -775,12 +784,12 @@
                     <span style={{ fontFamily: 'monospace', fontWeight: '700', color: '#0f766e', letterSpacing: '0.05em' }}>APQ - AI Powered Quality</span>
                   </div>
                   
-                  <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '1rem', color: '#0f172a' }}>
+                  <h1 className="apq-h1" style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '1rem', color: '#0f172a' }}>
                     Quality Report Generator
                   </h1>
 
                   {/* Toggle Button - UNCHANGED */}
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', marginTop: '2rem', flexWrap: 'wrap' }}>
                     <button
                       onClick={() => { setUseDemo(true); setShowReport(true); }}
                       style={{
@@ -825,7 +834,7 @@
                 </div>
 
                 {/* NEW: Main Content with Sidebar Layout */}
-                <div style={{ display: 'grid', gridTemplateColumns: !useDemo && !showReport ? '1fr 350px' : '1fr', gap: '2rem' }}>
+                <div className="apq-main-grid" style={{ display: 'grid', gridTemplateColumns: !useDemo && !showReport ? '1fr 350px' : '1fr', gap: '2rem' }}>
                   
                   {/* Main Content Area */}
                   <div>
@@ -833,7 +842,7 @@
                     {/* Custom Form - UNCHANGED except now in grid */}
                     {!useDemo && !showReport && (
                       <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-                        <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                        <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }} className="apq-section">
                           <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#0f766e', marginBottom: '1.5rem' }}>Enter Your Quality Data</h2>
                           
                           <div style={{ marginBottom: '1.5rem' }}>
@@ -969,11 +978,11 @@ Add “Cpk: 1.1” here or in test results for a capability verdict."
                     {showReport && (
                       <>
                         {/* Executive Summary - UNCHANGED */}
-                        <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                        <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }} className="apq-section">
                           <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#0f766e', marginBottom: '1rem' }}>
                             📄 {useDemo ? 'DVT Phase Gate Review' : 'Quality Data Summary'}
                           </h2>
-                          <div style={{ marginBottom: '1rem' }}>
+                          <div className="apq-meta-row" style={{ marginBottom: '1rem' }}>
                             <span style={{ color: '#64748b', fontSize: '0.875rem' }}>Product: </span>
                             <span style={{ color: '#334155', fontWeight: '600' }}>{currentReport.productName}</span>
                             <span style={{ color: '#64748b', marginLeft: '2rem', fontSize: '0.875rem' }}>Phase: </span>
@@ -1031,7 +1040,7 @@ Add “Cpk: 1.1” here or in test results for a capability verdict."
                                   </p>
                                 </div>
 
-                                <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                                <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }} className="apq-section">
                                   <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#0f766e', marginBottom: '1rem' }}>📋 Project Charter</h2>
                                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
                                     <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '0.5rem', border: '1px solid #e2e8f0' }}>
@@ -1076,7 +1085,7 @@ Add “Cpk: 1.1” here or in test results for a capability verdict."
                             )}
 
                             {/* Key Metrics - UNCHANGED */}
-                            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }} className="apq-section">
                               <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#0f766e', marginBottom: '1rem' }}>📊 Key Metrics</h2>
                               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
                                 {Object.entries(currentReport.keyMetrics).map(([key, value]) => (
@@ -1091,7 +1100,7 @@ Add “Cpk: 1.1” here or in test results for a capability verdict."
                             </div>
 
                             {/* ENHANCED: Pareto with Chart.js */}
-                            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }} className="apq-section">
                               <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#0f766e', marginBottom: '1rem' }}>📈 Pareto Analysis</h2>
                               <ParetoChart data={currentReport.paretoAnalysis} />
                               <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(15, 118, 110, 0.06)', borderRadius: '0.5rem' }}>
@@ -1100,7 +1109,7 @@ Add “Cpk: 1.1” here or in test results for a capability verdict."
                             </div>
 
                             {/* NEW: Control Chart */}
-                            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }} className="apq-section">
                               <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#0f766e', marginBottom: '1rem' }}>📉 Statistical Process Control Chart</h2>
                               <ControlChart series={useDemo ? undefined : (customSeries.length >= 5 ? customSeries : null)} />
                               <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(220, 38, 38, 0.05)', borderRadius: '0.5rem' }}>
@@ -1109,7 +1118,7 @@ Add “Cpk: 1.1” here or in test results for a capability verdict."
                             </div>
 
                             {/* NEW: Capability Analysis */}
-                            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }} className="apq-section">
                               <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#15803d', marginBottom: '1rem' }}>📊 Process Capability Analysis</h2>
                               {useDemo ? (<CapabilityChart cpk={0.89} />) : (customCpk != null ? (<CapabilityChart cpk={customCpk} single={true} />) : (
                               <div style={{ padding: '2.5rem 1rem', textAlign: 'center', color: '#64748b', background: '#f8fafc', borderRadius: '0.5rem', border: '1px dashed #e2e8f0' }}>
@@ -1123,7 +1132,7 @@ Add “Cpk: 1.1” here or in test results for a capability verdict."
                             </div>
 
                             {/* 5-Why - UNCHANGED */}
-                            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }} className="apq-section">
                               <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#0f766e', marginBottom: '1rem' }}>🎯 5-Why Root Cause Analysis</h2>
                               <div style={{ padding: '1.5rem', background: 'rgba(15, 118, 110, 0.06)', border: '1px solid rgba(15, 118, 110, 0.25)', borderRadius: '0.5rem', marginBottom: '1rem' }}>
                                 <div style={{ fontWeight: '600', color: '#64748b', marginBottom: '0.5rem' }}>Root Cause:</div>
@@ -1140,18 +1149,18 @@ Add “Cpk: 1.1” here or in test results for a capability verdict."
                             </div>
 
                             {/* FMEA - UNCHANGED */}
-                            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }} className="apq-section">
                               <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#b45309', marginBottom: '1rem' }}>⚠️ FMEA Analysis</h2>
                               {currentReport.fmeaAnalysis.map((fmea, i) => (
                                 <div key={i} style={{ padding: '1.5rem', background: '#f8fafc', borderRadius: '0.5rem', marginBottom: '1rem', border: '1px solid #e2e8f0' }}>
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
                                     <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#334155' }}>{fmea.failureMode}</h3>
                                     <div style={{ padding: '0.5rem 1rem', background: parseInt(fmea.rpn) > 200 ? 'rgba(220, 38, 38, 0.08)' : 'rgba(180, 83, 9, 0.08)', border: `1px solid ${parseInt(fmea.rpn) > 200 ? '#dc2626' : '#b45309'}`, borderRadius: '0.25rem' }}>
                                       <span style={{ fontSize: '0.75rem', color: '#64748b' }}>RPN: </span>
                                       <span style={{ fontSize: '1.25rem', fontWeight: 'bold', color: parseInt(fmea.rpn) > 200 ? '#dc2626' : '#b45309' }}>{fmea.rpn}</span>
                                     </div>
                                   </div>
-                                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem', marginBottom: '1rem' }}>
+                                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '0.5rem', marginBottom: '1rem' }}>
                                     <div style={{ textAlign: 'center', padding: '0.5rem', background: '#f8fafc', borderRadius: '0.25rem' }}>
                                       <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Severity</div>
                                       <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#dc2626' }}>{fmea.severity}</div>
@@ -1175,7 +1184,7 @@ Add “Cpk: 1.1” here or in test results for a capability verdict."
 
                             {/* Control Plan - demo only */}
                             {useDemo && currentReport.controlPlan && (
-                              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }} className="apq-section">
                                 <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#15803d', marginBottom: '1rem' }}>🛡️ Control Plan</h2>
                                 <p style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '1rem', lineHeight: '1.6' }}>How the gains get locked in — every corrective action lands here with an owner and a cadence before PVT.</p>
                                 <div style={{ overflowX: 'auto' }}>
@@ -1204,7 +1213,7 @@ Add “Cpk: 1.1” here or in test results for a capability verdict."
                             )}
 
                             {/* Gate Decision - UNCHANGED */}
-                            <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                            <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }} className="apq-section">
                               <h2 style={{ fontSize: '2.25rem', fontWeight: 'bold', color: '#b45309', marginBottom: '1rem', textAlign: 'center' }}>
                                 ✅ GATE DECISION
                               </h2>
@@ -1216,8 +1225,8 @@ Add “Cpk: 1.1” here or in test results for a capability verdict."
                         )}
 
                         {/* NEW: Action Items Section */}
-                        <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                        <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }} className="apq-section">
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.5rem' }}>
                             <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#0f766e' }}>✅ Action Item Tracking</h2>
                             <button
                               onClick={addActionItem}
