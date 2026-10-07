@@ -109,21 +109,36 @@
             return recommendations;
         };
         
-        // Meta Ray-Ban Case Study Data
+        // Meta Ray-Ban Case Study Data - Master Black Belt edition
         const metaReport = {
           productName: "Meta Ray-Ban Smart Glasses (Wayfarer)",
           phase: "DVT",
           sampleSize: "500",
-          executiveSummary: "DVT phase analysis reveals significant quality challenges requiring immediate attention before PVT transition. Audio distortion (12% failure rate), camera focus issues (5.2% failure), and battery degradation (15% below target) represent critical blockers. First Pass Yield of 78% falls substantially below the 95% target, with process capability (Cpk=0.89) indicating inadequate process control.",
+          dmaicPhase: "ANALYZE",
+          executiveSummary: "DVT gate assessment (n=500 across 3 builds): first-pass yield of 78% trails the 95% gate target by 17 points; DPMO of 1,200 runs 2.4x the 500 target. The vital few — audio distortion (35%), camera focus defects (22%), battery degradation (15%) — drive 72% of failures. The process is out of statistical control (Western Electric Rule 4 violation) and not capable (Cpk 0.89 vs. 1.33 target) — yet spread is capable (Cp 1.45) while centering is not, so a centering correction alone recovers major capability. Root cause: an unvalidated 50% adhesive cure-time reduction that bypassed change control. Verdict: CONDITIONAL PASS — clear the three corrective actions and demonstrate 30 days of in-control production before PVT. About $4.8M in annualized warranty exposure is at stake.",
           phaseStatus: "CONDITIONAL_PASS",
-          qualityToolsApplied: ["8D", "5-Why", "FMEA", "Pareto", "Fishbone", "SPC"],
+          qualityToolsApplied: ["DMAIC", "8D", "5-Why", "FMEA", "Pareto", "Fishbone", "SPC", "MSA"],
+          charter: {
+            problem: "DVT builds yield 78% first-pass (target 95%) at 1,200 DPMO (target 500) — three defect modes drive 72% of failures.",
+            goal: "Achieve ≥95% yield and Cpk ≥1.33 on all CTQs before PVT exit; contain $4.8M annualized warranty exposure.",
+            scope: "In scope: Build 3 corrective actions across audio, camera, battery. Out of scope: industrial design changes."
+          },
+          ctqs: [
+            { ctq: "Audio distortion (THD)", target: "<5% at max volume", actual: "12% failure rate", status: "FAIL" },
+            { ctq: "Camera focus reliability", target: "≥99% pass", actual: "5.2% cold failure", status: "FAIL" },
+            { ctq: "Battery life", target: "≥5.0 hrs", actual: "4.25 hrs avg", status: "FAIL" },
+            { ctq: "First-pass yield", target: "≥95%", actual: "78%", status: "FAIL" },
+            { ctq: "CTQ capability", target: "Cpk ≥1.33", actual: "Cpk 0.89", status: "FAIL" }
+          ],
+          msaNote: "Gage R&R: audio fixture 18% (marginal — fixture upgrade scheduled before PVT); dimensional and thermal systems <10% (acceptable).",
           keyMetrics: {
             defectDensity: "1,200 DPMO",
             yieldRate: "78%",
+            yieldGap: "-17 pts to target",
             criticalIssues: "3",
             testCoverage: "87%",
-            cpk: "0.89",
-            dpmo: "1,200"
+            capability: "Cp 1.45 / Cpk 0.89",
+            warrantyExposure: "$4.8M/yr"
           },
           paretoAnalysis: {
             top3Issues: [
@@ -131,30 +146,37 @@
               { issue: "Camera Module Defects", percentage: "22%", cumulativePercentage: "57%" },
               { issue: "Battery Performance Issues", percentage: "15%", cumulativePercentage: "72%" }
             ],
-            recommendation: "Focus immediate resources on audio quality (35% of defects) and camera reliability (22%). These two issues account for 57% of all defects."
+            recommendation: "The vital few (3 modes) drive 72% of defects — just short of the classic 80/20, so extend containment to the top 5 modes. Audio alone (35%) exceeds the next two combined: clearing audio + camera (57%) closes more than half the 17-point yield gap. Attack in Pareto order; do not spread resources evenly."
           },
           rootCauseAnalysis: {
-            method: "5-Why with Fishbone Diagram",
-            primaryCause: "Manufacturing process shortcuts driven by production schedule pressure",
+            method: "5-Why with Fishbone Diagram (evidence-backed)",
+            primaryCause: "Change-control gap allowed an unvalidated 50% adhesive cure-time reduction, collapsing speaker bond strength",
             whyChain: [
-              "Why is there audio distortion? → Speaker diaphragm is delaminating from voice coil",
-              "Why is delamination occurring? → Adhesive bond strength is insufficient",
-              "Why is bond strength insufficient? → Adhesive cure time was reduced from 4 hours to 2 hours",
-              "Why was cure time reduced? → To meet production takt time and schedule commitments",
-              "Why wasn't engineering consulted? → Production pressure prioritized schedule over process validation (ROOT CAUSE)"
+              "Why is there audio distortion? → Speaker diaphragm delaminating from voice coil (FA confirmed on 23 of 60 failed units)",
+              "Why delamination? → Adhesive bond strength 40% below spec (pull-test data, n=120, p<0.01 vs. baseline)",
+              "Why low bond strength? → Cure time cut 4h → 2h with no revalidation (ECO-2026-0841, PQ waived)",
+              "Why was it cut? → Takt-time pressure to hit the DVT Build 3 schedule",
+              "Why no engineering review? → The change bypassed the PCN workflow entirely (ROOT CAUSE: change-control gap — corrective action: PCN gate plus automated ECO hold)"
             ]
           },
           fmeaAnalysis: [
-            { failureMode: "Speaker Diaphragm Delamination", severity: "8", occurrence: "7", detection: "5", rpn: "280", recommendedActions: "Restore 4-hour cure time, implement 100% bond pull testing" },
-            { failureMode: "Battery Capacity Degradation", severity: "9", occurrence: "5", detection: "6", rpn: "270", recommendedActions: "Implement tighter voltage regulation, add thermal monitoring" },
-            { failureMode: "Camera Focus Mechanism Sticking", severity: "7", occurrence: "6", detection: "4", rpn: "168", recommendedActions: "Select low-temperature lubricant, implement cold chamber testing" }
+            { failureMode: "Speaker Diaphragm Delamination", severity: "8", occurrence: "7", detection: "5", rpn: "280", recommendedActions: "Restore 4h cure immediately (D. Chen); 100% bond pull test plus SPC on cure temperature by Build 4; add a cure-temperature interlock so the line cannot run outside the validated window." },
+            { failureMode: "Battery Capacity Degradation", severity: "9", occurrence: "5", detection: "6", rpn: "270", recommendedActions: "Tighten voltage regulation to ±1% (EE, 2 wks); add thermal monitoring in ESS; re-score occurrence after a 200-unit validation run." },
+            { failureMode: "Camera Focus Mechanism Sticking", severity: "7", occurrence: "6", detection: "4", rpn: "168", recommendedActions: "Qualify low-temperature lubricant (ME, 3 wks); cold-chamber focus test at -10°C per lot until occurrence drops below 4." }
           ],
           processStability: {
-            controlChartAnalysis: "OUT OF CONTROL at Station 3: 8 consecutive points below centerline (samples 4-11)",
-            processCapability: "NOT CAPABLE - Overall Cpk=0.89 (target: >1.33)",
-            recommendation: "Immediate process stabilization required"
+            controlChartAnalysis: "OUT OF CONTROL — Western Electric Rule 4: 8 consecutive points below the centerline (samples 4–11), a sustained shift, not random variation. Rule 1 (beyond limits): none in this window. Rational subgrouping: n=5 per station per shift.",
+            processCapability: "NOT CAPABLE — Cpk 0.89 (target ≥1.33). Diagnosis: Cp 1.45 (spread capable) vs. Cpk 0.89 → the process is off-center by ~0.5σ. Recentering alone lifts Cpk toward 1.3+ without reducing variation — the fastest path to capability.",
+            recommendation: "Contain the shift (quarantine Build 3 lots), recenter the process, then demonstrate 30 consecutive in-control subgroups before PVT."
           },
-          gateDecision: "CONDITIONAL PASS - Proceed to PVT phase ONLY after successful completion and validation of all corrective actions. Timeline: 4 weeks. Projected warranty savings: $4.8M annually."
+          controlPlan: [
+            { control: "Adhesive cure time/temp", method: "X-bar/R chart + temp profile", frequency: "Per lot", owner: "Process Eng." },
+            { control: "Bond strength", method: "Pull test, n=5 per lot", frequency: "Per lot", owner: "Quality" },
+            { control: "Audio function", method: "100% end-of-line test", frequency: "100%", owner: "Production" },
+            { control: "Camera focus (cold)", method: "Cold-chamber test, -10°C", frequency: "Per shift", owner: "Quality" },
+            { control: "Change control", method: "PCN workflow audit + ECO hold", frequency: "Weekly", owner: "Program Mgr" }
+          ],
+          gateDecision: "CONDITIONAL PASS — clear before PVT: (1) restore the 4h cure and validate with 30 consecutive in-control subgroups; (2) close all FMEA actions with RPN >200 and re-score; (3) demonstrate Cpk ≥1.33 on every CTQ. Re-review in 4 weeks. Entering PVT without closure carries ~$4.8M in annualized warranty exposure."
         };
 
         // Enhanced Pareto Chart Component
@@ -936,7 +958,7 @@ Add “Cpk: 1.1” here or in test results for a capability verdict."
 
                           <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.3)', borderRadius: '0.5rem' }}>
                             <p style={{ fontSize: '0.875rem', color: '#fbbf24', lineHeight: '1.6' }}>
-                              <strong>💡 Note:</strong> This demo displays your data in a structured format. For comprehensive AI-powered analysis using 8D, 5-Why, FMEA, Pareto, Fishbone, and SPC tools, contact me at <strong>mukundvijay@gmail.com</strong>
+                              <strong>💡 Tip:</strong> List one defect per line (e.g. “Scratches: 45”), paste measurements as comma-separated numbers, and write “Cpk: 1.1” in test results — the agent builds your Pareto, SPC chart, capability verdict, 5-Why, FMEA, and gate decision from that.
                             </p>
                           </div>
                         </div>
@@ -986,9 +1008,73 @@ Add “Cpk: 1.1” here or in test results for a capability verdict."
                           )}
                         </div>
 
-                        {/* Only show detailed analysis for demo */}
-                        {useDemo && (
+                        {/* Detailed analysis - demo + custom (all sections are data-driven) */}
+                        {(
                           <>
+                            {/* DMAIC phase strip + Project Charter - demo only */}
+                            {useDemo && currentReport.charter && (
+                              <>
+                                <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '1.5rem', marginBottom: '2rem' }}>
+                                  <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#64ffda', marginBottom: '1rem' }}>🧬 DMAIC Phase: {currentReport.dmaicPhase}</h2>
+                                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                    {['Define', 'Measure', 'Analyze', 'Improve', 'Control'].map((ph) => (
+                                      <div key={ph} style={{ flex: '1 1 0', minWidth: '88px', textAlign: 'center', padding: '0.7rem 0.25rem', borderRadius: '0.5rem', fontWeight: '700', fontSize: '0.78rem',
+                                        background: ph === 'Analyze' ? 'linear-gradient(to right, #64ffda, #a855f7)' : 'rgba(15, 23, 42, 0.8)',
+                                        color: ph === 'Analyze' ? '#0a192f' : '#94a3b8',
+                                        border: ph === 'Analyze' ? 'none' : '1px solid rgba(148, 163, 184, 0.2)' }}>
+                                        {ph.charAt(0)} · {ph}
+                                      </div>
+                                    ))}
+                                  </div>
+                                  <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginTop: '1rem', marginBottom: 0, lineHeight: '1.6' }}>
+                                    Measure complete (n=500, MSA 18% — marginal). Analyze: vital few identified, root cause confirmed via 5-Why and failure analysis. Next: Improve — execute the three corrective actions, then re-measure before the gate re-review.
+                                  </p>
+                                </div>
+
+                                <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                                  <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#3b82f6', marginBottom: '1rem' }}>📋 Project Charter</h2>
+                                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+                                    <div style={{ padding: '1rem', background: 'rgba(10, 25, 47, 0.5)', borderRadius: '0.5rem', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Problem Statement</div>
+                                      <div style={{ color: '#e2e8f0', fontSize: '0.9rem', lineHeight: '1.6' }}>{currentReport.charter.problem}</div>
+                                    </div>
+                                    <div style={{ padding: '1rem', background: 'rgba(10, 25, 47, 0.5)', borderRadius: '0.5rem', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Goal Statement</div>
+                                      <div style={{ color: '#e2e8f0', fontSize: '0.9rem', lineHeight: '1.6' }}>{currentReport.charter.goal}</div>
+                                    </div>
+                                    <div style={{ padding: '1rem', background: 'rgba(10, 25, 47, 0.5)', borderRadius: '0.5rem', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Scope</div>
+                                      <div style={{ color: '#e2e8f0', fontSize: '0.9rem', lineHeight: '1.6' }}>{currentReport.charter.scope}</div>
+                                    </div>
+                                  </div>
+                                  <h3 style={{ fontSize: '1.125rem', fontWeight: '700', color: '#e2e8f0', marginBottom: '0.75rem' }}>Critical-to-Quality (CTQ) Flow-Down</h3>
+                                  <div style={{ overflowX: 'auto' }}>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+                                      <thead>
+                                        <tr style={{ textAlign: 'left', color: '#94a3b8', borderBottom: '1px solid rgba(148, 163, 184, 0.3)' }}>
+                                          <th style={{ padding: '0.6rem' }}>CTQ</th>
+                                          <th style={{ padding: '0.6rem' }}>Target</th>
+                                          <th style={{ padding: '0.6rem' }}>Actual</th>
+                                          <th style={{ padding: '0.6rem' }}>Status</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {currentReport.ctqs.map((c, i) => (
+                                          <tr key={i} style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.12)', color: '#e2e8f0' }}>
+                                            <td style={{ padding: '0.6rem' }}>{c.ctq}</td>
+                                            <td style={{ padding: '0.6rem', color: '#94a3b8' }}>{c.target}</td>
+                                            <td style={{ padding: '0.6rem' }}>{c.actual}</td>
+                                            <td style={{ padding: '0.6rem' }}><span style={{ padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: '700', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444' }}>{c.status}</span></td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                  <p style={{ color: '#94a3b8', fontSize: '0.8rem', marginTop: '1rem', marginBottom: 0, lineHeight: '1.6' }}>🔍 MSA: {currentReport.msaNote}</p>
+                                </div>
+                              </>
+                            )}
+
                             {/* Key Metrics - UNCHANGED */}
                             <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
                               <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#a855f7', marginBottom: '1rem' }}>📊 Key Metrics</h2>
@@ -1086,6 +1172,36 @@ Add “Cpk: 1.1” here or in test results for a capability verdict."
                                 </div>
                               ))}
                             </div>
+
+                            {/* Control Plan - demo only */}
+                            {useDemo && currentReport.controlPlan && (
+                              <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                                <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#22c55e', marginBottom: '1rem' }}>🛡️ Control Plan</h2>
+                                <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginBottom: '1rem', lineHeight: '1.6' }}>How the gains get locked in — every corrective action lands here with an owner and a cadence before PVT.</p>
+                                <div style={{ overflowX: 'auto' }}>
+                                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+                                    <thead>
+                                      <tr style={{ textAlign: 'left', color: '#94a3b8', borderBottom: '1px solid rgba(148, 163, 184, 0.3)' }}>
+                                        <th style={{ padding: '0.6rem' }}>Control</th>
+                                        <th style={{ padding: '0.6rem' }}>Method</th>
+                                        <th style={{ padding: '0.6rem' }}>Frequency</th>
+                                        <th style={{ padding: '0.6rem' }}>Owner</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {currentReport.controlPlan.map((r, i) => (
+                                        <tr key={i} style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.12)', color: '#e2e8f0' }}>
+                                          <td style={{ padding: '0.6rem', fontWeight: '600' }}>{r.control}</td>
+                                          <td style={{ padding: '0.6rem', color: '#94a3b8' }}>{r.method}</td>
+                                          <td style={{ padding: '0.6rem' }}>{r.frequency}</td>
+                                          <td style={{ padding: '0.6rem' }}>{r.owner}</td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            )}
 
                             {/* Gate Decision - UNCHANGED */}
                             <div style={{ background: 'linear-gradient(to right, rgba(251, 191, 36, 0.2), rgba(239, 68, 68, 0.2))', border: '2px solid rgba(251, 191, 36, 0.5)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
