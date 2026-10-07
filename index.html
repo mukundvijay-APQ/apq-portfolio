@@ -1637,6 +1637,17 @@
                 <a href="https://mukundvijay-apq.github.io/apq-portfolio/stakeholder-engagement-tracker.html" target="_blank" rel="noopener" class="tool-btn tool-btn-primary">Launch Tracker →</a>
             </div>
         </div>
+        <!-- AI Readiness Assessment -->
+        <div class="tool-card fade-up stagger-1">
+            <span class="tool-badge badge-live">Live</span>
+            <div class="tool-emoji">🧭</div>
+            <div class="tool-name">AI Readiness Assessment</div>
+            <div class="tool-desc">How AI-ready is your quality organization? Six questions, two minutes, and a straight answer — plus your highest-leverage next move, mapped to the right engagement.</div>
+            <div class="tool-features">6 questions • Instant scored readout • Personalized recommendations</div>
+            <div class="tool-actions">
+                <a href="ai-readiness.html" class="tool-btn tool-btn-primary">Take the Assessment →</a>
+            </div>
+        </div>
         <!-- Predictive Analytics -->
         <div class="tool-card coming-soon fade-up stagger-1">
             <span class="tool-badge badge-soon">Coming Soon</span>
@@ -1858,6 +1869,126 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+<!-- ============ APQ CONCIERGE (AI chat assistant) ============ -->
+<style>
+    #apq-fab { position: fixed; right: 22px; bottom: 22px; width: 58px; height: 58px; border-radius: 50%;
+        background: #16213e; color: #fff; border: none; font-size: 26px; cursor: pointer; z-index: 9998;
+        box-shadow: 0 6px 24px rgba(22,33,62,.35); transition: transform .18s ease; }
+    #apq-fab:hover { transform: scale(1.08); }
+    #apq-panel { position: fixed; right: 22px; bottom: 94px; width: 372px; max-width: calc(100vw - 44px);
+        height: 520px; max-height: calc(100vh - 130px); background: #fff; border-radius: 16px; z-index: 9999;
+        box-shadow: 0 18px 60px rgba(22,33,62,.28); display: flex; flex-direction: column; overflow: hidden;
+        border: 1px solid #e8e4da; font-family: 'DM Sans', sans-serif; }
+    #apq-panel[hidden] { display: none; }
+    .apq-head { background: #16213e; color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .apq-head strong { font-size: 1rem; display: block; }
+    .apq-head span { font-size: .75rem; opacity: .75; display: block; }
+    #apq-close { background: none; border: none; color: #fff; font-size: 1.1rem; cursor: pointer; opacity: .8; }
+    #apq-msgs { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: #FAFAF8; }
+    .apq-msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: .92rem; line-height: 1.5; }
+    .apq-msg.bot { background: #fff; border: 1px solid #e8e4da; align-self: flex-start; border-bottom-left-radius: 4px; }
+    .apq-msg.user { background: #16213e; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .apq-msg a { color: #c9a227; }
+    .apq-typing { font-style: italic; opacity: .6; }
+    .apq-chips { display: flex; gap: 8px; padding: 10px 14px; flex-wrap: wrap; background: #FAFAF8; border-top: 1px solid #e8e4da; }
+    .apq-chips button { background: #fff; border: 1px solid #e8e4da; border-radius: 20px; padding: 6px 14px;
+        font-size: .8rem; cursor: pointer; font-family: inherit; color: #16213e; }
+    .apq-chips button:hover { border-color: #16213e; }
+    .apq-input { display: flex; border-top: 1px solid #e8e4da; background: #fff; }
+    #apq-text { flex: 1; border: none; padding: 14px 16px; font-size: .92rem; font-family: inherit; outline: none; }
+    #apq-send { background: #16213e; color: #fff; border: none; padding: 0 20px; font-size: 1.2rem; cursor: pointer; }
+    #apq-send:disabled { opacity: .5; cursor: default; }
+</style>
+<button id="apq-fab" aria-label="Chat with the APQ assistant">⚡</button>
+<div id="apq-panel" hidden role="dialog" aria-label="APQ assistant chat">
+    <div class="apq-head">
+        <div><strong>Ask APQ</strong><span>AI concierge · answers instantly</span></div>
+        <button id="apq-close" aria-label="Close chat">✕</button>
+    </div>
+    <div id="apq-msgs"></div>
+    <div class="apq-chips">
+        <button data-q="What is APQ?">What is APQ?</button>
+        <button data-q="How can I work with Mukund?">Work with me</button>
+        <button data-q="What AI tools has he built?">The tools</button>
+    </div>
+    <div class="apq-input">
+        <input id="apq-text" type="text" placeholder="Ask about APQ, quality AI, working together…" maxlength="500" autocomplete="off">
+        <button id="apq-send" aria-label="Send">→</button>
+    </div>
+</div>
+<script>
+(function () {
+    // ── Set this to your deployed Cloudflare Worker URL after following apq-concierge-worker.js ──
+    const WORKER_URL = "https://apq-concierge.YOUR-SUBDOMAIN.workers.dev/chat";
+
+    const fab = document.getElementById('apq-fab');
+    const panel = document.getElementById('apq-panel');
+    const msgs = document.getElementById('apq-msgs');
+    const input = document.getElementById('apq-text');
+    const sendBtn = document.getElementById('apq-send');
+    const history = [];
+    let opened = false;
+
+    function addMsg(text, who) {
+        const d = document.createElement('div');
+        d.className = 'apq-msg ' + who;
+        d.innerHTML = text;
+        msgs.appendChild(d);
+        msgs.scrollTop = msgs.scrollHeight;
+        return d;
+    }
+    function greet() {
+        addMsg("Hi, I'm the APQ concierge ⚡ — I can answer questions about Mukund, the APQ framework, the live AI tools on this site, or how to work together. What's on your mind?", 'bot');
+    }
+    fab.addEventListener('click', () => {
+        panel.hidden = !panel.hidden;
+        if (!panel.hidden && !opened) { opened = true; greet(); input.focus(); }
+    });
+    document.getElementById('apq-close').addEventListener('click', () => { panel.hidden = true; });
+    document.querySelectorAll('.apq-chips button').forEach(b =>
+        b.addEventListener('click', () => { input.value = b.dataset.q; send(); }));
+
+    function fallbackReply() {
+        return "The live concierge isn't connected yet — but Mukund reads every note himself. " +
+            "Email him at <a href='mailto:mukund.vijay@gmail.com'>mukund.vijay@gmail.com</a> " +
+            "or explore the <a href='#work-with-me'>Work With Me</a> section for the three ways to engage.";
+    }
+
+    async function send() {
+        const text = input.value.trim();
+        if (!text) return;
+        input.value = '';
+        addMsg(text.replace(/</g, '&lt;'), 'user');
+        history.push({ role: 'user', content: text });
+
+        if (WORKER_URL.includes('YOUR-SUBDOMAIN')) {
+            addMsg(fallbackReply(), 'bot');
+            return;
+        }
+        sendBtn.disabled = true;
+        const typing = addMsg('<span class="apq-typing">thinking…</span>', 'bot');
+        try {
+            const r = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages: history.slice(-10) })
+            });
+            if (!r.ok) throw new Error('bad response');
+            const data = await r.json();
+            typing.remove();
+            const reply = (data.reply || '').replace(/</g, '&lt;').replace(/\n/g, '<br>');
+            addMsg(reply || fallbackReply(), 'bot');
+            history.push({ role: 'assistant', content: data.reply || '' });
+        } catch (e) {
+            typing.remove();
+            addMsg("Hmm, I lost my connection for a moment. Try again — or reach Mukund directly at <a href='mailto:mukund.vijay@gmail.com'>mukund.vijay@gmail.com</a>.", 'bot');
+        }
+        sendBtn.disabled = false;
+    }
+    sendBtn.addEventListener('click', send);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+})();
 </script>
 </body>
 </html>

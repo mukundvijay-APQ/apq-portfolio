@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Readiness Assessment | APQ — AI Powered Quality</title>
+    <meta name="description" content="How AI-ready is your quality organization? Take the 2-minute APQ assessment and get a personalized readout with your next best move.">
+    <link rel="canonical" href="https://mukundvijay-apq.github.io/apq-portfolio/ai-readiness.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AI Readiness Assessment | APQ">
+    <meta property="og:description" content="How AI-ready is your quality organization? 2-minute assessment, personalized readout.">
+    <meta property="og:url" content="https://mukundvijay-apq.github.io/apq-portfolio/ai-readiness.html">
+    <meta property="og:image" content="https://mukundvijay-apq.github.io/apq-portfolio/og-image.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FAFAF8; --ink: #1a1a2e; --muted: #5b5b6e;
+            --accent: #16213e; --gold: #c9a227; --card: #ffffff;
+            --border: #e8e4da; --good: #1e7e46; --mid: #b7791f; --low: #b3372f;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; }
+        .wrap { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+        .back { display: inline-block; margin-bottom: 32px; color: var(--muted); text-decoration: none; font-size: .9rem; }
+        .back:hover { color: var(--ink); }
+        h1 { font-family: 'Playfair Display', serif; font-size: 2.4rem; line-height: 1.2; margin-bottom: 12px; }
+        h1 em { color: var(--gold); font-style: italic; }
+        .lede { color: var(--muted); font-size: 1.08rem; margin-bottom: 8px; }
+        .meta { color: var(--muted); font-size: .85rem; margin-bottom: 40px; }
+        .progress { height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 36px; overflow: hidden; }
+        .progress > div { height: 100%; background: var(--accent); width: 0; transition: width .4s ease; border-radius: 3px; }
+        .q { display: none; }
+        .q.active { display: block; animation: fade .35s ease; }
+        @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+        .q-num { font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 8px; }
+        .q-text { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 24px; line-height: 1.35; }
+        .opt { display: block; width: 100%; text-align: left; background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; font-family: inherit; font-size: 1rem; color: var(--ink); cursor: pointer; transition: all .18s ease; }
+        .opt:hover { border-color: var(--accent); transform: translateX(4px); }
+        .opt small { display: block; color: var(--muted); font-size: .85rem; margin-top: 2px; }
+        #result { display: none; }
+        .score-ring { width: 148px; height: 148px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 28px; border: 6px solid var(--accent); background: var(--card); }
+        .score-ring .n { font-family: 'Playfair Display', serif; font-size: 2.6rem; font-weight: 700; line-height: 1; }
+        .score-ring .d { font-size: .8rem; color: var(--muted); }
+        .tier { text-align: center; font-family: 'Playfair Display', serif; font-size: 1.9rem; margin-bottom: 6px; }
+        .tier-sub { text-align: center; color: var(--muted); margin-bottom: 28px; }
+        .recs { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 28px; }
+        .recs h3 { font-size: 1.05rem; margin-bottom: 14px; }
+        .recs li { margin-bottom: 10px; margin-left: 20px; }
+        .cta-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+        .btn { display: inline-block; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform .15s ease; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-ghost { border: 1.5px solid var(--border); color: var(--ink); background: var(--card); }
+        .note { text-align: center; color: var(--muted); font-size: .85rem; margin-top: 24px; }
+        .restart { display: block; text-align: center; margin-top: 16px; color: var(--muted); background: none; border: none; cursor: pointer; font-family: inherit; font-size: .9rem; text-decoration: underline; }
+        footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 32px 0 0; }
+        footer a { color: var(--muted); }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <a class="back" href="index.html">← Back to APQ Portfolio</a>
+
+    <div id="quiz">
+        <h1>How <em>AI-ready</em> is your quality org?</h1>
+        <p class="lede">Six questions. Two minutes. A straight answer about where you stand — and the highest-leverage next move.</p>
+        <p class="meta">Built on the APQ framework · 15+ years of quality engineering distilled</p>
+        <div class="progress"><div id="bar"></div></div>
+        <div id="questions"></div>
+    </div>
+
+    <div id="result">
+        <div class="score-ring"><span class="n" id="scoreN">0</span><span class="d">/ 18</span></div>
+        <div class="tier" id="tierName"></div>
+        <p class="tier-sub" id="tierSub"></p>
+        <div class="recs">
+            <h3>Your highest-leverage moves</h3>
+            <ul id="recList"></ul>
+        </div>
+        <div class="cta-row">
+            <a class="btn btn-primary" id="ctaMain" href="#">→</a>
+            <a class="btn btn-ghost" id="ctaMail" href="#">Email me my report</a>
+        </div>
+        <p class="note">No spam, no drip sequence. Your report goes to Mukund directly — a human reads it.</p>
+        <button class="restart" onclick="location.reload()">Retake assessment</button>
+    </div>
+
+    <footer>APQ — AI Powered Quality · <a href="index.html">mukundvijay-apq.github.io</a></footer>
+</div>
+
+<script>
+const QUESTIONS = [
+    { q: "Where does your quality data live?",
+      opts: ["Scattered across spreadsheets and inboxes", "Shared drives, but inconsistent formats", "Centralized in a QMS or database", "Centralized — streaming in near real time"] },
+    { q: "How long does a quality report (8D, FMEA, SPC) take to produce?",
+      opts: ["Days — it's a manual slog", "About a full day", "A few hours with templates", "Minutes — mostly automated"] },
+    { q: "Has your team used AI tools (ChatGPT, Claude, etc.) in quality workflows?",
+      opts: ["Never", "Experimented personally, not at work", "A few pilots inside the team", "Embedded in daily workflows"] },
+    { q: "How do you usually find root causes?",
+      opts: ["Tribal knowledge and long meetings", "Manual 5-Why / 8D documents", "Structured 8D / FMEA backed by data", "Data-driven, AI-assisted analysis"] },
+    { q: "What's leadership's stance on AI in operations?",
+      opts: ["Skeptical or unaware", "Curious, but no budget", "Supportive, with a small budget", "Actively championing and funding it"] },
+    { q: "When a defect escapes to a customer, what happens?",
+      opts: ["Firefight, then move on", "Contain it — corrective action, inconsistently", "Formal CAPA, every time", "CAPA plus the system learns to prevent recurrence"] },
+];
+
+const TIERS = [
+    { min: 0, max: 6, name: "Reactive Mode", color: "#b3372f",
+      sub: "You're fighting fires with manual tools. The good news: this is where the fastest wins live.",
+      recs: [
+        "Pick ONE recurring report and automate it — that's your proof-of-concept.",
+        "Centralize your top 3 quality data sources before buying any AI tool.",
+        "Get an outside read on where AI pays back first, before spending budget."
+      ],
+      cta: "Start with an AI Opportunity Audit", href: "mailto:mukund.vijay@gmail.com?subject=AI%20Opportunity%20Audit%20—%20from%20readiness%20quiz" },
+    { min: 7, max: 12, name: "Emerging", color: "#b7791f",
+      sub: "The foundations exist and pilots are happening. Time to turn experiments into production wins.",
+      recs: [
+        "Promote your best pilot to a production workflow with real owners.",
+        "Connect one more data source — VOC, torque, or field returns — to your quality view.",
+        "Ship one working automation this quarter and measure the hours it saves."
+      ],
+      cta: "Build a Quick-Win with me", href: "mailto:mukund.vijay@gmail.com?subject=Quick-Win%20Build%20—%20from%20readiness%20quiz" },
+    { min: 13, max: 18, name: "AI-Ready", color: "#1e7e46",
+      sub: "You're ahead of most orgs. The game now is scale, governance, and compounding the advantage.",
+      recs: [
+        "Systematize what's working into repeatable playbooks across product lines.",
+        "Add predictive signals — anomaly detection on your streaming quality data.",
+        "Keep a senior advisor in the loop as you scale to the next product generation."
+      ],
+      cta: "Talk about an Advisor Retainer", href: "mailto:mukund.vijay@gmail.com?subject=Advisor%20Retainer%20—%20from%20readiness%20quiz" },
+];
+
+let idx = 0, score = 0;
+const qWrap = document.getElementById('questions');
+const bar = document.getElementById('bar');
+
+QUESTIONS.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'q' + (i === 0 ? ' active' : '');
+    div.innerHTML = `<div class="q-num">Question ${i+1} of ${QUESTIONS.length}</div>
+        <div class="q-text">${item.q}</div>` +
+        item.opts.map((o, j) => `<button class="opt" data-s="${j}">${o}</button>`).join('');
+    div.querySelectorAll('.opt').forEach(btn => {
+        btn.addEventListener('click', () => {
+            score += parseInt(btn.dataset.s, 10);
+            div.classList.remove('active');
+            idx++;
+            bar.style.width = (idx / QUESTIONS.length * 100) + '%';
+            if (idx < QUESTIONS.length) {
+                qWrap.children[idx].classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                showResult();
+            }
+        });
+    });
+    qWrap.appendChild(div);
+});
+
+function showResult() {
+    const tier = TIERS.find(t => score >= t.min && score <= t.max);
+    document.getElementById('quiz').style.display = 'none';
+    const res = document.getElementById('result');
+    res.style.display = 'block';
+    document.getElementById('scoreN').textContent = score;
+    document.querySelector('.score-ring').style.borderColor = tier.color;
+    document.getElementById('tierName').textContent = tier.name;
+    document.getElementById('tierSub').textContent = tier.sub;
+    document.getElementById('recList').innerHTML = tier.recs.map(r => `<li>${r}</li>`).join('');
+    const cta = document.getElementById('ctaMain');
+    cta.textContent = tier.cta + ' →';
+    cta.href = tier.href;
+    const body = encodeURIComponent(`Hi Mukund,\n\nI took the APQ AI Readiness Assessment and scored ${score}/18 — "${tier.name}".\n\nMy top answers suggest: ${tier.recs[0]}\n\nI'd like to discuss next steps.\n\nThanks!`);
+    document.getElementById('ctaMail').href =
+        `mailto:mukund.vijay@gmail.com?subject=${encodeURIComponent(`My AI Readiness score: ${score}/18 — ${tier.name}`)}&body=${body}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
