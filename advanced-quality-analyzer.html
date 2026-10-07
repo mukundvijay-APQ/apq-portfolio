@@ -22,7 +22,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="agent-brief" style="background:#16213e;color:#fff;font-family:'DM Sans',sans-serif;padding:14px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:.92rem;line-height:1.5;border-bottom:2px solid #c9a227;">
+    <span style="font-size:1.3rem;">⚡</span>
+    <div style="flex:1;min-width:240px;"><b>Gate Review Agent</b> — Walking into a DVT gate review? Enter your defect data below — the agent builds your Pareto, SPC control charts, capability indices, and gate-risk verdict.<div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;"><span class='ab-step'>1 · Enter quality data</span><span class='ab-step'>2 · Review auto-analysis</span><span class='ab-step'>3 · Export gate report</span></div></div>
+    <button onclick="document.getElementById('agent-brief').remove();sessionStorage.setItem('ab-hide','1');" aria-label="Dismiss" style="background:none;border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:8px;padding:4px 12px;cursor:pointer;font-size:.85rem;">✕</button>
+</div>
+<script>if(sessionStorage.getItem('ab-hide'))document.getElementById('agent-brief').remove();</script>
+<style>.ab-step{background:rgba(255,255,255,.12);border-radius:20px;padding:3px 12px;font-size:.78rem;}</style>
+<div id="root"></div>
     
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;

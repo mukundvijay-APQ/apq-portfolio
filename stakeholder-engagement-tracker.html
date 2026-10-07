@@ -121,6 +121,14 @@
     </style>
 </head>
 <body class="bg-gray-50">
+<div id="agent-brief" style="background:#16213e;color:#fff;font-family:'DM Sans',sans-serif;padding:14px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:.92rem;line-height:1.5;border-bottom:2px solid #c9a227;">
+    <span style="font-size:1.3rem;">⚡</span>
+    <div style="flex:1;min-width:240px;"><b>Stakeholder Agent</b> — Pre-loaded with a smart-glasses NPI scenario. Explore engagement scores, risk flags, and discovery scripts across every stakeholder.<div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;"><span class='ab-step'>1 · Pick a stakeholder</span><span class='ab-step'>2 · Check risk flags</span><span class='ab-step'>3 · Use the scripts</span></div></div>
+    <button onclick="document.getElementById('agent-brief').remove();sessionStorage.setItem('ab-hide','1');" aria-label="Dismiss" style="background:none;border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:8px;padding:4px 12px;cursor:pointer;font-size:.85rem;">✕</button>
+</div>
+<script>if(sessionStorage.getItem('ab-hide'))document.getElementById('agent-brief').remove();</script>
+<style>.ab-step{background:rgba(255,255,255,.12);border-radius:20px;padding:3px 12px;font-size:.78rem;}</style>
+
     <div class="max-w-7xl mx-auto p-4 md:p-8">
         <!-- Header -->
         <div class="apq-gradient rounded-2xl p-8 mb-6 shadow-lg">
