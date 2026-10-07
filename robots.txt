@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mukundvijay-apq.github.io/apq-portfolio/sitemap.xml
