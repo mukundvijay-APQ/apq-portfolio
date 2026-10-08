@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>APQ VOC - Backend Integration Demo</title>
+<style>
+@media (max-width: 640px) {
+  .apq-root { padding: 1rem !important; }
+  .apq-h1 { font-size: 1.7rem !important; }
+}
+</style>
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2MS88FQKS6"></script>
@@ -22,10 +28,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
-    <div id="agent-brief" style="background:#16213e;color:#fff;font-family:'DM Sans',sans-serif;padding:14px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:.92rem;line-height:1.5;border-bottom:2px solid #c9a227;">
+    <div id="agent-brief" style="background:#f8fafc;color:#334155;font-family:'DM Sans',sans-serif;padding:14px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:.92rem;line-height:1.5;border-bottom:2px solid #0f766e;">
     <span style="font-size:1.3rem;">⚡</span>
     <div style="flex:1;min-width:240px;"><b>Voice-of-Customer Agent</b> — Paste a product URL to analyze real customer reviews — themes, Cpk / DPMO / Sigma scoring, and NPI-mapped corrective actions.<div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;"><span class='ab-step'>1 · Paste product URL</span><span class='ab-step'>2 · Run analysis</span><span class='ab-step'>3 · Prioritize fixes</span></div></div>
-    <button onclick="document.getElementById('agent-brief').remove();sessionStorage.setItem('ab-hide','1');" aria-label="Dismiss" style="background:none;border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:8px;padding:4px 12px;cursor:pointer;font-size:.85rem;">✕</button>
+    <button onclick="document.getElementById('agent-brief').remove();sessionStorage.setItem('ab-hide','1');" aria-label="Dismiss" style="background:none;border:1px solid #cbd5e1;color:#475569;border-radius:8px;padding:4px 12px;cursor:pointer;font-size:.85rem;">✕</button>
 </div>
 <script>if(sessionStorage.getItem('ab-hide'))document.getElementById('agent-brief').remove();</script>
 <style>.ab-step{background:rgba(255,255,255,.12);border-radius:20px;padding:3px 12px;font-size:.78rem;}</style>
@@ -521,18 +527,18 @@
                                 label: 'Number of Reviews',
                                 data: distribution.map(d => d.count),
                                 backgroundColor: [
-                                    'rgba(239, 68, 68, 0.6)',
-                                    'rgba(251, 191, 36, 0.6)',
-                                    'rgba(59, 130, 246, 0.6)',
-                                    'rgba(34, 197, 94, 0.6)',
-                                    'rgba(100, 255, 218, 0.6)'
+                                    'rgba(220, 38, 38, 0.6)',
+                                    'rgba(217, 119, 6, 0.6)',
+                                    'rgba(37, 99, 235, 0.6)',
+                                    'rgba(22, 163, 74, 0.6)',
+                                    'rgba(15, 118, 110, 0.6)'
                                 ],
                                 borderColor: [
-                                    '#ef4444',
-                                    '#fbbf24',
-                                    '#3b82f6',
-                                    '#22c55e',
-                                    '#64ffda'
+                                    '#dc2626',
+                                    '#d97706',
+                                    '#2563eb',
+                                    '#16a34a',
+                                    '#0f766e'
                                 ],
                                 borderWidth: 2
                             }]
@@ -544,12 +550,12 @@
                             scales: {
                                 y: {
                                     beginAtZero: true,
-                                    ticks: { color: '#94a3b8', stepSize: 1 },
-                                    grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                                    ticks: { color: '#64748b', stepSize: 1 },
+                                    grid: { color: 'rgba(100, 116, 139, 0.22)' }
                                 },
                                 x: {
-                                    ticks: { color: '#94a3b8' },
-                                    grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                                    ticks: { color: '#64748b' },
+                                    grid: { color: 'rgba(100, 116, 139, 0.22)' }
                                 }
                             }
                         }
@@ -643,50 +649,50 @@
             };
             
             return (
-                <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #0a192f, #1e293b)', color: 'white', padding: '2rem' }}>
+                <div className="apq-root" style={{ minHeight: '100vh', background: '#f1f5f9', color: '#0f172a', padding: '2rem' }}>
                     <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
                         
                         {/* Header */}
                         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                            <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '0.5rem', background: 'linear-gradient(to right, #64ffda, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                            <h1 className="apq-h1" style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#0f172a' }}>
                                 🎧 Voice of Customer Analysis
                             </h1>
-                            <p style={{ color: '#8892b0', fontSize: '1.1rem', marginBottom: '1rem' }}>
+                            <p style={{ color: '#475569', fontSize: '1.1rem', marginBottom: '1rem' }}>
                                 AI-powered customer review analysis for any Amazon product with statistical quality metrics
                             </p>
-                            <div style={{ display: 'inline-block', padding: '0.75rem 1.5rem', background: 'rgba(100, 255, 218, 0.1)', border: '1px solid rgba(100, 255, 218, 0.3)', borderRadius: '0.5rem' }}>
-                                <p style={{ color: '#64ffda', fontSize: '0.875rem', margin: 0 }}>
+                            <div style={{ display: 'inline-block', padding: '0.75rem 1.5rem', background: 'rgba(15, 118, 110, 0.1)', border: '1px solid rgba(15, 118, 110, 0.3)', borderRadius: '0.5rem' }}>
+                                <p style={{ color: '#0f766e', fontSize: '0.875rem', margin: 0 }}>
                                     💡 <strong>Demo Mode:</strong> Paste any Amazon product URL to analyze customer reviews with Cpk, DPMO, and Sigma Level calculations
                                 </p>
                             </div>
                         </div>
                         
                         {/* URL Input */}
-                        <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
-                            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#64ffda', marginBottom: '1rem' }}>
+                        <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#0f766e', marginBottom: '1rem' }}>
                                 🔗 Enter Product Review URL
                             </h2>
                             
                             <div style={{ marginBottom: '1rem' }}>
-                                <p style={{ color: '#94a3b8', fontSize: '0.95rem', marginBottom: '0.75rem' }}>
+                                <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '0.75rem' }}>
                                     Try these example Amazon products (with real review counts):
                                 </p>
                                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
                                     <button
                                         onClick={() => tryExampleUrl('https://www.amazon.com/Echo-Frames-3rd-Gen-Smart-audio-glasses-with-Alexa--Modern-Rectangle-frames-in-charcoal-gray--with-blue-light-filtering-lenses/dp/B09SVHP9X8/')}
-                                        style={{ padding: '0.5rem 1rem', background: 'rgba(100, 255, 218, 0.1)', color: '#64ffda', border: '1px solid rgba(100, 255, 218, 0.3)', borderRadius: '0.25rem', fontSize: '0.875rem', cursor: 'pointer' }}
+                                        style={{ padding: '0.5rem 1rem', background: 'rgba(15, 118, 110, 0.1)', color: '#0f766e', border: '1px solid rgba(15, 118, 110, 0.3)', borderRadius: '0.25rem', fontSize: '0.875rem', cursor: 'pointer' }}
                                     >
                                         Echo Frames (467 reviews)
                                     </button>
                                     <button
                                         onClick={() => tryExampleUrl('https://www.amazon.com/Amazon-Kindle-Colorsoft-Kids-Starlight/dp/B0DZ9NMQ2K/')}
-                                        style={{ padding: '0.5rem 1rem', background: 'rgba(168, 85, 247, 0.1)', color: '#a855f7', border: '1px solid rgba(168, 85, 247, 0.3)', borderRadius: '0.25rem', fontSize: '0.875rem', cursor: 'pointer' }}
+                                        style={{ padding: '0.5rem 1rem', background: 'rgba(15, 118, 110, 0.1)', color: '#0f766e', border: '1px solid rgba(15, 118, 110, 0.3)', borderRadius: '0.25rem', fontSize: '0.875rem', cursor: 'pointer' }}
                                     >
                                         Kindle (348 reviews)
                                     </button>
                                     <button
                                         onClick={() => tryExampleUrl('https://www.amazon.com/Apple-AirPods-Pro-2nd-Generation/dp/B0CHWRXH8B/')}
-                                        style={{ padding: '0.5rem 1rem', background: 'rgba(251, 191, 36, 0.1)', color: '#fbbf24', border: '1px solid rgba(251, 191, 36, 0.3)', borderRadius: '0.25rem', fontSize: '0.875rem', cursor: 'pointer' }}
+                                        style={{ padding: '0.5rem 1rem', background: 'rgba(217, 119, 6, 0.1)', color: '#d97706', border: '1px solid rgba(217, 119, 6, 0.3)', borderRadius: '0.25rem', fontSize: '0.875rem', cursor: 'pointer' }}
                                     >
                                         AirPods Pro (890 reviews)
                                     </button>
@@ -698,7 +704,7 @@
                                 value={productUrl}
                                 onChange={(e) => setProductUrl(e.target.value)}
                                 placeholder="https://www.amazon.com/product/dp/B08XYZ1234"
-                                style={{ width: '100%', padding: '0.75rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '0.5rem', color: 'white', fontSize: '0.95rem', marginBottom: '1rem' }}
+                                style={{ width: '100%', padding: '0.75rem', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '0.5rem', color: '#0f172a', fontSize: '0.95rem', marginBottom: '1rem' }}
                             />
                             
                             <button
@@ -706,7 +712,7 @@
                                 disabled={isLoading}
                                 style={{
                                     padding: '0.75rem 2rem',
-                                    background: isLoading ? 'rgba(100, 255, 218, 0.3)' : 'linear-gradient(to right, #64ffda, #a855f7)',
+                                    background: isLoading ? '#b9ddd9' : '#0f766e',
                                     color: 'white',
                                     border: 'none',
                                     borderRadius: '0.5rem',
@@ -721,20 +727,20 @@
                             
                             {/* Progress Bar */}
                             {progress && (
-                                <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '0.5rem' }}>
+                                <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(37, 99, 235, 0.1)', border: '1px solid rgba(37, 99, 235, 0.3)', borderRadius: '0.5rem' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                        <span style={{ color: '#3b82f6', fontSize: '0.875rem', fontWeight: '600' }}>
+                                        <span style={{ color: '#2563eb', fontSize: '0.875rem', fontWeight: '600' }}>
                                             Page {progress.page} of {progress.totalPages}
                                         </span>
-                                        <span style={{ color: '#64ffda', fontSize: '0.875rem', fontWeight: '600' }}>
+                                        <span style={{ color: '#0f766e', fontSize: '0.875rem', fontWeight: '600' }}>
                                             {progress.reviewsScraped} / {progress.totalReviews} reviews
                                         </span>
                                     </div>
-                                    <div style={{ width: '100%', height: '8px', background: 'rgba(15, 23, 42, 0.8)', borderRadius: '9999px', overflow: 'hidden' }}>
+                                    <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '9999px', overflow: 'hidden' }}>
                                         <div style={{
                                             width: `${(progress.reviewsScraped / progress.totalReviews) * 100}%`,
                                             height: '100%',
-                                            background: 'linear-gradient(to right, #64ffda, #3b82f6)',
+                                            background: '#0f766e',
                                             transition: 'width 0.3s ease'
                                         }}></div>
                                     </div>
@@ -745,18 +751,18 @@
                                 <div style={{
                                     marginTop: '1rem',
                                     padding: '0.75rem 1rem',
-                                    background: statusMessage.startsWith('✅') ? 'rgba(34, 197, 94, 0.1)' : 
-                                               statusMessage.startsWith('⏳') ? 'rgba(59, 130, 246, 0.1)' :
-                                               'rgba(239, 68, 68, 0.1)',
-                                    border: `1px solid ${statusMessage.startsWith('✅') ? '#22c55e' : 
-                                                         statusMessage.startsWith('⏳') ? '#3b82f6' : 
-                                                         '#ef4444'}`,
+                                    background: statusMessage.startsWith('✅') ? 'rgba(22, 163, 74, 0.1)' : 
+                                               statusMessage.startsWith('⏳') ? 'rgba(37, 99, 235, 0.1)' :
+                                               'rgba(220, 38, 38, 0.1)',
+                                    border: `1px solid ${statusMessage.startsWith('✅') ? '#16a34a' : 
+                                                         statusMessage.startsWith('⏳') ? '#2563eb' : 
+                                                         '#dc2626'}`,
                                     borderRadius: '0.5rem'
                                 }}>
                                     <p style={{
-                                        color: statusMessage.startsWith('✅') ? '#22c55e' : 
-                                               statusMessage.startsWith('⏳') ? '#3b82f6' :
-                                               '#ef4444',
+                                        color: statusMessage.startsWith('✅') ? '#16a34a' : 
+                                               statusMessage.startsWith('⏳') ? '#2563eb' :
+                                               '#dc2626',
                                         fontSize: '0.875rem',
                                         margin: 0
                                     }}>
@@ -771,37 +777,37 @@
                             <>
                                 {/* Data Source Indicator */}
                                 <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
-                                    <div style={{ display: 'inline-block', padding: '0.5rem 1.5rem', background: 'rgba(100, 255, 218, 0.1)', border: '1px solid rgba(100, 255, 218, 0.3)', borderRadius: '9999px' }}>
-                                        <span style={{ color: '#64ffda', fontSize: '0.875rem', fontWeight: '600' }}>
+                                    <div style={{ display: 'inline-block', padding: '0.5rem 1.5rem', background: 'rgba(15, 118, 110, 0.1)', border: '1px solid rgba(15, 118, 110, 0.3)', borderRadius: '9999px' }}>
+                                        <span style={{ color: '#0f766e', fontSize: '0.875rem', fontWeight: '600' }}>
                                             📊 Analyzing {analysis.stats.totalReviews} reviews from {dataSource}
                                         </span>
                                     </div>
                                 </div>
                                 
                                 {/* Statistical Summary */}
-                                <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
-                                    <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#64ffda', marginBottom: '1.5rem' }}>📊 Statistical Analysis</h2>
+                                <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem', marginBottom: '2rem' }}>
+                                    <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#0f766e', marginBottom: '1.5rem' }}>📊 Statistical Analysis</h2>
                                     
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-                                        <div style={{ padding: '1.5rem', background: 'rgba(100, 255, 218, 0.1)', border: '1px solid rgba(100, 255, 218, 0.3)', borderRadius: '0.5rem', textAlign: 'center' }}>
-                                            <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.5rem' }}>AVG RATING</div>
-                                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#64ffda' }}>{analysis.stats.mean}</div>
+                                        <div style={{ padding: '1.5rem', background: 'rgba(15, 118, 110, 0.1)', border: '1px solid rgba(15, 118, 110, 0.3)', borderRadius: '0.5rem', textAlign: 'center' }}>
+                                            <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.5rem' }}>AVG RATING</div>
+                                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#0f766e' }}>{analysis.stats.mean}</div>
                                         </div>
-                                        <div style={{ padding: '1.5rem', background: parseFloat(analysis.stats.Cpk) >= 1.33 ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)', border: `1px solid ${parseFloat(analysis.stats.Cpk) >= 1.33 ? '#22c55e' : '#ef4444'}`, borderRadius: '0.5rem', textAlign: 'center' }}>
-                                            <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.5rem' }}>CPK</div>
-                                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: parseFloat(analysis.stats.Cpk) >= 1.33 ? '#22c55e' : '#ef4444' }}>{analysis.stats.Cpk}</div>
+                                        <div style={{ padding: '1.5rem', background: parseFloat(analysis.stats.Cpk) >= 1.33 ? 'rgba(22, 163, 74, 0.1)' : 'rgba(220, 38, 38, 0.1)', border: `1px solid ${parseFloat(analysis.stats.Cpk) >= 1.33 ? '#16a34a' : '#dc2626'}`, borderRadius: '0.5rem', textAlign: 'center' }}>
+                                            <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.5rem' }}>CPK</div>
+                                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: parseFloat(analysis.stats.Cpk) >= 1.33 ? '#16a34a' : '#dc2626' }}>{analysis.stats.Cpk}</div>
                                         </div>
-                                        <div style={{ padding: '1.5rem', background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.3)', borderRadius: '0.5rem', textAlign: 'center' }}>
-                                            <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.5rem' }}>DEFECT RATE</div>
-                                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#fbbf24' }}>{analysis.stats.defectRate}%</div>
+                                        <div style={{ padding: '1.5rem', background: 'rgba(217, 119, 6, 0.1)', border: '1px solid rgba(217, 119, 6, 0.3)', borderRadius: '0.5rem', textAlign: 'center' }}>
+                                            <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.5rem' }}>DEFECT RATE</div>
+                                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#d97706' }}>{analysis.stats.defectRate}%</div>
                                         </div>
-                                        <div style={{ padding: '1.5rem', background: 'rgba(168, 85, 247, 0.1)', border: '1px solid rgba(168, 85, 247, 0.3)', borderRadius: '0.5rem', textAlign: 'center' }}>
-                                            <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.5rem' }}>DPMO</div>
-                                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#a855f7' }}>{analysis.stats.dpmo}</div>
+                                        <div style={{ padding: '1.5rem', background: 'rgba(15, 118, 110, 0.1)', border: '1px solid rgba(15, 118, 110, 0.3)', borderRadius: '0.5rem', textAlign: 'center' }}>
+                                            <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.5rem' }}>DPMO</div>
+                                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#0f766e' }}>{analysis.stats.dpmo}</div>
                                         </div>
-                                        <div style={{ padding: '1.5rem', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '0.5rem', textAlign: 'center' }}>
-                                            <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.5rem' }}>SIGMA LEVEL</div>
-                                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#3b82f6' }}>{analysis.stats.sigmaLevel}σ</div>
+                                        <div style={{ padding: '1.5rem', background: 'rgba(37, 99, 235, 0.1)', border: '1px solid rgba(37, 99, 235, 0.3)', borderRadius: '0.5rem', textAlign: 'center' }}>
+                                            <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.5rem' }}>SIGMA LEVEL</div>
+                                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2563eb' }}>{analysis.stats.sigmaLevel}σ</div>
                                         </div>
                                     </div>
                                     
@@ -809,12 +815,12 @@
                                 </div>
                                 
                                 {/* Insights Summary - Replacing NPI Mapping */}
-                                <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.3)', borderRadius: '1rem', padding: '2rem' }}>
-                                    <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#fbbf24', marginBottom: '1.5rem' }}>💡 Key Insights & Recommendations</h2>
+                                <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '1rem', padding: '2rem' }}>
+                                    <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#d97706', marginBottom: '1.5rem' }}>💡 Key Insights & Recommendations</h2>
                                     
                                     {/* Overall Assessment */}
-                                    <div style={{ padding: '1.5rem', background: parseFloat(analysis.stats.mean) >= 4.5 ? 'rgba(34, 197, 94, 0.1)' : parseFloat(analysis.stats.mean) >= 4.0 ? 'rgba(251, 191, 36, 0.1)' : 'rgba(239, 68, 68, 0.1)', border: `1px solid ${parseFloat(analysis.stats.mean) >= 4.5 ? '#22c55e' : parseFloat(analysis.stats.mean) >= 4.0 ? '#fbbf24' : '#ef4444'}`, borderRadius: '0.5rem', marginBottom: '2rem' }}>
-                                        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: parseFloat(analysis.stats.mean) >= 4.5 ? '#22c55e' : parseFloat(analysis.stats.mean) >= 4.0 ? '#fbbf24' : '#ef4444', marginBottom: '0.75rem' }}>
+                                    <div style={{ padding: '1.5rem', background: parseFloat(analysis.stats.mean) >= 4.5 ? 'rgba(22, 163, 74, 0.1)' : parseFloat(analysis.stats.mean) >= 4.0 ? 'rgba(217, 119, 6, 0.1)' : 'rgba(220, 38, 38, 0.1)', border: `1px solid ${parseFloat(analysis.stats.mean) >= 4.5 ? '#16a34a' : parseFloat(analysis.stats.mean) >= 4.0 ? '#d97706' : '#dc2626'}`, borderRadius: '0.5rem', marginBottom: '2rem' }}>
+                                        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: parseFloat(analysis.stats.mean) >= 4.5 ? '#16a34a' : parseFloat(analysis.stats.mean) >= 4.0 ? '#d97706' : '#dc2626', marginBottom: '0.75rem' }}>
                                             {parseFloat(analysis.stats.mean) >= 4.5 ? '✅ Strong Customer Satisfaction' : 
                                              parseFloat(analysis.stats.mean) >= 4.0 ? '⚠️ Good with Room for Improvement' : 
                                              '🔴 Critical Quality Issues'}
@@ -831,18 +837,18 @@
                                     {/* Top Issues */}
                                     {analysis.issues.length > 0 && (
                                         <div style={{ marginBottom: '2rem' }}>
-                                            <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#e6f1ff', marginBottom: '1rem' }}>🎯 Top Customer Pain Points</h3>
+                                            <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#0f172a', marginBottom: '1rem' }}>🎯 Top Customer Pain Points</h3>
                                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
                                                 {analysis.issues.slice(0, 3).map((issue, i) => (
-                                                    <div key={i} style={{ padding: '1.25rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '0.5rem' }}>
+                                                    <div key={i} style={{ padding: '1.25rem', background: 'rgba(220, 38, 38, 0.1)', border: '1px solid rgba(220, 38, 38, 0.3)', borderRadius: '0.5rem' }}>
                                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                                                             <span style={{ fontSize: '1.5rem' }}>#{i + 1}</span>
-                                                            <span style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#ef4444' }}>{issue.percentage}%</span>
+                                                            <span style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#dc2626' }}>{issue.percentage}%</span>
                                                         </div>
-                                                        <div style={{ fontSize: '1rem', fontWeight: '600', color: '#fca5a5', marginBottom: '0.5rem', textTransform: 'capitalize' }}>
+                                                        <div style={{ fontSize: '1rem', fontWeight: '600', color: '#b91c1c', marginBottom: '0.5rem', textTransform: 'capitalize' }}>
                                                             {issue.category}
                                                         </div>
-                                                        <div style={{ fontSize: '0.875rem', color: '#94a3b8' }}>
+                                                        <div style={{ fontSize: '0.875rem', color: '#64748b' }}>
                                                             Mentioned in {issue.count} reviews
                                                         </div>
                                                     </div>
@@ -853,7 +859,7 @@
                                     
                                     {/* Actionable Recommendations */}
                                     <div style={{ marginBottom: '2rem' }}>
-                                        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#e6f1ff', marginBottom: '1rem' }}>🔧 Recommended Actions</h3>
+                                        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#0f172a', marginBottom: '1rem' }}>🔧 Recommended Actions</h3>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                             {analysis.issues.slice(0, 3).map((issue, i) => {
                                                 let recommendation = '';
@@ -878,13 +884,13 @@
                                                 }
                                                 
                                                 return (
-                                                    <div key={i} style={{ padding: '1.25rem', background: 'rgba(100, 255, 218, 0.05)', border: '1px solid rgba(100, 255, 218, 0.2)', borderRadius: '0.5rem' }}>
+                                                    <div key={i} style={{ padding: '1.25rem', background: 'rgba(15, 118, 110, 0.05)', border: '1px solid rgba(15, 118, 110, 0.2)', borderRadius: '0.5rem' }}>
                                                         <div style={{ display: 'flex', gap: '1rem', alignItems: 'start' }}>
-                                                            <div style={{ flexShrink: 0, width: '2rem', height: '2rem', borderRadius: '9999px', background: 'rgba(100, 255, 218, 0.2)', color: '#64ffda', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+                                                            <div style={{ flexShrink: 0, width: '2rem', height: '2rem', borderRadius: '9999px', background: 'rgba(15, 118, 110, 0.2)', color: '#0f766e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
                                                                 {i + 1}
                                                             </div>
                                                             <div style={{ flex: 1 }}>
-                                                                <div style={{ fontSize: '1rem', fontWeight: '600', color: '#64ffda', marginBottom: '0.5rem', textTransform: 'capitalize' }}>
+                                                                <div style={{ fontSize: '1rem', fontWeight: '600', color: '#0f766e', marginBottom: '0.5rem', textTransform: 'capitalize' }}>
                                                                     Address {issue.category} Issues ({issue.count} mentions)
                                                                 </div>
                                                                 <div style={{ fontSize: '0.95rem', color: '#cbd5e1', lineHeight: '1.6' }}>
@@ -900,32 +906,32 @@
                                     
                                     {/* Critical Review Snapshots */}
                                     <div style={{ marginBottom: '2rem' }}>
-                                        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#e6f1ff', marginBottom: '0.5rem' }}>🔍 Critical Review Snapshots</h3>
-                                        <p style={{ fontSize: '0.875rem', color: '#94a3b8', marginBottom: '1rem' }}>
+                                        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#0f172a', marginBottom: '0.5rem' }}>🔍 Critical Review Snapshots</h3>
+                                        <p style={{ fontSize: '0.875rem', color: '#64748b', marginBottom: '1rem' }}>
                                             Verbatim excerpts from 1-2 star reviews revealing recurring themes
                                         </p>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                             {reviews.filter(r => r.rating <= 2).slice(0, 5).map((review, i) => (
-                                                <div key={i} style={{ padding: '1.25rem', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.2)', borderLeft: '4px solid #ef4444', borderRadius: '0.5rem' }}>
+                                                <div key={i} style={{ padding: '1.25rem', background: 'rgba(220, 38, 38, 0.05)', border: '1px solid rgba(220, 38, 38, 0.2)', borderLeft: '4px solid #dc2626', borderRadius: '0.5rem' }}>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                                             <div style={{ display: 'flex', gap: '0.125rem' }}>
                                                                 {[...Array(5)].map((_, starIdx) => (
-                                                                    <span key={starIdx} style={{ color: starIdx < review.rating ? '#fbbf24' : '#475569', fontSize: '1rem' }}>★</span>
+                                                                    <span key={starIdx} style={{ color: starIdx < review.rating ? '#d97706' : '#475569', fontSize: '1rem' }}>★</span>
                                                                 ))}
                                                             </div>
-                                                            <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{review.date}</span>
+                                                            <span style={{ fontSize: '0.75rem', color: '#64748b' }}>{review.date}</span>
                                                         </div>
-                                                        <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#ef4444' }}>
+                                                        <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#dc2626' }}>
                                                             {review.rating === 1 ? 'CRITICAL' : 'NEGATIVE'}
                                                         </span>
                                                     </div>
                                                     {review.title && (
-                                                        <div style={{ fontSize: '0.95rem', fontWeight: '600', color: '#fca5a5', marginBottom: '0.5rem' }}>
+                                                        <div style={{ fontSize: '0.95rem', fontWeight: '600', color: '#b91c1c', marginBottom: '0.5rem' }}>
                                                             "{review.title}"
                                                         </div>
                                                     )}
-                                                    <div style={{ fontSize: '0.95rem', color: '#e2e8f0', lineHeight: '1.6', fontStyle: 'italic', paddingLeft: '1rem', borderLeft: '2px solid rgba(239, 68, 68, 0.3)' }}>
+                                                    <div style={{ fontSize: '0.95rem', color: '#334155', lineHeight: '1.6', fontStyle: 'italic', paddingLeft: '1rem', borderLeft: '2px solid rgba(220, 38, 38, 0.3)' }}>
                                                         "{review.review}"
                                                     </div>
                                                 </div>
@@ -934,8 +940,8 @@
                                         
                                         {/* Theme Summary */}
                                         {reviews.filter(r => r.rating <= 2).length > 0 && (
-                                            <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.3)', borderRadius: '0.5rem' }}>
-                                                <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#fbbf24', marginBottom: '0.5rem' }}>
+                                            <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(217, 119, 6, 0.1)', border: '1px solid rgba(217, 119, 6, 0.3)', borderRadius: '0.5rem' }}>
+                                                <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#d97706', marginBottom: '0.5rem' }}>
                                                     🎯 Recurring Themes in Critical Reviews:
                                                 </div>
                                                 <ul style={{ fontSize: '0.875rem', color: '#cbd5e1', lineHeight: '1.8', margin: 0, paddingLeft: '1.5rem' }}>
@@ -990,28 +996,28 @@
                                     </div>
                                     
                                     {/* Strategic Implications */}
-                                    <div style={{ padding: '1.5rem', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '0.5rem' }}>
-                                        <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#3b82f6', marginBottom: '1rem' }}>📈 Strategic Implications</h3>
+                                    <div style={{ padding: '1.5rem', background: 'rgba(37, 99, 235, 0.1)', border: '1px solid rgba(37, 99, 235, 0.3)', borderRadius: '0.5rem' }}>
+                                        <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#2563eb', marginBottom: '1rem' }}>📈 Strategic Implications</h3>
                                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                                             <div>
-                                                <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.25rem' }}>MARKET POSITION</div>
-                                                <div style={{ fontSize: '0.95rem', color: '#e2e8f0', lineHeight: '1.5' }}>
+                                                <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.25rem' }}>MARKET POSITION</div>
+                                                <div style={{ fontSize: '0.95rem', color: '#334155', lineHeight: '1.5' }}>
                                                     {parseFloat(analysis.stats.mean) >= 4.5 ? 'Strong competitive position' : 
                                                      parseFloat(analysis.stats.mean) >= 4.0 ? 'Competitive but vulnerable' : 
                                                      'At risk of market share loss'}
                                                 </div>
                                             </div>
                                             <div>
-                                                <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.25rem' }}>WARRANTY RISK</div>
-                                                <div style={{ fontSize: '0.95rem', color: '#e2e8f0', lineHeight: '1.5' }}>
+                                                <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.25rem' }}>WARRANTY RISK</div>
+                                                <div style={{ fontSize: '0.95rem', color: '#334155', lineHeight: '1.5' }}>
                                                     {parseFloat(analysis.stats.defectRate) < 5 ? 'Low - within targets' :
                                                      parseFloat(analysis.stats.defectRate) < 10 ? 'Moderate - monitor closely' :
                                                      'High - immediate action needed'}
                                                 </div>
                                             </div>
                                             <div>
-                                                <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.25rem' }}>PROCESS CAPABILITY</div>
-                                                <div style={{ fontSize: '0.95rem', color: '#e2e8f0', lineHeight: '1.5' }}>
+                                                <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.25rem' }}>PROCESS CAPABILITY</div>
+                                                <div style={{ fontSize: '0.95rem', color: '#334155', lineHeight: '1.5' }}>
                                                     {parseFloat(analysis.stats.Cpk) >= 1.67 ? 'Excellent (>1.67)' :
                                                      parseFloat(analysis.stats.Cpk) >= 1.33 ? 'Acceptable (≥1.33)' :
                                                      parseFloat(analysis.stats.Cpk) >= 1.0 ? 'Marginal (<1.33)' :
@@ -1019,8 +1025,8 @@
                                                 </div>
                                             </div>
                                             <div>
-                                                <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.25rem' }}>CUSTOMER LOYALTY</div>
-                                                <div style={{ fontSize: '0.95rem', color: '#e2e8f0', lineHeight: '1.5' }}>
+                                                <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.25rem' }}>CUSTOMER LOYALTY</div>
+                                                <div style={{ fontSize: '0.95rem', color: '#334155', lineHeight: '1.5' }}>
                                                     {(analysis.stats.distribution.find(d => d.star === 5)?.count / analysis.stats.totalReviews * 100) >= 70 ? 'High - strong advocates' :
                                                      (analysis.stats.distribution.find(d => d.star === 5)?.count / analysis.stats.totalReviews * 100) >= 50 ? 'Moderate - satisfied customers' :
                                                      'Low - retention risk'}
@@ -1033,13 +1039,13 @@
                         )}
                         
                         {/* Backend Info */}
-                        <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '0.5rem' }}>
-                            <h3 style={{ color: '#3b82f6', marginBottom: '0.75rem', fontSize: '1.125rem' }}>ℹ️ How This Works</h3>
+                        <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(37, 99, 235, 0.1)', border: '1px solid rgba(37, 99, 235, 0.3)', borderRadius: '0.5rem' }}>
+                            <h3 style={{ color: '#2563eb', marginBottom: '0.75rem', fontSize: '1.125rem' }}>ℹ️ How This Works</h3>
                             <p style={{ color: '#cbd5e1', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '0.5rem' }}>
                                 <strong>Demo Mode:</strong> AI-generated reviews based on product category detected from URL. Realistic distributions and product-appropriate feedback.
                             </p>
                             <p style={{ color: '#cbd5e1', fontSize: '0.95rem', lineHeight: '1.6' }}>
-                                <strong>Production:</strong> Connects to Python Flask API (<code style={{ background: 'rgba(15, 23, 42, 0.8)', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>voc_scraper_backend.py</code>) which scrapes actual Amazon reviews using BeautifulSoup. Supports any Amazon product when deployed.
+                                <strong>Production:</strong> Connects to Python Flask API (<code style={{ background: '#f1f5f9', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>voc_scraper_backend.py</code>) which scrapes actual Amazon reviews using BeautifulSoup. Supports any Amazon product when deployed.
                             </p>
                         </div>
                     </div>
